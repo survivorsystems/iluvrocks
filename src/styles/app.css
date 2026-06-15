@@ -1,0 +1,73 @@
+@import "tailwindcss";
+
+@theme {
+  --color-earth-950: #1b2632;
+  --color-earth-900: #24313d;
+  --color-earth-800: #2e3d4a;
+  --color-earth-700: #4a5a66;
+  --color-earth-400: #a7b1b6;
+  --color-earth-200: #d6d2c4;
+  --color-earth-50: #f5f3ee;
+
+  --color-mineral-teal: #3d6b6b;
+  --color-mineral-teal-hover: #4b8282;
+  --color-mineral-green: #6b7f5e;
+  --color-mineral-green-hover: #7d9370;
+  --color-mineral-copper: #b87333;
+  --color-mineral-copper-hover: #c98443;
+
+  --color-link: #4f9a9a;
+  --color-success: #6b7f5e;
+  --color-warning: #d6a64b;
+  --color-error: #b85a5a;
+}
+
+@layer base {
+  html,
+  body {
+    @apply text-earth-50 bg-earth-950 antialiased;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  /* Rugged Headings */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-black uppercase italic tracking-tighter;
+  }
+
+  .using-mouse * {
+    outline: none !important;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-mineral-teal hover:bg-mineral-teal-hover text-earth-50 px-6 py-3 rounded-xl font-black uppercase tracking-widest text-xs transition-all shadow-lg;
+  }
+  
+  .btn-secondary {
+    @apply bg-mineral-green hover:bg-mineral-green-hover text-earth-50 px-6 py-3 rounded-xl font-black uppercase tracking-widest text-xs transition-all shadow-lg;
+  }
+
+  .btn-cta {
+    @apply bg-mineral-copper hover:bg-mineral-copper-hover text-earth-50 px-6 py-3 rounded-xl font-black uppercase tracking-widest text-xs transition-all shadow-xl;
+  }
+
+  .surface-card {
+    @apply bg-earth-900/80 backdrop-blur-md border border-earth-700 rounded-[2rem] shadow-xl overflow-hidden transition-all;
+  }
+
+  .surface-elevated {
+    @apply bg-earth-800 border border-earth-700 rounded-[2.5rem] shadow-2xl overflow-hidden;
+  }
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  @apply bg-earth-950;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-earth-700 rounded-full hover:bg-earth-400;
+}
