@@ -112,7 +112,7 @@ function LocationDetail() {
             </div>
 
             <div className="flex gap-8 border-b border-earth-700 px-4 overflow-x-auto scrollbar-hide">
-               <TabBtn active={activeTab === 'intel'} onClick={() => setActiveTab('intel'} label="Site Intel" />
+               <TabBtn active={activeTab === 'intel'} onClick={() => setActiveTab('intel')} label="Site Intel" />
                <TabBtn active={activeTab === 'feed'} onClick={() => setActiveTab('feed')} label="Community Feed" />
                <TabBtn active={activeTab === 'minerals'} onClick={() => setActiveTab('minerals')} label="Minerals" />
                <TabBtn active={activeTab === 'safety'} onClick={() => setActiveTab('safety')} label="Safety & Access" />
