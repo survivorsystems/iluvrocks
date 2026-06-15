@@ -1,6 +1,7 @@
-import { defineSchema, defineTable } from "convex/server";
+  import 
+{ defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
-import { authTables } from "@convex-dev/auth/server";
+import{ authTables } from "@convex-dev/auth/server";
 
 export default defineSchema({
   ...authTables,
@@ -130,7 +131,7 @@ export default defineSchema({
   follows: defineTable({
     followerId: v.id("users"),
     followingId: v.id("users"),
-  }).index("by_follower", ["followerId"])
+  }).index("by_follower", ["followerId", "followingId"])
     .index("by_following", ["followingId"]),
 
   groups: defineTable({
@@ -262,4 +263,33 @@ export default defineSchema({
     type: v.string(), 
     status: v.string(),
   }).index("by_status", ["status"]),
+
+ locationPhotos: defineTable({
+    locationId: v.id("locations"),
+    userId: v.id("users"),
+    storageId: v.id("_storage"),
+    url: v.optional(v.string()),
+    caption: v.optional(v.string()),
+    category: v.optional(v.string()),
+    status: v.optional(v.string()),
+  }).index("by_location", ["locationId"])
+    .index("by_user", ["userId"]),
+
+  locationComments: defineTable({
+    locationId: v.id("locations"),
+    userId: v.id("users"),
+    text: v.string(),
+    status: v.optional(v.string()),
+    parentId: v.optional(v.id("locationComments")),
+  }).index("by_location", ["locationId"])
+    .index("by_user", ["userId"]),
+
+  weatherCache: defineTable({
+    locationId: v.id("locations"),
+    temp: v.optional(v.number()),
+    wind: v.optional(v.string()),
+    precipitation: v.optional(v.string()),
+    summary: v.optional(v.string()),
+    updatedAt: v.number(),
+  }).index("by_location", ["locationId"]),
 });
