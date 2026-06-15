@@ -314,9 +314,9 @@ function LocationDetail() {
                       <div className="p-4 bg-emerald-800/50 rounded-2xl border border-emerald-700">
                         <p className="text-[10px] font-black text-emerald-300 uppercase tracking-widest mb-2">Hounders Advisory</p>
                         <p className="text-sm font-medium leading-tight">
-                          {weather.precipitation 
+               {weather.precipitation
   ? (parseFloat(weather.precipitation) > 0
-    ? "Wet conditions will make agates pop, but watch your footing on steep riverbanks." 
+    ? "Wet conditions will make agates pop, but watch your footing on steep riverbanks."
     : "Clear skies today. Perfect for high-elevation prospecting near the ridges.")
   : "Check local conditions before heading out."}
                         </p>
