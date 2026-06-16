@@ -11,6 +11,7 @@ export default function Login() {
   const [email, setEmail] = useState('')
   const [code, setCode] = useState('')
   const [message, setMessage] = useState('Enter your email to request a sign-in code.')
+  const [requestedEmail, setRequestedEmail] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isOpeningProfile, setIsOpeningProfile] = useState(false)
 
@@ -20,10 +21,31 @@ export default function Login() {
     }
   }, [isAuthenticated, isOpeningProfile, navigate])
 
+  useEffect(() => {
+    if (!isOpeningProfile) return
+
+    const timer = window.setTimeout(() => {
+      setIsOpeningProfile(false)
+      setMessage(
+        'Code accepted, but RockHound could not confirm your session yet. Refresh the page and try opening your profile.',
+      )
+    }, 10000)
+
+    return () => window.clearTimeout(timer)
+  }, [isOpeningProfile])
+
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     if (isDevAuthBypass) {
       navigate('/basecamp')
+      return
+    }
+
+    const cleanEmail = normalizeEmail(email)
+    const cleanCode = code.trim()
+
+    if (cleanCode && requestedEmail && cleanEmail !== requestedEmail) {
+      setMessage(`Use the same email address that requested the code: ${requestedEmail}.`)
       return
     }
 
@@ -33,9 +55,11 @@ export default function Login() {
     try {
       const result = await signIn(
         'resend-otp',
-        code ? { email, code, redirectTo: '/profile' } : { email, redirectTo: '/profile' },
+        cleanCode
+          ? { email: cleanEmail, code: cleanCode, redirectTo: '/profile' }
+          : { email: cleanEmail, redirectTo: '/profile' },
       )
-      if (code) {
+      if (cleanCode) {
         if (result.signingIn) {
           setIsOpeningProfile(true)
           setMessage('Code accepted. Opening your profile...')
@@ -43,10 +67,11 @@ export default function Login() {
           setMessage('That code was not accepted. Request a fresh code and try again.')
         }
       } else {
-        setMessage(`Check ${email} for your sign-in code.`)
+        setRequestedEmail(cleanEmail)
+        setMessage(`Check ${cleanEmail} for your sign-in code.`)
       }
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : 'Sign-in failed.')
+      setMessage(getSignInErrorMessage(error))
     } finally {
       setIsSubmitting(false)
     }
@@ -103,4 +128,26 @@ export default function Login() {
       </form>
     </section>
   )
+}
+
+function normalizeEmail(value: string) {
+  return value.trim().toLowerCase()
+}
+
+function getSignInErrorMessage(error: unknown) {
+  const message = error instanceof Error ? error.message : ''
+
+  if (message.includes('Could not verify code')) {
+    return 'That code was not accepted. Request a fresh code and try again.'
+  }
+
+  if (message.includes('Short verification code requires a matching `email`')) {
+    return 'The email address must match the one that requested the code.'
+  }
+
+  if (message.includes('Missing environment variable')) {
+    return 'RockHound sign-in is missing a server setting. Please try again after the latest deployment finishes.'
+  }
+
+  return message || 'Sign-in failed. Please try again.'
 }
