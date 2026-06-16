@@ -5,6 +5,13 @@ import Home from './routes/Home'
 import Login from './routes/Login'
 import Profile from './routes/Profile'
 import ProfileSetup from './routes/ProfileSetup'
+import ProtectedRoute from './components/ProtectedRoute'
+import AdminDashboard from './routes/AdminDashboard'
+import Basecamp from './routes/Basecamp'
+import CollectionTracker from './routes/CollectionTracker'
+import Community from './routes/Community'
+import LogFind from './routes/LogFind'
+import SavedLocations from './routes/SavedLocations'
 
 export default function App() {
   return (
@@ -13,8 +20,63 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/feed" element={<Feed />} />
-        <Route path="/profile" element={<ProfileSetup />} />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <ProfileSetup />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/profile/:handle" element={<Profile />} />
+        <Route
+          path="/basecamp"
+          element={
+            <ProtectedRoute>
+              <Basecamp />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/collection"
+          element={
+            <ProtectedRoute>
+              <CollectionTracker />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/saved-locations"
+          element={
+            <ProtectedRoute>
+              <SavedLocations />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/log-find"
+          element={
+            <ProtectedRoute>
+              <LogFind />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/community"
+          element={
+            <ProtectedRoute>
+              <Community />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute adminOnly>
+              <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>

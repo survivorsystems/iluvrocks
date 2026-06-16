@@ -1,11 +1,13 @@
 import { Mountain, UserRound } from 'lucide-react'
-import { useAuthActions } from '@convex-dev/auth/react'
-import { useConvexAuth } from 'convex/react'
 import { NavLink, Outlet } from 'react-router-dom'
+import DevModeBadge from './DevModeBadge'
+import { useAppAuth } from '../lib/devAuth'
 
 const navItems = [
   { to: '/', label: 'Home' },
   { to: '/feed', label: 'Feed' },
+  { to: '/community', label: 'Community' },
+  { to: '/basecamp', label: 'Basecamp' },
   { to: '/profile', label: 'Profile' },
 ]
 
@@ -24,6 +26,7 @@ export default function Layout() {
             </NavLink>
           ))}
         </nav>
+        <DevModeBadge />
         <AuthLink />
       </header>
       <main>
@@ -34,8 +37,7 @@ export default function Layout() {
 }
 
 function AuthLink() {
-  const { isAuthenticated } = useConvexAuth()
-  const { signOut } = useAuthActions()
+  const { isAuthenticated, signOut } = useAppAuth()
 
   if (isAuthenticated) {
     return (

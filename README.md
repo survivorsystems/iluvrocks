@@ -1,66 +1,88 @@
-# RockHound ⚒️
+# RockHound
 
-A professional, community-driven social platform for rockhounds, prospectors, fossil hunters, and outdoor explorers. Built with TanStack Start, Convex, and Tailwind CSS v4.
+A community field-notes platform for rockhounds, prospectors, fossil hunters, and outdoor explorers. RockHound is built as a static React app with a Convex backend.
 
-## 🚀 Features
+## Features
 
-- **Live Social Feed**: Discover finds, trip reports, and local intel in real-time.
-- **Interactive Mapping**: Explore verified collecting sites across the American West.
-- **Digital Field Journal**: Maintain a personal log of discoveries and collections.
-- **Community Hubs**: Join regional chapters and connect with local experts.
-- **AI Identification**: Instant mineral identification using advanced vision models.
-- **Safety Check-in**: Specialized tools for outdoor safety and trip planning.
+- Public feed and visitor-friendly landing pages.
+- Basecamp dashboard for trip planning and field workflows.
+- Collection tracker for specimen records.
+- Saved locations for access notes and future scouting.
+- Log-a-find workflow for field notes.
+- Community and admin dashboard foundations.
+- Convex Auth with Resend email codes.
 
-## 🛠️ Tech Stack
+## Tech Stack
 
-- **Frontend**: [TanStack Start](https://tanstack.com/router/latest/docs/framework/react/start/overview) (React, File-based Routing)
-- **Backend**: [Convex](https://convex.dev/) (Real-time Database, Server Functions)
-- **Auth**: [Convex Auth](https://labs.convex.dev/auth)
-- **Styling**: [Tailwind CSS v4](https://tailwindcss.com/)
-- **AI**: [Convex Agent](https://github.com/get-convex/agent) + OpenRouter
+- Frontend: React, Vite, TypeScript, React Router
+- Backend: Convex
+- Auth: Convex Auth and Resend
+- Styling: Plain CSS
 
-## 🏃 Local Development
+## Local Development
 
-1. **Clone the repository**
-2. **Install dependencies**:
-   ```bash
-   npm install
-   ```
-3. **Set up Convex**:
-   If you haven't already, install the Convex CLI and log in:
-   ```bash
-   npx convex dev
-   ```
-4. **Environment Variables**:
-   Copy `.env.example` to `.env.local` and add your Convex URL.
-5. **Run the development server**:
-   ```bash
-   npm run dev
-   ```
+Install dependencies:
 
-## 🏗️ Production Build
+```bash
+npm install
+```
 
-To build the application for production:
+Copy `.env.example` to `.env.local` and set your Convex URL:
+
+```bash
+VITE_CONVEX_URL=https://tough-emu-800.convex.cloud
+```
+
+Run the local app:
+
+```bash
+npm run dev
+```
+
+## Development Auth Bypass
+
+While Resend DNS propagation and email delivery are being configured, local development can use a mock authenticated admin user.
+
+Add this to `.env.local`:
+
+```bash
+VITE_DEV_AUTH_BYPASS=true
+```
+
+The bypass only activates when both conditions are true:
+
+- Vite is running in local development mode.
+- `VITE_DEV_AUTH_BYPASS=true`.
+
+The mock user is:
+
+```text
+id: dev-user
+username: chickensweets87
+displayName: Krista
+email: dev@rockhoundapp.app
+role: admin
+```
+
+Never enable this for production. Production builds do not activate the bypass because the code also checks `import.meta.env.DEV`.
+
+## Production Build
+
+Build the static app:
 
 ```bash
 npm run build
 ```
 
-The output will be in the `.output` directory (for the server) and `dist` (for static assets), ready for deployment on platforms like Vercel.
+The output is written to `dist`.
 
-## 📦 Deployment (Vercel)
+## Deployment
 
-1. Connect your GitHub repository to Vercel.
-2. Set the following build settings:
-   - **Framework Preset**: Other (Vite-based)
-   - **Build Command**: `npm run build`
-   - **Output Directory**: `.output/public`
-   - **Install Command**: `npm install`
-3. Add your environment variables:
-   - `VITE_CONVEX_URL`: Your production Convex URL.
-   - `AUTH_SECRET`: A secure random string for authentication.
-   - `OPENROUTER_API_KEY`: (Optional) For AI features.
+For Vercel or Netlify:
 
----
+- Build command: `npm run build`
+- Output directory: `dist`
+- Required frontend env var: `VITE_CONVEX_URL`
+- Do not set `VITE_DEV_AUTH_BYPASS=true` in production.
 
-Built with ❤️ for the Rockhounding community.
+Convex backend environment variables are managed separately with the Convex CLI or dashboard. Auth email delivery requires `SITE_URL` and `RESEND_API_KEY`.

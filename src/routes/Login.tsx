@@ -2,11 +2,11 @@ import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuthActions } from '@convex-dev/auth/react'
-import { useConvexAuth } from 'convex/react'
+import { useAppAuth, isDevAuthBypass } from '../lib/devAuth'
 
 export default function Login() {
   const navigate = useNavigate()
-  const { isAuthenticated } = useConvexAuth()
+  const { isAuthenticated, user } = useAppAuth()
   const { signIn, signOut } = useAuthActions()
   const [email, setEmail] = useState('')
   const [code, setCode] = useState('')
@@ -15,6 +15,11 @@ export default function Login() {
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+    if (isDevAuthBypass) {
+      navigate('/basecamp')
+      return
+    }
+
     setIsSubmitting(true)
     setMessage('')
 
@@ -42,7 +47,9 @@ export default function Login() {
         <div className="auth-form">
           <p className="eyebrow">Member access</p>
           <h1>You are signed in</h1>
-          <p className="form-note">Create or update your profile before posting.</p>
+          <p className="form-note">
+            {user ? `${user.displayName} is using the local dev account.` : 'Create or update your profile before posting.'}
+          </p>
           <Link to="/profile" className="primary-action">
             Open profile setup
           </Link>

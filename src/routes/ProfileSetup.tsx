@@ -3,16 +3,29 @@ import type { FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useConvexAuth, useMutation, useQuery } from 'convex/react'
 import { api } from '../../convex/_generated/api'
+import { devUser, isDevAuthBypass } from '../lib/devAuth'
 
 export default function ProfileSetup() {
   const navigate = useNavigate()
   const { isLoading, isAuthenticated } = useConvexAuth()
-  const viewer = useQuery(api.users.viewer)
+  const viewer = useQuery(api.users.viewer, isDevAuthBypass ? 'skip' : {})
   const updateProfile = useMutation(api.users.updateProfile)
   const [status, setStatus] = useState<string | null>(null)
   const [isSaving, setIsSaving] = useState(false)
 
-  const initial = viewer?.user
+  const initial = isDevAuthBypass
+    ? {
+        name: devUser.displayName,
+        username: devUser.username,
+        email: devUser.email,
+        bio: 'Building RockHound and testing the local dev account.',
+        location: 'Washington',
+        homeRegion: 'Puget Sound',
+        favoriteMinerals: ['Agate', 'Jasper', 'Quartz'],
+        collectingStyles: ['Beach walks', 'River bars'],
+        yearsRockhounding: 4,
+      }
+    : viewer?.user
   const [name, setName] = useState('')
   const [username, setUsername] = useState('')
   const [bio, setBio] = useState('')
@@ -45,16 +58,18 @@ export default function ProfileSetup() {
       .replace(/[^a-z0-9_-]/g, '')
 
     try {
-      await updateProfile({
-        name: emptyToUndefined(name),
-        username: cleanUsername || undefined,
-        bio: emptyToUndefined(bio),
-        location: emptyToUndefined(location),
-        homeRegion: emptyToUndefined(homeRegion),
-        favoriteMinerals: splitList(favoriteMinerals),
-        collectingStyles: splitList(collectingStyles),
-        yearsRockhounding: yearsRockhounding ? Number(yearsRockhounding) : undefined,
-      })
+      if (!isDevAuthBypass) {
+        await updateProfile({
+          name: emptyToUndefined(name),
+          username: cleanUsername || undefined,
+          bio: emptyToUndefined(bio),
+          location: emptyToUndefined(location),
+          homeRegion: emptyToUndefined(homeRegion),
+          favoriteMinerals: splitList(favoriteMinerals),
+          collectingStyles: splitList(collectingStyles),
+          yearsRockhounding: yearsRockhounding ? Number(yearsRockhounding) : undefined,
+        })
+      }
       setStatus('Profile saved.')
       if (cleanUsername) {
         navigate(`/profile/${cleanUsername}`)
@@ -66,11 +81,11 @@ export default function ProfileSetup() {
     }
   }
 
-  if (isLoading || viewer === undefined) {
+  if (!isDevAuthBypass && (isLoading || viewer === undefined)) {
     return <p className="empty-state">Loading profile setup...</p>
   }
 
-  if (!isAuthenticated || viewer === null) {
+  if (!isDevAuthBypass && (!isAuthenticated || viewer === null)) {
     return (
       <section className="auth-page">
         <div className="auth-form">
