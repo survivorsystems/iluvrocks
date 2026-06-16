@@ -1,4 +1,4 @@
-import { useAuthActions } from '@convex-dev/auth/react'
+import { useAuthActions, useAuthToken } from '@convex-dev/auth/react'
 import { useConvexAuth, useQuery } from 'convex/react'
 import { useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
@@ -16,9 +16,11 @@ export type AuthProfileState =
 export function useAuthProfileState(isCreatingProfile = false) {
   const convexAuth = useConvexAuth()
   const authActions = useAuthActions()
+  const authToken = useAuthToken()
   const location = useLocation()
 
-  const shouldLoadViewer = !isDevAuthBypass && convexAuth.isAuthenticated
+  const hasAuthToken = !!authToken
+  const shouldLoadViewer = !isDevAuthBypass && (convexAuth.isAuthenticated || hasAuthToken)
   const viewer = useQuery(api.users.viewer, shouldLoadViewer ? {} : 'skip')
 
   const state: AuthProfileState = isDevAuthBypass
@@ -28,6 +30,7 @@ export function useAuthProfileState(isCreatingProfile = false) {
     : getAuthProfileState({
         isAuthLoading: convexAuth.isLoading,
         isAuthenticated: convexAuth.isAuthenticated,
+        hasAuthToken,
         isViewerLoading: shouldLoadViewer && viewer === undefined,
         hasViewer: viewer !== null && viewer !== undefined,
         hasProfile: !!viewer?.user?.username,
@@ -46,16 +49,16 @@ export function useAuthProfileState(isCreatingProfile = false) {
             _id: devUser.id,
             name: devUser.displayName,
             username: devUser.username,
-          email: devUser.email,
-          isAdmin: true,
-          bio: 'Building RockHound and testing the local dev account.',
-          location: 'Washington',
-          homeRegion: 'Puget Sound',
-          favoriteMinerals: ['Agate', 'Jasper', 'Quartz'],
-          collectingStyles: ['Beach walks', 'River bars'],
-          yearsRockhounding: 4,
+            email: devUser.email,
+            isAdmin: true,
+            bio: 'Building RockHound and testing the local dev account.',
+            location: 'Washington',
+            homeRegion: 'Puget Sound',
+            favoriteMinerals: ['Agate', 'Jasper', 'Quartz'],
+            collectingStyles: ['Beach walks', 'River bars'],
+            yearsRockhounding: 4,
+          },
         },
-      },
         user: devUser,
         signOut: async () => undefined,
       }
@@ -77,6 +80,7 @@ export function useAuthProfileState(isCreatingProfile = false) {
 function getAuthProfileState({
   isAuthLoading,
   isAuthenticated,
+  hasAuthToken,
   isViewerLoading,
   hasViewer,
   hasProfile,
@@ -84,14 +88,15 @@ function getAuthProfileState({
 }: {
   isAuthLoading: boolean
   isAuthenticated: boolean
+  hasAuthToken: boolean
   isViewerLoading: boolean
   hasViewer: boolean
   hasProfile: boolean
   isCreatingProfile: boolean
 }): AuthProfileState {
   if (isCreatingProfile) return 'creatingProfile'
-  if (isAuthLoading) return 'loadingAuth'
-  if (!isAuthenticated) return 'unauthenticated'
+  if (isAuthLoading && !hasAuthToken) return 'loadingAuth'
+  if (!isAuthenticated && !hasAuthToken) return 'unauthenticated'
   if (isViewerLoading) return 'loadingAuth'
   if (!hasViewer) return 'error'
   if (!hasProfile) return 'authenticatedNoProfile'
