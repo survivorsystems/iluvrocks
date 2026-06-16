@@ -12,7 +12,7 @@ export const ResendOTP = Email({
   async sendVerificationRequest({ identifier: email, provider, token }) {
     const resend = new ResendAPI(provider.apiKey);
     const { error } = await resend.emails.send({
-      from: "RockApp <chickensweets87@gmail.com>",
+      from: "RockApp <auth@survivorsystems.org>",
       to: [email],
       subject: "Your sign-in code",
       text: `Your verification code is: ${token}`,
