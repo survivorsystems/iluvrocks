@@ -1,4 +1,4 @@
-import { useAuthActions } from '@convex-dev/auth/react'
+import { useAuthActions, useAuthToken } from '@convex-dev/auth/react'
 import { useConvexAuth } from 'convex/react'
 
 export const isDevAuthBypass =
@@ -17,6 +17,7 @@ export type AppUser = typeof devUser
 export function useAppAuth() {
   const convexAuth = useConvexAuth()
   const authActions = useAuthActions()
+  const authToken = useAuthToken()
 
   if (isDevAuthBypass) {
     return {
@@ -30,8 +31,9 @@ export function useAppAuth() {
 
   return {
     isDevMode: false,
-    isLoading: convexAuth.isLoading,
-    isAuthenticated: convexAuth.isAuthenticated,
+    isLoading: convexAuth.isLoading && !authToken,
+    isAuthenticated: convexAuth.isAuthenticated || !!authToken,
+    isServerConfirmed: convexAuth.isAuthenticated,
     user: null,
     signOut: authActions.signOut,
   }
