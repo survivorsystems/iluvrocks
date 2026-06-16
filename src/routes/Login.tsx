@@ -19,7 +19,10 @@ export default function Login() {
     setMessage('')
 
     try {
-      const result = await signIn('resend-otp', code ? { email, code } : { email })
+      const result = await signIn(
+        'resend-otp',
+        code ? { email, code, redirectTo: '/profile' } : { email, redirectTo: '/profile' },
+      )
       if (result.signingIn || code) {
         setMessage('Signed in. Set up your profile next.')
         navigate('/profile')
