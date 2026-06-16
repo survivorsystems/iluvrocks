@@ -33,7 +33,7 @@ export function useAuthProfileState(isCreatingProfile = false) {
         hasAuthToken,
         isViewerLoading: shouldLoadViewer && viewer === undefined,
         hasViewer: viewer !== undefined,
-        hasProfile: !!viewer?.user?.username,
+        hasProfile: hasBasicProfile(viewer?.user),
         isCreatingProfile,
       })
 
@@ -101,6 +101,19 @@ function getAuthProfileState({
   if (!hasViewer) return 'authenticatedNoProfile'
   if (!hasProfile) return 'authenticatedNoProfile'
   return 'authenticatedWithProfile'
+}
+
+function hasBasicProfile(user: unknown) {
+  if (!user || typeof user !== 'object') return false
+
+  const profile = user as {
+    name?: string
+    email?: string
+    location?: string
+    yearsRockhounding?: number
+  }
+
+  return !!profile.name?.trim() && !!profile.email?.trim() && !!profile.location?.trim() && profile.yearsRockhounding !== undefined
 }
 
 function useAuthDebugLog(

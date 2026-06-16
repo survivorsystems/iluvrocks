@@ -5,9 +5,10 @@ import { useAuthProfileState } from '../lib/authState'
 type ProtectedRouteProps = {
   children: ReactNode
   adminOnly?: boolean
+  requireProfile?: boolean
 }
 
-export default function ProtectedRoute({ children, adminOnly = false }: ProtectedRouteProps) {
+export default function ProtectedRoute({ children, adminOnly = false, requireProfile = true }: ProtectedRouteProps) {
   const auth = useAuthProfileState()
   const location = useLocation()
 
@@ -19,6 +20,11 @@ export default function ProtectedRoute({ children, adminOnly = false }: Protecte
   if (auth.state === 'unauthenticated') {
     console.info('[RockHound redirect]', { route: location.pathname, decision: 'redirect-to-login' })
     return <Navigate to="/login" replace />
+  }
+
+  if (requireProfile && auth.state === 'authenticatedNoProfile') {
+    console.info('[RockHound redirect]', { route: location.pathname, decision: 'redirect-to-onboarding-profile' })
+    return <Navigate to="/onboarding/profile" replace />
   }
 
   if (adminOnly && !auth.viewer?.user?.isAdmin && auth.user?.role !== 'admin') {

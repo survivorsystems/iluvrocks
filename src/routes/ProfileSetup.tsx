@@ -27,6 +27,7 @@ export default function ProfileSetup() {
       }
     : auth.viewer?.user
   const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
   const [username, setUsername] = useState('')
   const [bio, setBio] = useState('')
   const [location, setLocation] = useState('')
@@ -38,6 +39,7 @@ export default function ProfileSetup() {
   useEffect(() => {
     if (!initial) return
     setName(initial.name ?? '')
+    setEmail(initial.email ?? '')
     setUsername(initial.username ?? '')
     setBio(initial.bio ?? '')
     setLocation(initial.location ?? '')
@@ -61,6 +63,7 @@ export default function ProfileSetup() {
       if (!isDevAuthBypass) {
         await updateProfile({
           name: emptyToUndefined(name),
+          email: emptyToUndefined(email),
           username: cleanUsername || undefined,
           bio: emptyToUndefined(bio),
           location: emptyToUndefined(location),
@@ -70,7 +73,7 @@ export default function ProfileSetup() {
           yearsRockhounding: yearsRockhounding ? Number(yearsRockhounding) : undefined,
         })
       }
-      setStatus('Profile saved. Opening Basecamp...')
+      setStatus('Basic profile saved. Opening Basecamp...')
       navigate('/basecamp', { replace: true })
     } catch (error) {
       setStatus(error instanceof Error ? error.message : 'Profile could not be saved.')
@@ -118,12 +121,16 @@ export default function ProfileSetup() {
   return (
     <section className="profile-page">
       <form className="auth-form profile-form" onSubmit={handleSubmit}>
-        <p className="eyebrow">Create profile</p>
-        <h1>Your rockhound card</h1>
+        <p className="eyebrow">Basic profile</p>
+        <h1>Create your Basecamp profile</h1>
         <div className="form-grid">
           <label>
-            Display name
-            <input value={name} onChange={(event) => setName(event.target.value)} placeholder="Jane Rockhound" />
+            Name
+            <input value={name} onChange={(event) => setName(event.target.value)} placeholder="Jane Rockhound" required />
+          </label>
+          <label>
+            Email
+            <input type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="you@example.com" required />
           </label>
           <label>
             Handle
@@ -131,7 +138,7 @@ export default function ProfileSetup() {
           </label>
           <label>
             Location
-            <input value={location} onChange={(event) => setLocation(event.target.value)} placeholder="Olympia, WA" />
+            <input value={location} onChange={(event) => setLocation(event.target.value)} placeholder="Olympia, WA" required />
           </label>
           <label>
             Home region
@@ -145,6 +152,7 @@ export default function ProfileSetup() {
               value={yearsRockhounding}
               onChange={(event) => setYearsRockhounding(event.target.value)}
               placeholder="3"
+              required
             />
           </label>
           <label>
@@ -175,7 +183,7 @@ export default function ProfileSetup() {
         </label>
         <div className="form-footer">
           <span>{status}</span>
-          <button type="submit" disabled={isSaving || !username.trim()}>
+          <button type="submit" disabled={isSaving || !name.trim() || !email.trim() || !location.trim() || !yearsRockhounding}>
             {isSaving ? 'Saving...' : 'Save profile'}
           </button>
         </div>

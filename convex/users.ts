@@ -117,6 +117,7 @@ export const updateProfile = mutation({
     bio: v.optional(v.string()),
     location: v.optional(v.string()),
     name: v.optional(v.string()),
+    email: v.optional(v.string()),
     homeRegion: v.optional(v.string()),
     yearsRockhounding: v.optional(v.number()),
     favoriteMinerals: v.optional(v.array(v.string())),

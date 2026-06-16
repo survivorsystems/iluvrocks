@@ -32,7 +32,6 @@ export default function Layout() {
         <AuthLink auth={auth} />
       </header>
       <main>
-        <ProfileSetupBanner auth={auth} />
         <Outlet />
       </main>
     </div>
@@ -53,19 +52,5 @@ function AuthLink({ auth }: { auth: ReturnType<typeof useAuthProfileState> }) {
       <UserRound aria-hidden="true" />
       <span className="sr-only">Sign in</span>
     </NavLink>
-  )
-}
-
-function ProfileSetupBanner({ auth }: { auth: ReturnType<typeof useAuthProfileState> }) {
-  if (!auth.isAuthenticated || auth.hasProfile || auth.state === 'loadingAuth') return null
-
-  return (
-    <section className="profile-setup-banner" aria-label="Profile setup reminder">
-      <div>
-        <strong>Finish setting up your Basecamp profile</strong>
-        <p>Add your handle, region, and field notes when you are ready.</p>
-      </div>
-      <NavLink to="/onboarding/profile">Finish profile</NavLink>
-    </section>
   )
 }

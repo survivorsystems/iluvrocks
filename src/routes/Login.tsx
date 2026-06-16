@@ -18,7 +18,11 @@ export default function Login() {
 
   useEffect(() => {
     if (!isOpeningProfile) return
-    if (auth.state === 'authenticatedNoProfile' || auth.state === 'authenticatedWithProfile') {
+    if (auth.state === 'authenticatedNoProfile') {
+      console.info('[RockHound redirect]', { route: '/login', decision: 'authenticated-open-basic-profile', state: auth.state })
+      navigate('/onboarding/profile', { replace: true })
+    }
+    if (auth.state === 'authenticatedWithProfile') {
       console.info('[RockHound redirect]', { route: '/login', decision: 'authenticated-open-basecamp', state: auth.state })
       navigate('/basecamp', { replace: true })
     }
@@ -59,8 +63,8 @@ export default function Login() {
       const result = await signIn(
         'resend-otp',
         cleanCode
-          ? { email: cleanEmail, code: cleanCode, redirectTo: '/basecamp' }
-          : { email: cleanEmail, redirectTo: '/basecamp' },
+          ? { email: cleanEmail, code: cleanCode, redirectTo: '/onboarding/profile' }
+          : { email: cleanEmail, redirectTo: '/onboarding/profile' },
       )
       if (cleanCode) {
         if (result.signingIn) {
@@ -94,11 +98,11 @@ export default function Login() {
           <h1>You are signed in</h1>
           <p className="form-note">
             {auth.state === 'authenticatedNoProfile'
-              ? 'Basecamp is open. You can finish your profile later.'
+              ? 'Finish your basic profile to unlock Basecamp.'
               : 'Welcome back. Basecamp is ready.'}
           </p>
-          <Link to="/basecamp" className="primary-action">
-            Open Basecamp
+          <Link to={auth.state === 'authenticatedNoProfile' ? '/onboarding/profile' : '/basecamp'} className="primary-action">
+            Continue
           </Link>
           <button type="button" onClick={() => void signOut()}>
             Sign out
