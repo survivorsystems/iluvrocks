@@ -61,7 +61,7 @@ export default function RockhoundDashboard({ mode = 'basecamp' }: RockhoundDashb
         </section>
 
         <section className="trail-panel rockhound-card">
-          <SectionTitle icon={ShieldCheck} label="Rockhound card" />
+          <SectionTitle icon={ShieldCheck} label="RockHound card" />
           <dl>
             <div>
               <dt>Focus</dt>

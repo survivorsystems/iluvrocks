@@ -2,6 +2,10 @@
 
 A community field-notes platform for rockhounds, prospectors, fossil hunters, and outdoor explorers. RockHound is built as a static React app with a Convex backend.
 
+Built by rockhounds, for rockhounds.
+
+Official domain: rockhoundapp.app
+
 ## Features
 
 - Public feed and visitor-friendly landing pages.

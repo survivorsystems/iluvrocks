@@ -9,7 +9,7 @@ export default function Feed() {
   return (
     <section className="page-grid">
       <aside className="rail">
-        <p className="eyebrow">RockApp feed</p>
+        <p className="eyebrow">RockHound feed</p>
         <h1>Fresh from the field</h1>
         <p>Browse recent finds and notes from the community.</p>
       </aside>

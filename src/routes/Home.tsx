@@ -9,6 +9,7 @@ export default function Home() {
         <div className="hero-copy">
           <p className="eyebrow">Community field notes</p>
           <h1>RockHound</h1>
+          <p className="tagline">Built by rockhounds, for rockhounds.</p>
           <p>
             A field-first home for rockhounds to discover public collecting knowledge,
             learn specimen basics, and connect with careful local explorers.

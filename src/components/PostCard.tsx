@@ -42,7 +42,7 @@ export default function PostCard({ post }: PostCardProps) {
           {post.author?.image ? <img src={post.author.image} alt="" /> : initials(post.author?.name)}
         </div>
         <div>
-          <p className="post-author">{post.author?.name || 'RockApp member'}</p>
+          <p className="post-author">{post.author?.name || 'RockHound member'}</p>
           <p className="post-meta">
             @{post.author?.username || 'rockhound'} · {formatDate(post._creationTime)}
           </p>

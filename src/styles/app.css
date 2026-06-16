@@ -163,6 +163,11 @@ main {
   line-height: 1.7;
 }
 
+.tagline {
+  color: var(--forest-deep) !important;
+  font-weight: 900;
+}
+
 .eyebrow {
   margin: 0 0 0.75rem;
   color: #9b5d2e;

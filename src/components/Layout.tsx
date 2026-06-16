@@ -15,9 +15,9 @@ export default function Layout() {
   return (
     <div className="app-shell">
       <header className="site-header">
-        <NavLink to="/" className="brand" aria-label="RockApp home">
+        <NavLink to="/" className="brand" aria-label="RockHound home">
           <Mountain aria-hidden="true" />
-          <span>RockApp</span>
+          <span>RockHound</span>
         </NavLink>
         <nav className="site-nav" aria-label="Primary navigation">
           {navItems.map((item) => (
