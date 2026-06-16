@@ -1,24 +1,33 @@
 import { Navigate } from 'react-router-dom'
 import type { ReactNode } from 'react'
-import { useAppAuth } from '../lib/devAuth'
+import { useAuthProfileState } from '../lib/authState'
 
 type ProtectedRouteProps = {
   children: ReactNode
   adminOnly?: boolean
+  requireProfile?: boolean
 }
 
-export default function ProtectedRoute({ children, adminOnly = false }: ProtectedRouteProps) {
-  const auth = useAppAuth()
+export default function ProtectedRoute({ children, adminOnly = false, requireProfile = true }: ProtectedRouteProps) {
+  const auth = useAuthProfileState()
 
-  if (auth.isLoading) {
+  if (auth.state === 'loadingAuth') {
     return <p className="empty-state">Checking access...</p>
   }
 
-  if (!auth.isAuthenticated) {
+  if (auth.state === 'unauthenticated') {
     return <Navigate to="/login" replace />
   }
 
-  if (adminOnly && auth.user?.role !== 'admin') {
+  if (auth.state === 'error') {
+    return <p className="empty-state">RockHound could not confirm your session. Please sign out, then sign in again.</p>
+  }
+
+  if (requireProfile && auth.state === 'authenticatedNoProfile') {
+    return <Navigate to="/create-profile" replace />
+  }
+
+  if (adminOnly && !auth.viewer?.user?.isAdmin && auth.user?.role !== 'admin') {
     return <p className="empty-state">Admin access is required.</p>
   }
 

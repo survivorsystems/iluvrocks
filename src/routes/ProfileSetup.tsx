@@ -1,17 +1,17 @@
 import { useEffect, useState } from 'react'
 import type { FormEvent } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { useMutation, useQuery } from 'convex/react'
+import { Link, Navigate, useNavigate } from 'react-router-dom'
+import { useMutation } from 'convex/react'
 import { api } from '../../convex/_generated/api'
-import { devUser, isDevAuthBypass, useAppAuth } from '../lib/devAuth'
+import { devUser, isDevAuthBypass } from '../lib/devAuth'
+import { useAuthProfileState } from '../lib/authState'
 
 export default function ProfileSetup() {
   const navigate = useNavigate()
-  const auth = useAppAuth()
-  const viewer = useQuery(api.users.viewer, isDevAuthBypass || !auth.isAuthenticated ? 'skip' : {})
+  const [isSaving, setIsSaving] = useState(false)
+  const auth = useAuthProfileState(isSaving)
   const updateProfile = useMutation(api.users.updateProfile)
   const [status, setStatus] = useState<string | null>(null)
-  const [isSaving, setIsSaving] = useState(false)
 
   const initial = isDevAuthBypass
     ? {
@@ -25,7 +25,7 @@ export default function ProfileSetup() {
         collectingStyles: ['Beach walks', 'River bars'],
         yearsRockhounding: 4,
       }
-    : viewer?.user
+    : auth.viewer?.user
   const [name, setName] = useState('')
   const [username, setUsername] = useState('')
   const [bio, setBio] = useState('')
@@ -70,10 +70,8 @@ export default function ProfileSetup() {
           yearsRockhounding: yearsRockhounding ? Number(yearsRockhounding) : undefined,
         })
       }
-      setStatus('Profile saved.')
-      if (cleanUsername) {
-        navigate(`/profile/${cleanUsername}`)
-      }
+      setStatus('Profile saved. Opening Basecamp...')
+      navigate('/basecamp', { replace: true })
     } catch (error) {
       setStatus(error instanceof Error ? error.message : 'Profile could not be saved.')
     } finally {
@@ -81,11 +79,11 @@ export default function ProfileSetup() {
     }
   }
 
-  if (!isDevAuthBypass && auth.isLoading) {
+  if (auth.state === 'loadingAuth' || auth.state === 'creatingProfile') {
     return <p className="empty-state">Checking your sign-in...</p>
   }
 
-  if (!isDevAuthBypass && !auth.isAuthenticated) {
+  if (auth.state === 'unauthenticated') {
     return (
       <section className="auth-page">
         <div className="auth-form">
@@ -100,18 +98,18 @@ export default function ProfileSetup() {
     )
   }
 
-  if (!isDevAuthBypass && viewer === undefined) {
-    return <p className="empty-state">Loading profile setup...</p>
+  if (auth.state === 'authenticatedWithProfile') {
+    return <Navigate to="/basecamp" replace />
   }
 
-  if (!isDevAuthBypass && viewer === null) {
+  if (auth.state === 'error') {
     return (
       <section className="auth-page">
         <div className="auth-form">
           <p className="eyebrow">Create profile</p>
-          <h1>Session not confirmed</h1>
+          <h1>Session could not be confirmed</h1>
           <p className="form-note">
-            RockHound received an auth token, but Convex has not confirmed the signed-in user yet.
+            RockHound could not confirm your signed-in user. Sign out, then request a fresh code.
           </p>
           <Link to="/login" className="primary-action">
             Try sign-in again

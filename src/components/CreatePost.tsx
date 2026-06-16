@@ -3,11 +3,11 @@ import type { FormEvent } from 'react'
 import { Send } from 'lucide-react'
 import { useMutation } from 'convex/react'
 import { api } from '../../convex/_generated/api'
-import { useAppAuth } from '../lib/devAuth'
+import { useAuthProfileState } from '../lib/authState'
 
 export default function CreatePost() {
   const createPost = useMutation(api.social.createPost)
-  const auth = useAppAuth()
+  const auth = useAuthProfileState()
   const [content, setContent] = useState('')
   const [title, setTitle] = useState('')
   const [status, setStatus] = useState<string | null>(null)

@@ -23,7 +23,15 @@ export default function App() {
         <Route
           path="/profile"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute requireProfile={false}>
+              <ProfileSetup />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/create-profile"
+          element={
+            <ProtectedRoute requireProfile={false}>
               <ProfileSetup />
             </ProtectedRoute>
           }

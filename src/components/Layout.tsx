@@ -1,7 +1,7 @@
 import { Mountain, UserRound } from 'lucide-react'
 import { NavLink, Outlet } from 'react-router-dom'
 import DevModeBadge from './DevModeBadge'
-import { useAppAuth } from '../lib/devAuth'
+import { useAuthProfileState } from '../lib/authState'
 
 const navItems = [
   { to: '/', label: 'Home' },
@@ -37,11 +37,11 @@ export default function Layout() {
 }
 
 function AuthLink() {
-  const { isAuthenticated, signOut } = useAppAuth()
+  const auth = useAuthProfileState()
 
-  if (isAuthenticated) {
+  if (auth.isAuthenticated) {
     return (
-      <button type="button" className="icon-link" onClick={() => void signOut()} aria-label="Sign out">
+      <button type="button" className="icon-link" onClick={() => void auth.signOut()} aria-label="Sign out">
         Sign out
       </button>
     )

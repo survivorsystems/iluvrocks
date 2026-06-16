@@ -7,12 +7,12 @@ export const viewer = query({
   handler: async (ctx) => {
     const userId = await getAuthUserId(ctx);
     if (userId === null) {
-      console.log("users.viewer: no authenticated user id");
+      logAuthDebug("users.viewer: no authenticated user id");
       return null;
     }
     const user = await ctx.db.get(userId);
     if (!user) {
-      console.log("users.viewer: authenticated user document missing");
+      logAuthDebug("users.viewer: authenticated user document missing");
       return null;
     }
 
@@ -69,6 +69,12 @@ export const viewer = query({
     };
   },
 });
+
+function logAuthDebug(message: string) {
+  if (process.env.AUTH_DEBUG === "true") {
+    console.log(message);
+  }
+}
 
 export const getPublicProfile = query({
   args: { username: v.string() },

@@ -2,11 +2,12 @@ import { useEffect, useState } from 'react'
 import type { FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuthActions } from '@convex-dev/auth/react'
-import { useAppAuth, isDevAuthBypass } from '../lib/devAuth'
+import { isDevAuthBypass } from '../lib/devAuth'
+import { useAuthProfileState } from '../lib/authState'
 
 export default function Login() {
   const navigate = useNavigate()
-  const { isAuthenticated, isLoading, user } = useAppAuth()
+  const auth = useAuthProfileState()
   const { signIn, signOut } = useAuthActions()
   const [email, setEmail] = useState('')
   const [code, setCode] = useState('')
@@ -16,10 +17,14 @@ export default function Login() {
   const [isOpeningProfile, setIsOpeningProfile] = useState(false)
 
   useEffect(() => {
-    if (isOpeningProfile && isAuthenticated) {
-      navigate('/profile', { replace: true })
+    if (!isOpeningProfile) return
+    if (auth.state === 'authenticatedNoProfile') {
+      navigate('/create-profile', { replace: true })
     }
-  }, [isAuthenticated, isOpeningProfile, navigate])
+    if (auth.state === 'authenticatedWithProfile') {
+      navigate('/basecamp', { replace: true })
+    }
+  }, [auth.state, isOpeningProfile, navigate])
 
   useEffect(() => {
     if (!isOpeningProfile) return
@@ -27,7 +32,7 @@ export default function Login() {
     const timer = window.setTimeout(() => {
       setIsOpeningProfile(false)
       setMessage(
-        'Code accepted, but RockHound could not confirm your session yet. Refresh the page and try opening your profile.',
+        'Code accepted, but RockHound could not confirm your session yet. Please try again in a private window.',
       )
     }, 10000)
 
@@ -56,8 +61,8 @@ export default function Login() {
       const result = await signIn(
         'resend-otp',
         cleanCode
-          ? { email: cleanEmail, code: cleanCode, redirectTo: '/profile' }
-          : { email: cleanEmail, redirectTo: '/profile' },
+          ? { email: cleanEmail, code: cleanCode, redirectTo: '/create-profile' }
+          : { email: cleanEmail, redirectTo: '/create-profile' },
       )
       if (cleanCode) {
         if (result.signingIn) {
@@ -77,17 +82,24 @@ export default function Login() {
     }
   }
 
-  if (isAuthenticated) {
+  if (auth.state === 'loadingAuth') {
+    return <p className="empty-state">Checking your sign-in...</p>
+  }
+
+  if (auth.state === 'authenticatedNoProfile' || auth.state === 'authenticatedWithProfile') {
+    const destination = auth.state === 'authenticatedNoProfile' ? '/create-profile' : '/basecamp'
     return (
       <section className="auth-page">
         <div className="auth-form">
           <p className="eyebrow">Member access</p>
           <h1>You are signed in</h1>
           <p className="form-note">
-            {user ? `${user.displayName} is using the local dev account.` : 'Create or update your profile before posting.'}
+            {auth.state === 'authenticatedNoProfile'
+              ? 'Create your profile to unlock Basecamp.'
+              : 'Welcome back. Basecamp is ready.'}
           </p>
-          <Link to="/profile" className="primary-action">
-            Open profile setup
+          <Link to={destination} className="primary-action">
+            Continue
           </Link>
           <button type="button" onClick={() => void signOut()}>
             Sign out
@@ -120,7 +132,7 @@ export default function Login() {
             placeholder="Optional verification code"
           />
         </label>
-        <button type="submit" disabled={isSubmitting || isOpeningProfile || isLoading}>
+        <button type="submit" disabled={isSubmitting || isOpeningProfile || auth.isLoading}>
           {isSubmitting || isOpeningProfile ? 'Working...' : code ? 'Verify code' : 'Request code'}
         </button>
         <p className="form-note">{message}</p>
