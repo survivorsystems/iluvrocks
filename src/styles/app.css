@@ -1,6 +1,12 @@
 :root {
-  color: #27313a;
-  background: #f4f1e8;
+  --forest-deep: #1e3d2f;
+  --forest-moss: #4b6b4f;
+  --forest-sage: #7a855e;
+  --forest-clay: #b78e6b;
+  --forest-paper: #f4efe3;
+  --forest-bark: #3a2f2a;
+  color: var(--forest-bark);
+  background: var(--forest-paper);
   font-family:
     Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
     sans-serif;
@@ -37,9 +43,9 @@ button {
 .app-shell {
   min-height: 100vh;
   background:
-    linear-gradient(135deg, rgba(82, 125, 118, 0.18), transparent 34%),
-    linear-gradient(315deg, rgba(180, 102, 57, 0.16), transparent 30%),
-    #f4f1e8;
+    linear-gradient(135deg, rgba(30, 61, 47, 0.16), transparent 34%),
+    linear-gradient(315deg, rgba(183, 142, 107, 0.22), transparent 30%),
+    var(--forest-paper);
 }
 
 .site-header {
@@ -52,7 +58,7 @@ button {
   gap: 1rem;
   padding: 1rem clamp(1rem, 4vw, 3rem);
   border-bottom: 1px solid rgba(55, 67, 78, 0.14);
-  background: rgba(244, 241, 232, 0.92);
+  background: rgba(244, 239, 227, 0.92);
   backdrop-filter: blur(16px);
 }
 
@@ -108,7 +114,7 @@ button {
 .site-nav a:hover,
 .icon-link:hover {
   background: #27313a;
-  color: #fffaf0;
+  color: var(--forest-paper);
 }
 
 .dev-mode-badge {
@@ -118,7 +124,7 @@ button {
   border-radius: 999px;
   padding: 0.35rem 0.65rem;
   background: #9b5d2e;
-  color: #fffaf0;
+  color: var(--forest-paper);
   font-size: 0.72rem;
   font-weight: 900;
   letter-spacing: 0.08em;
@@ -347,6 +353,370 @@ main {
   gap: 1rem;
   align-items: flex-start;
   padding: 1rem;
+}
+
+.trail-dashboard {
+  display: grid;
+  gap: 1rem;
+}
+
+.trail-hero,
+.trail-panel,
+.trail-stats {
+  border: 1px solid rgba(58, 47, 42, 0.14);
+  border-radius: 8px;
+  background: rgba(244, 239, 227, 0.9);
+  box-shadow: 0 18px 48px rgba(30, 61, 47, 0.12);
+}
+
+.trail-hero {
+  display: grid;
+  gap: 1rem;
+  padding: clamp(1rem, 5vw, 2rem);
+  color: var(--forest-paper);
+  background:
+    linear-gradient(135deg, rgba(30, 61, 47, 0.94), rgba(75, 107, 79, 0.9)),
+    var(--forest-deep);
+}
+
+.trail-avatar {
+  display: grid;
+  width: 5rem;
+  height: 5rem;
+  place-items: center;
+  border: 2px solid rgba(244, 239, 227, 0.62);
+  border-radius: 50%;
+  background: var(--forest-clay);
+  color: var(--forest-bark);
+  font-size: 1.5rem;
+  font-weight: 900;
+}
+
+.trail-hero-copy {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.trail-hero h1 {
+  margin: 0;
+  max-width: 860px;
+  color: var(--forest-paper);
+  font-size: clamp(2.2rem, 9vw, 5.6rem);
+  line-height: 0.92;
+}
+
+.trail-hero p {
+  margin: 0;
+  max-width: 760px;
+  color: rgba(244, 239, 227, 0.86);
+  line-height: 1.65;
+}
+
+.trail-kicker {
+  color: var(--forest-clay) !important;
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.trail-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.trail-chip-row span {
+  border: 1px solid rgba(244, 239, 227, 0.24);
+  border-radius: 999px;
+  padding: 0.4rem 0.7rem;
+  background: rgba(244, 239, 227, 0.1);
+  color: var(--forest-paper);
+  font-size: 0.85rem;
+  font-weight: 800;
+}
+
+.trail-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  overflow: hidden;
+}
+
+.trail-stats div {
+  display: grid;
+  gap: 0.25rem;
+  padding: 1rem;
+  border-right: 1px solid rgba(58, 47, 42, 0.1);
+  border-bottom: 1px solid rgba(58, 47, 42, 0.1);
+}
+
+.trail-stats strong {
+  color: var(--forest-deep);
+  font-size: clamp(1.7rem, 8vw, 2.8rem);
+  line-height: 1;
+}
+
+.trail-stats span {
+  color: var(--forest-moss);
+  font-size: 0.82rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.trail-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.trail-panel {
+  display: grid;
+  gap: 1rem;
+  align-content: start;
+  padding: 1rem;
+}
+
+.trail-section-title {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.trail-section-title svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: var(--forest-moss);
+}
+
+.trail-section-title h2 {
+  margin: 0;
+  color: var(--forest-deep);
+  font-size: 1rem;
+  text-transform: uppercase;
+}
+
+.specimen-grid,
+.badge-grid,
+.basecamp-task-grid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.specimen-card,
+.badge-card,
+.timeline-card,
+.basecamp-task {
+  border: 1px solid rgba(58, 47, 42, 0.12);
+  border-radius: 8px;
+  padding: 0.9rem;
+  background: rgba(255, 252, 246, 0.72);
+}
+
+.specimen-card {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.specimen-stone {
+  width: 100%;
+  aspect-ratio: 5 / 3;
+  border-radius: 7px;
+  background:
+    radial-gradient(circle at 25% 30%, rgba(244, 239, 227, 0.8), transparent 18%),
+    linear-gradient(135deg, var(--forest-clay), var(--forest-sage));
+}
+
+.specimen-card h3,
+.badge-card h3,
+.timeline-card h3,
+.basecamp-task h3 {
+  margin: 0;
+  color: var(--forest-bark);
+  font-size: 1rem;
+}
+
+.specimen-card p,
+.badge-card p,
+.timeline-card p,
+.basecamp-task p,
+.rockhound-card dd {
+  margin: 0;
+  color: rgba(58, 47, 42, 0.75);
+  line-height: 1.55;
+}
+
+.specimen-card span,
+.timeline-card span {
+  color: var(--forest-moss);
+  font-size: 0.82rem;
+  font-weight: 900;
+}
+
+.rockhound-card dl {
+  display: grid;
+  gap: 0.85rem;
+  margin: 0;
+}
+
+.rockhound-card div {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.rockhound-card dt {
+  color: var(--forest-moss);
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.timeline-list,
+.progress-list,
+.trail-list,
+.reputation-list {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.badge-card {
+  display: grid;
+  gap: 0.55rem;
+  background:
+    linear-gradient(135deg, rgba(183, 142, 107, 0.26), rgba(122, 133, 94, 0.16)),
+    rgba(255, 252, 246, 0.82);
+}
+
+.badge-card svg {
+  width: 2rem;
+  height: 2rem;
+  color: var(--forest-clay);
+}
+
+.trail-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.trail-list li {
+  display: flex;
+  gap: 0.55rem;
+  align-items: flex-start;
+  color: rgba(58, 47, 42, 0.82);
+  line-height: 1.5;
+}
+
+.trail-list svg {
+  flex: 0 0 auto;
+  width: 1.05rem;
+  height: 1.05rem;
+  margin-top: 0.2rem;
+  color: var(--forest-moss);
+}
+
+.progress-item {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.progress-item div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  color: var(--forest-bark);
+  font-weight: 800;
+}
+
+progress {
+  width: 100%;
+  height: 0.7rem;
+  overflow: hidden;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(75, 107, 79, 0.16);
+}
+
+progress::-webkit-progress-bar {
+  background: rgba(75, 107, 79, 0.16);
+}
+
+progress::-webkit-progress-value {
+  background: var(--forest-moss);
+}
+
+progress::-moz-progress-bar {
+  background: var(--forest-moss);
+}
+
+.reputation-list {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.reputation-list div {
+  display: grid;
+  gap: 0.2rem;
+  border-radius: 7px;
+  padding: 0.75rem;
+  background: rgba(75, 107, 79, 0.1);
+}
+
+.reputation-list strong {
+  color: var(--forest-deep);
+  font-size: 1.45rem;
+}
+
+.reputation-list span {
+  color: var(--forest-moss);
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+@media (min-width: 720px) {
+  .trail-hero {
+    grid-template-columns: auto 1fr;
+    align-items: center;
+  }
+
+  .trail-avatar {
+    width: 7rem;
+    height: 7rem;
+    font-size: 2rem;
+  }
+
+  .trail-stats {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .specimen-grid,
+  .badge-grid,
+  .basecamp-task-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .trail-grid-main {
+    grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.65fr);
+  }
+
+  .trail-grid-secondary {
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 0.8fr);
+  }
+
+  .trail-grid-tertiary {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .trail-grid-tertiary .trail-panel:last-child {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (min-width: 1020px) {
+  .trail-grid-tertiary {
+    grid-template-columns: 1fr 1fr 0.8fr;
+  }
+
+  .trail-grid-tertiary .trail-panel:last-child {
+    grid-column: auto;
+  }
 }
 
 .page-grid {
@@ -607,7 +977,8 @@ textarea {
 
   .feature-grid,
   .stats-grid,
-  .table-row {
+  .table-row,
+  .reputation-list {
     grid-template-columns: 1fr;
   }
 

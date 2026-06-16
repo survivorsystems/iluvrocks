@@ -2,10 +2,17 @@ import { useParams } from 'react-router-dom'
 import { useQuery } from 'convex/react'
 import { api } from '../../convex/_generated/api'
 import PostCard from '../components/PostCard'
+import RockhoundDashboard from '../components/RockhoundDashboard'
+import { isDevAuthBypass } from '../lib/devAuth'
 
 export default function Profile() {
   const { handle = '' } = useParams()
-  const profile = useQuery(api.users.getPublicProfile, { username: handle })
+  const useMockProfile = isDevAuthBypass && handle === 'chickensweets87'
+  const profile = useQuery(api.users.getPublicProfile, useMockProfile ? 'skip' : { username: handle })
+
+  if (useMockProfile) {
+    return <RockhoundDashboard mode="profile" />
+  }
 
   if (profile === undefined) {
     return <p className="empty-state">Loading profile...</p>
