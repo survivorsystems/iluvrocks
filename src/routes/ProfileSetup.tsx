@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import type { FormEvent } from 'react'
-import { Link, Navigate, useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useMutation } from 'convex/react'
 import { api } from '../../convex/_generated/api'
 import { devUser, isDevAuthBypass } from '../lib/devAuth'
@@ -96,10 +96,6 @@ export default function ProfileSetup() {
         </div>
       </section>
     )
-  }
-
-  if (auth.state === 'authenticatedWithProfile') {
-    return <Navigate to="/basecamp" replace />
   }
 
   if (auth.state === 'error') {

@@ -12,6 +12,8 @@ const navItems = [
 ]
 
 export default function Layout() {
+  const auth = useAuthProfileState()
+
   return (
     <div className="app-shell">
       <header className="site-header">
@@ -27,18 +29,17 @@ export default function Layout() {
           ))}
         </nav>
         <DevModeBadge />
-        <AuthLink />
+        <AuthLink auth={auth} />
       </header>
       <main>
+        <ProfileSetupBanner auth={auth} />
         <Outlet />
       </main>
     </div>
   )
 }
 
-function AuthLink() {
-  const auth = useAuthProfileState()
-
+function AuthLink({ auth }: { auth: ReturnType<typeof useAuthProfileState> }) {
   if (auth.isAuthenticated) {
     return (
       <button type="button" className="icon-link" onClick={() => void auth.signOut()} aria-label="Sign out">
@@ -52,5 +53,19 @@ function AuthLink() {
       <UserRound aria-hidden="true" />
       <span className="sr-only">Sign in</span>
     </NavLink>
+  )
+}
+
+function ProfileSetupBanner({ auth }: { auth: ReturnType<typeof useAuthProfileState> }) {
+  if (!auth.isAuthenticated || auth.hasProfile || auth.state === 'loadingAuth') return null
+
+  return (
+    <section className="profile-setup-banner" aria-label="Profile setup reminder">
+      <div>
+        <strong>Finish setting up your Basecamp profile</strong>
+        <p>Add your handle, region, and field notes when you are ready.</p>
+      </div>
+      <NavLink to="/onboarding/profile">Finish profile</NavLink>
+    </section>
   )
 }

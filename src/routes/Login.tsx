@@ -18,10 +18,8 @@ export default function Login() {
 
   useEffect(() => {
     if (!isOpeningProfile) return
-    if (auth.state === 'authenticatedNoProfile') {
-      navigate('/create-profile', { replace: true })
-    }
-    if (auth.state === 'authenticatedWithProfile') {
+    if (auth.state === 'authenticatedNoProfile' || auth.state === 'authenticatedWithProfile') {
+      console.info('[RockHound redirect]', { route: '/login', decision: 'authenticated-open-basecamp', state: auth.state })
       navigate('/basecamp', { replace: true })
     }
   }, [auth.state, isOpeningProfile, navigate])
@@ -61,8 +59,8 @@ export default function Login() {
       const result = await signIn(
         'resend-otp',
         cleanCode
-          ? { email: cleanEmail, code: cleanCode, redirectTo: '/create-profile' }
-          : { email: cleanEmail, redirectTo: '/create-profile' },
+          ? { email: cleanEmail, code: cleanCode, redirectTo: '/basecamp' }
+          : { email: cleanEmail, redirectTo: '/basecamp' },
       )
       if (cleanCode) {
         if (result.signingIn) {
@@ -83,11 +81,12 @@ export default function Login() {
   }
 
   if (auth.state === 'loadingAuth') {
+    console.info('[RockHound redirect]', { route: '/login', decision: 'wait-for-auth' })
     return <p className="empty-state">Checking your sign-in...</p>
   }
 
   if (auth.state === 'authenticatedNoProfile' || auth.state === 'authenticatedWithProfile') {
-    const destination = auth.state === 'authenticatedNoProfile' ? '/create-profile' : '/basecamp'
+    console.info('[RockHound redirect]', { route: '/login', decision: 'show-authenticated-continue', state: auth.state })
     return (
       <section className="auth-page">
         <div className="auth-form">
@@ -95,11 +94,11 @@ export default function Login() {
           <h1>You are signed in</h1>
           <p className="form-note">
             {auth.state === 'authenticatedNoProfile'
-              ? 'Create your profile to unlock Basecamp.'
+              ? 'Basecamp is open. You can finish your profile later.'
               : 'Welcome back. Basecamp is ready.'}
           </p>
-          <Link to={destination} className="primary-action">
-            Continue
+          <Link to="/basecamp" className="primary-action">
+            Open Basecamp
           </Link>
           <button type="button" onClick={() => void signOut()}>
             Sign out

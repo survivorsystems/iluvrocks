@@ -32,7 +32,7 @@ export function useAuthProfileState(isCreatingProfile = false) {
         isAuthenticated: convexAuth.isAuthenticated,
         hasAuthToken,
         isViewerLoading: shouldLoadViewer && viewer === undefined,
-        hasViewer: viewer !== null && viewer !== undefined,
+        hasViewer: viewer !== undefined,
         hasProfile: !!viewer?.user?.username,
         isCreatingProfile,
       })
@@ -98,7 +98,7 @@ function getAuthProfileState({
   if (isAuthLoading && !hasAuthToken) return 'loadingAuth'
   if (!isAuthenticated && !hasAuthToken) return 'unauthenticated'
   if (isViewerLoading) return 'loadingAuth'
-  if (!hasViewer) return 'error'
+  if (!hasViewer) return 'authenticatedNoProfile'
   if (!hasProfile) return 'authenticatedNoProfile'
   return 'authenticatedWithProfile'
 }
@@ -114,7 +114,6 @@ function useAuthDebugLog(
   pathname: string,
 ) {
   useEffect(() => {
-    if (!import.meta.env.DEV) return
     console.info('[RockHound auth]', {
       route: pathname,
       state: state.state,

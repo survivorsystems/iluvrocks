@@ -136,6 +136,39 @@ main {
   padding: clamp(2rem, 5vw, 4rem) 0;
 }
 
+.profile-setup-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  border: 1px solid rgba(30, 61, 47, 0.22);
+  border-radius: 8px;
+  padding: 1rem;
+  background: rgba(255, 250, 240, 0.88);
+  box-shadow: 0 14px 34px rgba(58, 47, 42, 0.1);
+}
+
+.profile-setup-banner strong {
+  display: block;
+  color: var(--forest-deep);
+  font-size: 1rem;
+}
+
+.profile-setup-banner p {
+  margin: 0.25rem 0 0;
+  color: #59646b;
+}
+
+.profile-setup-banner a {
+  flex: 0 0 auto;
+  border-radius: 999px;
+  padding: 0.7rem 0.95rem;
+  background: var(--forest-deep);
+  color: var(--forest-paper);
+  font-weight: 800;
+}
+
 .hero {
   display: grid;
   grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
@@ -992,6 +1025,11 @@ textarea {
   }
 
   .profile-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .profile-setup-banner {
     align-items: flex-start;
     flex-direction: column;
   }
