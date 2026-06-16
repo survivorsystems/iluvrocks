@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react'
 import type { FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useConvexAuth, useMutation, useQuery } from 'convex/react'
+import { useMutation, useQuery } from 'convex/react'
 import { api } from '../../convex/_generated/api'
-import { devUser, isDevAuthBypass } from '../lib/devAuth'
+import { devUser, isDevAuthBypass, useAppAuth } from '../lib/devAuth'
 
 export default function ProfileSetup() {
   const navigate = useNavigate()
-  const { isLoading, isAuthenticated } = useConvexAuth()
-  const viewer = useQuery(api.users.viewer, isDevAuthBypass ? 'skip' : {})
+  const auth = useAppAuth()
+  const viewer = useQuery(api.users.viewer, isDevAuthBypass || !auth.isAuthenticated ? 'skip' : {})
   const updateProfile = useMutation(api.users.updateProfile)
   const [status, setStatus] = useState<string | null>(null)
   const [isSaving, setIsSaving] = useState(false)
@@ -81,11 +81,11 @@ export default function ProfileSetup() {
     }
   }
 
-  if (!isDevAuthBypass && (isLoading || viewer === undefined)) {
-    return <p className="empty-state">Loading profile setup...</p>
+  if (!isDevAuthBypass && auth.isLoading) {
+    return <p className="empty-state">Checking your sign-in...</p>
   }
 
-  if (!isDevAuthBypass && (!isAuthenticated || viewer === null)) {
+  if (!isDevAuthBypass && !auth.isAuthenticated) {
     return (
       <section className="auth-page">
         <div className="auth-form">
@@ -94,6 +94,25 @@ export default function ProfileSetup() {
           <p className="form-note">Your profile is created from your signed-in account.</p>
           <Link to="/login" className="primary-action">
             Sign in
+          </Link>
+        </div>
+      </section>
+    )
+  }
+
+  if (!isDevAuthBypass && viewer === undefined) {
+    return <p className="empty-state">Loading profile setup...</p>
+  }
+
+  if (!isDevAuthBypass && viewer === null) {
+    return (
+      <section className="auth-page">
+        <div className="auth-form">
+          <p className="eyebrow">Create profile</p>
+          <h1>Session still waking up</h1>
+          <p className="form-note">RockHound accepted your sign-in. Refresh once, then open profile setup again.</p>
+          <Link to="/login" className="primary-action">
+            Back to sign in
           </Link>
         </div>
       </section>
