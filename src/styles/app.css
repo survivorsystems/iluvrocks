@@ -80,6 +80,18 @@ button {
   height: 1.35rem;
 }
 
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .site-nav {
   justify-content: center;
   gap: 0.35rem;
@@ -393,6 +405,16 @@ textarea {
   padding: clamp(1rem, 4vw, 2rem);
 }
 
+.profile-form {
+  width: 100%;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
 .empty-state {
   border: 1px dashed rgba(39, 49, 58, 0.22);
   border-radius: 8px;
@@ -445,5 +467,9 @@ textarea {
   .profile-header {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
   }
 }

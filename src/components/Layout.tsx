@@ -1,10 +1,12 @@
 import { Mountain, UserRound } from 'lucide-react'
+import { useAuthActions } from '@convex-dev/auth/react'
+import { useConvexAuth } from 'convex/react'
 import { NavLink, Outlet } from 'react-router-dom'
 
 const navItems = [
   { to: '/', label: 'Home' },
   { to: '/feed', label: 'Feed' },
-  { to: '/profile/demo', label: 'Profile' },
+  { to: '/profile', label: 'Profile' },
 ]
 
 export default function Layout() {
@@ -22,13 +24,31 @@ export default function Layout() {
             </NavLink>
           ))}
         </nav>
-        <NavLink to="/login" className="icon-link" aria-label="Sign in">
-          <UserRound aria-hidden="true" />
-        </NavLink>
+        <AuthLink />
       </header>
       <main>
         <Outlet />
       </main>
     </div>
+  )
+}
+
+function AuthLink() {
+  const { isAuthenticated } = useConvexAuth()
+  const { signOut } = useAuthActions()
+
+  if (isAuthenticated) {
+    return (
+      <button type="button" className="icon-link" onClick={() => void signOut()} aria-label="Sign out">
+        Sign out
+      </button>
+    )
+  }
+
+  return (
+    <NavLink to="/login" className="icon-link" aria-label="Sign in">
+      <UserRound aria-hidden="true" />
+      <span className="sr-only">Sign in</span>
+    </NavLink>
   )
 }

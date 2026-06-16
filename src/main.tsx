@@ -1,7 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
-import { ConvexProvider } from 'convex/react'
+import { ConvexAuthProvider } from '@convex-dev/auth/react'
 import App from './App'
 import { convex } from './lib/convex'
 import './styles/app.css'
@@ -11,11 +11,11 @@ const root = createRoot(document.getElementById('root')!)
 root.render(
   <StrictMode>
     {convex ? (
-      <ConvexProvider client={convex}>
+      <ConvexAuthProvider client={convex}>
         <BrowserRouter>
           <App />
         </BrowserRouter>
-      </ConvexProvider>
+      </ConvexAuthProvider>
     ) : (
       <MissingConvexUrl />
     )}
