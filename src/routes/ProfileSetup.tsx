@@ -109,10 +109,12 @@ export default function ProfileSetup() {
       <section className="auth-page">
         <div className="auth-form">
           <p className="eyebrow">Create profile</p>
-          <h1>Session still waking up</h1>
-          <p className="form-note">RockHound accepted your sign-in. Refresh once, then open profile setup again.</p>
+          <h1>Session not confirmed</h1>
+          <p className="form-note">
+            RockHound received an auth token, but Convex has not confirmed the signed-in user yet.
+          </p>
           <Link to="/login" className="primary-action">
-            Back to sign in
+            Try sign-in again
           </Link>
         </div>
       </section>

@@ -7,10 +7,14 @@ export const viewer = query({
   handler: async (ctx) => {
     const userId = await getAuthUserId(ctx);
     if (userId === null) {
+      console.log("users.viewer: no authenticated user id");
       return null;
     }
     const user = await ctx.db.get(userId);
-    if (!user) return null;
+    if (!user) {
+      console.log("users.viewer: authenticated user document missing");
+      return null;
+    }
 
     const favorites = await ctx.db
       .query("favorites")
