@@ -3,9 +3,11 @@ import type { FormEvent } from 'react'
 import { Send } from 'lucide-react'
 import { useMutation } from 'convex/react'
 import { api } from '../../convex/_generated/api'
+import { useAppAuth } from '../lib/devAuth'
 
 export default function CreatePost() {
   const createPost = useMutation(api.social.createPost)
+  const auth = useAppAuth()
   const [content, setContent] = useState('')
   const [title, setTitle] = useState('')
   const [status, setStatus] = useState<string | null>(null)
@@ -14,6 +16,12 @@ export default function CreatePost() {
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     setStatus(null)
+
+    if (!auth.isAuthenticated) {
+      setStatus('Sign in before posting to the feed.')
+      return
+    }
+
     setIsSubmitting(true)
 
     try {
@@ -27,7 +35,8 @@ export default function CreatePost() {
       setTitle('')
       setStatus('Posted to the feed.')
     } catch (error) {
-      setStatus(error instanceof Error ? error.message : 'Sign in to create a post.')
+      const message = error instanceof Error ? error.message : ''
+      setStatus(message.includes('Unauthorized') ? 'Sign in before posting to the feed.' : 'Post could not be saved.')
     } finally {
       setIsSubmitting(false)
     }
@@ -55,7 +64,7 @@ export default function CreatePost() {
       </label>
       <div className="form-footer">
         <span>{status}</span>
-        <button type="submit" disabled={isSubmitting || !content.trim()}>
+        <button type="submit" disabled={isSubmitting || !content.trim() || auth.isLoading}>
           <Send aria-hidden="true" />
           {isSubmitting ? 'Posting' : 'Post'}
         </button>
