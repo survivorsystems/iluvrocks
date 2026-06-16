@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuthActions } from '@convex-dev/auth/react'
@@ -6,12 +6,19 @@ import { useAppAuth, isDevAuthBypass } from '../lib/devAuth'
 
 export default function Login() {
   const navigate = useNavigate()
-  const { isAuthenticated, user } = useAppAuth()
+  const { isAuthenticated, isLoading, user } = useAppAuth()
   const { signIn, signOut } = useAuthActions()
   const [email, setEmail] = useState('')
   const [code, setCode] = useState('')
   const [message, setMessage] = useState('Enter your email to request a sign-in code.')
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isOpeningProfile, setIsOpeningProfile] = useState(false)
+
+  useEffect(() => {
+    if (isOpeningProfile && isAuthenticated) {
+      navigate('/profile', { replace: true })
+    }
+  }, [isAuthenticated, isOpeningProfile, navigate])
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -28,9 +35,13 @@ export default function Login() {
         'resend-otp',
         code ? { email, code, redirectTo: '/profile' } : { email, redirectTo: '/profile' },
       )
-      if (result.signingIn || code) {
-        setMessage('Signed in. Set up your profile next.')
-        navigate('/profile')
+      if (code) {
+        if (result.signingIn) {
+          setIsOpeningProfile(true)
+          setMessage('Code accepted. Opening your profile...')
+        } else {
+          setMessage('That code was not accepted. Request a fresh code and try again.')
+        }
       } else {
         setMessage(`Check ${email} for your sign-in code.`)
       }
@@ -84,8 +95,8 @@ export default function Login() {
             placeholder="Optional verification code"
           />
         </label>
-        <button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? 'Working...' : code ? 'Verify code' : 'Request code'}
+        <button type="submit" disabled={isSubmitting || isOpeningProfile || isLoading}>
+          {isSubmitting || isOpeningProfile ? 'Working...' : code ? 'Verify code' : 'Request code'}
         </button>
         <p className="form-note">{message}</p>
         <Link to="/feed">Continue to feed</Link>
