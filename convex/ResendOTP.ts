@@ -11,14 +11,29 @@ export const ResendOTP = Email({
   },
   async sendVerificationRequest({ identifier: email, provider, token }) {
     const resend = new ResendAPI(provider.apiKey);
-    const { error } = await resend.emails.send({
+    const { data, error } = await resend.emails.send({
       from: "RockApp <auth@survivorsystems.org>",
       to: [email],
-      subject: "Your sign-in code",
-      text: `Your verification code is: ${token}`,
+      subject: `${token} is your RockApp sign-in code`,
+      text: [
+        `Your RockApp sign-in code is ${token}.`,
+        "",
+        "This code expires in 15 minutes.",
+        "If you did not request this code, you can ignore this email.",
+      ].join("\n"),
+      html: `
+        <div style="font-family: Arial, sans-serif; color: #27313a; line-height: 1.5;">
+          <h1 style="font-size: 22px;">Your RockApp sign-in code</h1>
+          <p>Use this code to finish signing in:</p>
+          <p style="font-size: 32px; font-weight: 700; letter-spacing: 4px;">${token}</p>
+          <p>This code expires in 15 minutes.</p>
+          <p style="color: #66717a;">If you did not request this code, you can ignore this email.</p>
+        </div>
+      `,
     });
     if (error) {
       throw new Error(JSON.stringify(error));
     }
+    console.log(`Sent RockApp sign-in email via Resend: ${data?.id ?? "no id returned"}`);
   },
 });
