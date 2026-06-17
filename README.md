@@ -4,7 +4,7 @@ A community field-notes platform for rockhounds, prospectors, fossil hunters, an
 
 Built by rockhounds, for rockhounds.
 
-Official domain: rockhoundapp.app
+Official domain: iluvrocks.rocks
 
 ## Features
 
@@ -64,7 +64,7 @@ The mock user is:
 id: dev-user
 username: chickensweets87
 displayName: Krista
-email: dev@rockhoundapp.app
+email: dev@iluvrocks.rocks
 role: admin
 ```
 
@@ -89,4 +89,4 @@ For Vercel or Netlify:
 - Required frontend env var: `VITE_CONVEX_URL`
 - Do not set `VITE_DEV_AUTH_BYPASS=true` in production.
 
-Convex backend environment variables are managed separately with the Convex CLI or dashboard. Auth email delivery requires `SITE_URL` and `RESEND_API_KEY`.
+Convex backend environment variables are managed separately with the Convex CLI or dashboard. Auth email delivery requires `SITE_URL=https://iluvrocks.rocks` and `RESEND_API_KEY`.

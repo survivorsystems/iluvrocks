@@ -8,7 +8,7 @@ export const devUser = {
   id: 'dev-user',
   username: 'chickensweets87',
   displayName: 'Krista',
-  email: 'dev@rockhoundapp.app',
+  email: 'dev@iluvrocks.rocks',
   role: 'admin',
 } as const
 

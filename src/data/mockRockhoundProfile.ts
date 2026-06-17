@@ -3,7 +3,7 @@ export const mockRockhoundProfile = {
     id: 'dev-user',
     username: 'chickensweets87',
     displayName: 'Krista',
-    email: 'dev@rockhoundapp.app',
+    email: 'dev@iluvrocks.rocks',
     role: 'admin',
     location: 'Puget Sound, Washington',
     homeRegion: 'Forest trails, river bars, and beach gravels',
