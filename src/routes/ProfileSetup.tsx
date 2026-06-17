@@ -4,7 +4,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useMutation } from 'convex/react'
 import { api } from '../../convex/_generated/api'
 import { devUser, isDevAuthBypass } from '../lib/devAuth'
-import { clearAuthHandoff, useAuthProfileState } from '../lib/authState'
+import { useAuthProfileState } from '../lib/authState'
 
 export default function ProfileSetup() {
   const navigate = useNavigate()
@@ -99,7 +99,6 @@ export default function ProfileSetup() {
         profileState: 'saved-basic-profile',
         decision: 'open-basecamp-after-profile-save',
       })
-      clearAuthHandoff()
       setStatus('Basic profile saved. Opening Basecamp...')
       navigate('/basecamp', { replace: true })
     } catch (error) {

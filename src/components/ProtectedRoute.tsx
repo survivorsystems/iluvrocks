@@ -20,7 +20,7 @@ export default function ProtectedRoute({ children, adminOnly = false, requirePro
     adminOnly,
   }
 
-  if (auth.state === 'loadingAuth' || (auth.state === 'unauthenticated' && 'hasAuthToken' in auth && auth.hasAuthToken)) {
+  if (auth.state === 'loadingAuth') {
     console.info('[RockHound redirect]', { ...routeLog, decision: 'wait-for-auth' })
     return <p className="empty-state">Checking access...</p>
   }
