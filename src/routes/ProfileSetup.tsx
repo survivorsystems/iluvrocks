@@ -83,7 +83,7 @@ export default function ProfileSetup() {
   }
 
   if (auth.state === 'loadingAuth' || auth.state === 'creatingProfile') {
-    return <p className="empty-state">Checking your sign-in...</p>
+    return <p className="empty-state">Finishing sign-in before saving your profile...</p>
   }
 
   if (auth.state === 'unauthenticated') {

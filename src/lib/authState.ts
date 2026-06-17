@@ -32,7 +32,7 @@ export function useAuthProfileState(isCreatingProfile = false) {
         isAuthenticated: convexAuth.isAuthenticated,
         hasAuthToken,
         isViewerLoading: shouldLoadViewer && viewer === undefined,
-        hasViewer: viewer !== undefined,
+        hasViewer: viewer !== null && viewer !== undefined,
         hasProfile: hasBasicProfile(viewer?.user),
         isCreatingProfile,
       })
@@ -98,7 +98,7 @@ function getAuthProfileState({
   if (isAuthLoading && !hasAuthToken) return 'loadingAuth'
   if (!isAuthenticated && !hasAuthToken) return 'unauthenticated'
   if (isViewerLoading) return 'loadingAuth'
-  if (!hasViewer) return 'authenticatedNoProfile'
+  if (!hasViewer) return hasAuthToken ? 'loadingAuth' : 'unauthenticated'
   if (!hasProfile) return 'authenticatedNoProfile'
   return 'authenticatedWithProfile'
 }
