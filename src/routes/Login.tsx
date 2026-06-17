@@ -3,7 +3,7 @@ import type { FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuthActions } from '@convex-dev/auth/react'
 import { isDevAuthBypass } from '../lib/devAuth'
-import { useAuthProfileState } from '../lib/authState'
+import { beginAuthHandoff, useAuthProfileState } from '../lib/authState'
 
 export default function Login() {
   const navigate = useNavigate()
@@ -68,12 +68,16 @@ export default function Login() {
       )
       if (cleanCode) {
         if (result.signingIn) {
+          beginAuthHandoff()
           setIsOpeningProfile(true)
           setMessage('Code accepted. Opening your profile...')
           console.info('[RockHound redirect]', {
             route: '/login',
             decision: 'code-verified-wait-for-confirmed-auth',
           })
+          window.setTimeout(() => {
+            navigate('/onboarding/profile', { replace: true })
+          }, 250)
         } else {
           setMessage('That code was not accepted. Request a fresh code and try again.')
         }

@@ -1,9 +1,12 @@
 import { useAuthActions, useAuthToken } from '@convex-dev/auth/react'
 import { useConvexAuth, useQuery } from 'convex/react'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { api } from '../../convex/_generated/api'
 import { devUser, isDevAuthBypass } from './devAuth'
+
+const AUTH_HANDOFF_KEY = 'rockhound-auth-handoff-started-at'
+const AUTH_HANDOFF_MAX_AGE_MS = 20000
 
 export type AuthProfileState =
   | 'loadingAuth'
@@ -18,10 +21,28 @@ export function useAuthProfileState(isCreatingProfile = false) {
   const authActions = useAuthActions()
   const authToken = useAuthToken()
   const location = useLocation()
+  const [, refreshAuthHandoff] = useState(0)
 
   const hasAuthToken = !!authToken
+  const hasPendingAuthHandoff = hasRecentAuthHandoff()
   const shouldLoadViewer = !isDevAuthBypass && convexAuth.isAuthenticated
   const viewer = useQuery(api.users.viewer, shouldLoadViewer ? {} : 'skip')
+
+  useEffect(() => {
+    if (convexAuth.isAuthenticated) {
+      clearAuthHandoff()
+    }
+  }, [convexAuth.isAuthenticated])
+
+  useEffect(() => {
+    if (!hasPendingAuthHandoff || convexAuth.isAuthenticated) return
+
+    const timer = window.setTimeout(() => {
+      refreshAuthHandoff((count) => count + 1)
+    }, 1000)
+
+    return () => window.clearTimeout(timer)
+  }, [convexAuth.isAuthenticated, hasPendingAuthHandoff])
 
   const state: AuthProfileState = isDevAuthBypass
     ? isCreatingProfile
@@ -30,6 +51,7 @@ export function useAuthProfileState(isCreatingProfile = false) {
     : getAuthProfileState({
         isAuthLoading: convexAuth.isLoading,
         isAuthenticated: convexAuth.isAuthenticated,
+        hasPendingAuthHandoff,
         isViewerLoading: shouldLoadViewer && viewer === undefined,
         hasViewer: viewer !== null && viewer !== undefined,
         hasProfile: hasBasicProfile(viewer?.user),
@@ -73,6 +95,7 @@ export function useAuthProfileState(isCreatingProfile = false) {
         signOut: authActions.signOut,
         convexAuth,
         hasAuthToken,
+        hasPendingAuthHandoff,
       }
   useAuthDebugLog(result, location.pathname)
   return result
@@ -81,6 +104,7 @@ export function useAuthProfileState(isCreatingProfile = false) {
 function getAuthProfileState({
   isAuthLoading,
   isAuthenticated,
+  hasPendingAuthHandoff,
   isViewerLoading,
   hasViewer,
   hasProfile,
@@ -88,6 +112,7 @@ function getAuthProfileState({
 }: {
   isAuthLoading: boolean
   isAuthenticated: boolean
+  hasPendingAuthHandoff: boolean
   isViewerLoading: boolean
   hasViewer: boolean
   hasProfile: boolean
@@ -95,6 +120,7 @@ function getAuthProfileState({
 }): AuthProfileState {
   if (isCreatingProfile) return 'creatingProfile'
   if (isAuthLoading) return 'loadingAuth'
+  if (hasPendingAuthHandoff) return 'loadingAuth'
   if (!isAuthenticated) return 'unauthenticated'
   if (isViewerLoading) return 'loadingAuth'
   if (!hasViewer) return 'authenticatedNoProfile'
@@ -135,6 +161,26 @@ function useAuthDebugLog(
       viewerStatus: state.viewer === undefined ? 'loading' : state.viewer === null ? 'none' : 'loaded',
       convexAuth: 'convexAuth' in state ? state.convexAuth : undefined,
       hasAuthToken: 'hasAuthToken' in state ? state.hasAuthToken : undefined,
+      hasPendingAuthHandoff: 'hasPendingAuthHandoff' in state ? state.hasPendingAuthHandoff : undefined,
     })
   }, [pathname, state.hasProfile, state.isAuthenticated, state.isDevMode, state.state, state.viewer])
+}
+
+export function beginAuthHandoff() {
+  window.sessionStorage.setItem(AUTH_HANDOFF_KEY, Date.now().toString())
+}
+
+export function clearAuthHandoff() {
+  window.sessionStorage.removeItem(AUTH_HANDOFF_KEY)
+}
+
+function hasRecentAuthHandoff() {
+  const startedAt = Number(window.sessionStorage.getItem(AUTH_HANDOFF_KEY))
+  if (!Number.isFinite(startedAt) || startedAt <= 0) return false
+
+  const isRecent = Date.now() - startedAt < AUTH_HANDOFF_MAX_AGE_MS
+  if (!isRecent) {
+    clearAuthHandoff()
+  }
+  return isRecent
 }
