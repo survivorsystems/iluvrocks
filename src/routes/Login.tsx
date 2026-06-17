@@ -72,9 +72,8 @@ export default function Login() {
           setMessage('Code accepted. Opening your profile...')
           console.info('[RockHound redirect]', {
             route: '/login',
-            decision: 'code-verified-open-basic-profile',
+            decision: 'code-verified-wait-for-confirmed-auth',
           })
-          navigate('/onboarding/profile', { replace: true })
         } else {
           setMessage('That code was not accepted. Request a fresh code and try again.')
         }
@@ -89,7 +88,7 @@ export default function Login() {
     }
   }
 
-  if (auth.state === 'loadingAuth') {
+  if (auth.state === 'loadingAuth' || (auth.state === 'unauthenticated' && 'hasAuthToken' in auth && auth.hasAuthToken)) {
     console.info('[RockHound redirect]', { route: '/login', decision: 'wait-for-auth' })
     return <p className="empty-state">Checking your sign-in...</p>
   }

@@ -15,11 +15,12 @@ export default function ProtectedRoute({ children, adminOnly = false, requirePro
     route: location.pathname,
     authState: auth.state,
     profileState: auth.hasProfile ? 'profile-complete' : auth.viewer ? 'profile-incomplete' : 'no-viewer',
+    hasAuthToken: 'hasAuthToken' in auth ? auth.hasAuthToken : false,
     requireProfile,
     adminOnly,
   }
 
-  if (auth.state === 'loadingAuth') {
+  if (auth.state === 'loadingAuth' || (auth.state === 'unauthenticated' && 'hasAuthToken' in auth && auth.hasAuthToken)) {
     console.info('[RockHound redirect]', { ...routeLog, decision: 'wait-for-auth' })
     return <p className="empty-state">Checking access...</p>
   }
