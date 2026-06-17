@@ -60,6 +60,13 @@ export default function ProfileSetup() {
       .replace(/[^a-z0-9_-]/g, '')
 
     try {
+      console.info('[RockHound profile]', {
+        decision: 'save-basic-profile',
+        authState: auth.state,
+        hasProfile: auth.hasProfile,
+        viewerStatus: auth.viewer ? 'loaded' : 'none',
+        devAuthBypass: auth.isDevMode,
+      })
       if (!isDevAuthBypass) {
         await updateProfile({
           name: emptyToUndefined(name),
@@ -73,9 +80,21 @@ export default function ProfileSetup() {
           yearsRockhounding: yearsRockhounding ? Number(yearsRockhounding) : undefined,
         })
       }
+      console.info('[RockHound redirect]', {
+        route: '/onboarding/profile',
+        authState: auth.state,
+        profileState: 'saved-basic-profile',
+        decision: 'open-basecamp-after-profile-save',
+      })
       setStatus('Basic profile saved. Opening Basecamp...')
       navigate('/basecamp', { replace: true })
     } catch (error) {
+      console.info('[RockHound profile]', {
+        decision: 'save-basic-profile-failed',
+        authState: auth.state,
+        hasProfile: auth.hasProfile,
+        error: error instanceof Error ? error.message : 'Unknown error',
+      })
       setStatus(error instanceof Error ? error.message : 'Profile could not be saved.')
     } finally {
       setIsSaving(false)

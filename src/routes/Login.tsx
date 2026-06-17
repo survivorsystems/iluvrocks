@@ -70,6 +70,11 @@ export default function Login() {
         if (result.signingIn) {
           setIsOpeningProfile(true)
           setMessage('Code accepted. Opening your profile...')
+          console.info('[RockHound redirect]', {
+            route: '/login',
+            decision: 'code-verified-open-basic-profile',
+          })
+          navigate('/onboarding/profile', { replace: true })
         } else {
           setMessage('That code was not accepted. Request a fresh code and try again.')
         }

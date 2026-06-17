@@ -11,19 +11,26 @@ type ProtectedRouteProps = {
 export default function ProtectedRoute({ children, adminOnly = false, requireProfile = true }: ProtectedRouteProps) {
   const auth = useAuthProfileState()
   const location = useLocation()
+  const routeLog = {
+    route: location.pathname,
+    authState: auth.state,
+    profileState: auth.hasProfile ? 'profile-complete' : auth.viewer ? 'profile-incomplete' : 'no-viewer',
+    requireProfile,
+    adminOnly,
+  }
 
   if (auth.state === 'loadingAuth') {
-    console.info('[RockHound redirect]', { route: location.pathname, decision: 'wait-for-auth' })
+    console.info('[RockHound redirect]', { ...routeLog, decision: 'wait-for-auth' })
     return <p className="empty-state">Checking access...</p>
   }
 
   if (auth.state === 'unauthenticated') {
-    console.info('[RockHound redirect]', { route: location.pathname, decision: 'redirect-to-login' })
+    console.info('[RockHound redirect]', { ...routeLog, decision: 'redirect-to-login' })
     return <Navigate to="/login" replace />
   }
 
   if (auth.state === 'error') {
-    console.info('[RockHound redirect]', { route: location.pathname, decision: 'session-not-confirmed' })
+    console.info('[RockHound redirect]', { ...routeLog, decision: 'session-not-confirmed' })
     return (
       <section className="auth-page">
         <div className="auth-form">
@@ -42,15 +49,15 @@ export default function ProtectedRoute({ children, adminOnly = false, requirePro
   }
 
   if (requireProfile && auth.state === 'authenticatedNoProfile') {
-    console.info('[RockHound redirect]', { route: location.pathname, decision: 'redirect-to-onboarding-profile' })
+    console.info('[RockHound redirect]', { ...routeLog, decision: 'redirect-to-onboarding-profile' })
     return <Navigate to="/onboarding/profile" replace />
   }
 
   if (adminOnly && !auth.viewer?.user?.isAdmin && auth.user?.role !== 'admin') {
-    console.info('[RockHound redirect]', { route: location.pathname, decision: 'block-admin-only' })
+    console.info('[RockHound redirect]', { ...routeLog, decision: 'block-admin-only' })
     return <p className="empty-state">Admin access is required.</p>
   }
 
-  console.info('[RockHound redirect]', { route: location.pathname, decision: 'allow-protected-route' })
+  console.info('[RockHound redirect]', { ...routeLog, decision: 'allow-protected-route' })
   return children
 }
