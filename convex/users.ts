@@ -151,7 +151,22 @@ export const updateProfile = mutation({
   },
   handler: async (ctx, args) => {
     const userId = await getAuthUserId(ctx);
-    if (!userId) throw new Error("Unauthorized");
+    if (!userId) {
+      const identity = await ctx.auth.getUserIdentity();
+      console.log("users.updateProfile: unauthorized", {
+        hasIdentity: identity !== null,
+        issuer: identity?.issuer ?? null,
+        subjectPrefix: identity?.subject?.slice(0, 24) ?? null,
+        email: identity?.email ?? null,
+      });
+      throw new Error("Unauthorized");
+    }
+
+    const user = await ctx.db.get(userId);
+    if (!user) {
+      console.log("users.updateProfile: authenticated user document missing", { userId });
+      throw new Error("Authenticated user record was not found.");
+    }
     
     if (args.username) {
        const existing = await ctx.db.query("users").withIndex("username", q => q.eq("username", args.username)).unique();
@@ -161,5 +176,14 @@ export const updateProfile = mutation({
     }
     
     await ctx.db.patch(userId, args);
+    const updatedUser = await ctx.db.get(userId);
+    return {
+      user: updatedUser,
+      hasBasicProfile:
+        !!updatedUser?.name?.trim() &&
+        !!updatedUser?.email?.trim() &&
+        !!updatedUser?.location?.trim() &&
+        updatedUser?.yearsRockhounding !== undefined,
+    };
   },
 });

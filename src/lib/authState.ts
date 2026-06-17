@@ -32,6 +32,7 @@ export function useAuthProfileState(isCreatingProfile = false) {
     : getAuthProfileState({
         isAuthLoading: convexAuth.isLoading,
         isAuthenticated: convexAuth.isAuthenticated,
+        hasAuthToken,
         isViewerLoading: shouldLoadViewer && viewer === undefined,
         hasViewer: viewer !== null && viewer !== undefined,
         hasProfile: hasBasicProfile(viewer?.user),
@@ -85,6 +86,7 @@ export function useAuthProfileState(isCreatingProfile = false) {
 function getAuthProfileState({
   isAuthLoading,
   isAuthenticated,
+  hasAuthToken,
   isViewerLoading,
   hasViewer,
   hasProfile,
@@ -92,6 +94,7 @@ function getAuthProfileState({
 }: {
   isAuthLoading: boolean
   isAuthenticated: boolean
+  hasAuthToken: boolean
   isViewerLoading: boolean
   hasViewer: boolean
   hasProfile: boolean
@@ -99,6 +102,7 @@ function getAuthProfileState({
 }): AuthProfileState {
   if (isCreatingProfile) return 'creatingProfile'
   if (isAuthLoading) return 'loadingAuth'
+  if (!isAuthenticated && hasAuthToken) return 'authenticatedNoProfile'
   if (!isAuthenticated) return 'unauthenticated'
   if (isViewerLoading) return 'loadingAuth'
   if (!hasViewer) return 'authenticatedNoProfile'

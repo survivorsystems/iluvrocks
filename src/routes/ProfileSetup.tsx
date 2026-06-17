@@ -80,8 +80,9 @@ export default function ProfileSetup() {
         viewerStatus: auth.viewer ? 'loaded' : 'none',
         devAuthBypass: auth.isDevMode,
       })
+      let saveResult: { hasBasicProfile?: boolean } | null = null
       if (!isDevAuthBypass) {
-        await updateProfile({
+        saveResult = await updateProfile({
           name: emptyToUndefined(name),
           email: emptyToUndefined(email),
           username: cleanUsername || undefined,
@@ -92,6 +93,10 @@ export default function ProfileSetup() {
           collectingStyles: splitList(collectingStyles),
           yearsRockhounding: yearsRockhounding ? Number(yearsRockhounding) : undefined,
         })
+      }
+      if (!isDevAuthBypass && !saveResult?.hasBasicProfile) {
+        setStatus('Profile saved, but RockHound could not confirm the required fields yet. Please try Save again.')
+        return
       }
       console.info('[RockHound redirect]', {
         route: '/onboarding/profile',
