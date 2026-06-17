@@ -1,4 +1,4 @@
-import { Navigate, useLocation } from 'react-router-dom'
+import { Link, Navigate, useLocation } from 'react-router-dom'
 import type { ReactNode } from 'react'
 import { useAuthProfileState } from '../lib/authState'
 
@@ -20,6 +20,25 @@ export default function ProtectedRoute({ children, adminOnly = false, requirePro
   if (auth.state === 'unauthenticated') {
     console.info('[RockHound redirect]', { route: location.pathname, decision: 'redirect-to-login' })
     return <Navigate to="/login" replace />
+  }
+
+  if (auth.state === 'error') {
+    console.info('[RockHound redirect]', { route: location.pathname, decision: 'session-not-confirmed' })
+    return (
+      <section className="auth-page">
+        <div className="auth-form">
+          <p className="eyebrow">Member access</p>
+          <h1>Sign-in needs a fresh try</h1>
+          <p className="form-note">
+            RockHound could not confirm your signed-in session. Sign out, then request a new code.
+          </p>
+          <button type="button" onClick={() => void auth.signOut()}>
+            Sign out
+          </button>
+          <Link to="/login">Try sign-in again</Link>
+        </div>
+      </section>
+    )
   }
 
   if (requireProfile && auth.state === 'authenticatedNoProfile') {

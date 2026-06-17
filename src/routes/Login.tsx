@@ -89,6 +89,26 @@ export default function Login() {
     return <p className="empty-state">Checking your sign-in...</p>
   }
 
+  if (auth.state === 'error') {
+    console.info('[RockHound redirect]', { route: '/login', decision: 'session-not-confirmed' })
+    return (
+      <section className="auth-page">
+        <div className="auth-form">
+          <p className="eyebrow">Member access</p>
+          <h1>Sign-in needs a fresh try</h1>
+          <p className="form-note">
+            Your code was accepted, but RockHound could not confirm the session with Convex. Sign out, then request a
+            fresh code.
+          </p>
+          <button type="button" onClick={() => void signOut()}>
+            Sign out
+          </button>
+          <Link to="/login">Request a new code</Link>
+        </div>
+      </section>
+    )
+  }
+
   if (auth.state === 'authenticatedNoProfile' || auth.state === 'authenticatedWithProfile') {
     console.info('[RockHound redirect]', { route: '/login', decision: 'show-authenticated-continue', state: auth.state })
     return (

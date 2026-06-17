@@ -110,6 +110,9 @@ export default function ProfileSetup() {
           <p className="form-note">
             RockHound could not confirm your signed-in user. Sign out, then request a fresh code.
           </p>
+          <button type="button" onClick={() => void auth.signOut()}>
+            Sign out
+          </button>
           <Link to="/login" className="primary-action">
             Try sign-in again
           </Link>
