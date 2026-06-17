@@ -21,6 +21,8 @@ export function useAuthProfileState(isCreatingProfile = false) {
 
   const hasAuthToken = !!authToken
   const shouldLoadViewer = !isDevAuthBypass && convexAuth.isAuthenticated
+  const shouldLoadAuthDebug = !isDevAuthBypass && hasAuthToken
+  const backendAuthDebug = useQuery((api as any).users.authDebug, shouldLoadAuthDebug ? {} : 'skip')
   const viewer = useQuery(api.users.viewer, shouldLoadViewer ? {} : 'skip')
 
   const state: AuthProfileState = isDevAuthBypass
@@ -74,6 +76,7 @@ export function useAuthProfileState(isCreatingProfile = false) {
         convexAuth,
         hasAuthToken,
         authTokenClaims: getPublicTokenClaims(authToken),
+        backendAuthDebug,
       }
   useAuthDebugLog(result, location.pathname)
   return result
@@ -123,6 +126,10 @@ function useAuthDebugLog(
     isAuthenticated: boolean
     hasProfile: boolean
     viewer: unknown
+    backendAuthDebug?: unknown
+    authTokenClaims?: unknown
+    hasAuthToken?: boolean
+    convexAuth?: unknown
   },
   pathname: string,
 ) {
@@ -137,8 +144,17 @@ function useAuthDebugLog(
       convexAuth: 'convexAuth' in state ? state.convexAuth : undefined,
       hasAuthToken: 'hasAuthToken' in state ? state.hasAuthToken : undefined,
       tokenClaims: 'authTokenClaims' in state ? state.authTokenClaims : undefined,
+      backendAuthDebug: 'backendAuthDebug' in state ? state.backendAuthDebug : undefined,
     })
-  }, [pathname, state.hasProfile, state.isAuthenticated, state.isDevMode, state.state, state.viewer])
+  }, [
+    pathname,
+    state.backendAuthDebug,
+    state.hasProfile,
+    state.isAuthenticated,
+    state.isDevMode,
+    state.state,
+    state.viewer,
+  ])
 }
 
 function getPublicTokenClaims(token: string | null) {

@@ -2,6 +2,31 @@ import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
 import { getAuthUserId } from "@convex-dev/auth/server";
 
+export const authDebug = query({
+  args: {},
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+    const userId = await getAuthUserId(ctx);
+    const user = userId ? await ctx.db.get(userId) : null;
+
+    return {
+      hasIdentity: identity !== null,
+      issuer: identity?.issuer ?? null,
+      subjectPrefix: identity?.subject?.slice(0, 24) ?? null,
+      email: identity?.email ?? null,
+      tokenIdentifier: identity?.tokenIdentifier ?? null,
+      userId,
+      hasUser: user !== null,
+      userEmail: user?.email ?? null,
+      hasBasicProfile:
+        !!user?.name?.trim() &&
+        !!user?.email?.trim() &&
+        !!user?.location?.trim() &&
+        user?.yearsRockhounding !== undefined,
+    };
+  },
+});
+
 export const viewer = query({
   args: {},
   handler: async (ctx) => {
