@@ -1,7 +1,9 @@
 import { Heart, MapPin, MessageCircle } from 'lucide-react'
 import { useMutation } from 'convex/react'
+import { Link } from 'react-router-dom'
 import { api } from '../../convex/_generated/api'
 import type { Doc, Id } from '../../convex/_generated/dataModel'
+import { useAuthProfileState } from '../lib/authState'
 
 type FeedPost = Doc<'posts'> & {
   author?: {
@@ -26,8 +28,11 @@ const formatDate = (timestamp: number) =>
 
 export default function PostCard({ post }: PostCardProps) {
   const toggleLike = useMutation(api.social.toggleLike)
+  const auth = useAuthProfileState()
 
   const handleLike = async () => {
+    if (!auth.isAuthenticated) return
+
     try {
       await toggleLike({ postId: post._id as Id<'posts'> })
     } catch (error) {
@@ -66,10 +71,17 @@ export default function PostCard({ post }: PostCardProps) {
         ) : null}
       </div>
       <footer className="post-actions">
-        <button type="button" onClick={handleLike} className={post.isLiked ? 'is-liked' : ''}>
-          <Heart aria-hidden="true" />
-          {post.likeCount || 0}
-        </button>
+        {auth.isAuthenticated ? (
+          <button type="button" onClick={handleLike} className={post.isLiked ? 'is-liked' : ''}>
+            <Heart aria-hidden="true" />
+            {post.likeCount || 0}
+          </button>
+        ) : (
+          <Link to="/login">
+            <Heart aria-hidden="true" />
+            Create your Basecamp to like
+          </Link>
+        )}
         <span>
           <MessageCircle aria-hidden="true" />
           {post.commentCount || 0}

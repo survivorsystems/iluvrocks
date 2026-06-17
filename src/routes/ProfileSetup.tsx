@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import type { FormEvent } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useMutation } from 'convex/react'
 import { api } from '../../convex/_generated/api'
 import { devUser, isDevAuthBypass } from '../lib/devAuth'
@@ -8,6 +8,7 @@ import { useAuthProfileState } from '../lib/authState'
 
 export default function ProfileSetup() {
   const navigate = useNavigate()
+  const routeLocation = useLocation()
   const [isSaving, setIsSaving] = useState(false)
   const auth = useAuthProfileState(isSaving)
   const updateProfile = useMutation(api.users.updateProfile)
@@ -48,6 +49,18 @@ export default function ProfileSetup() {
     setCollectingStyles(initial.collectingStyles?.join(', ') ?? '')
     setYearsRockhounding(initial.yearsRockhounding?.toString() ?? '')
   }, [initial])
+
+  useEffect(() => {
+    if (routeLocation.pathname === '/onboarding/profile' && auth.state === 'authenticatedWithProfile') {
+      console.info('[RockHound redirect]', {
+        route: routeLocation.pathname,
+        authState: auth.state,
+        profileState: 'profile-complete',
+        decision: 'existing-user-open-basecamp',
+      })
+      navigate('/basecamp', { replace: true })
+    }
+  }, [auth.state, routeLocation.pathname, navigate])
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()

@@ -1,4 +1,4 @@
-import { ArrowRight, BookOpen, Compass, MapPinned, Pickaxe, UsersRound } from 'lucide-react'
+import { ArrowRight, Compass, MapPinned, Pickaxe, UsersRound } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import FeaturePanel from '../components/FeaturePanel'
 
@@ -15,12 +15,12 @@ export default function Home() {
             learn specimen basics, and connect with careful local explorers.
           </p>
           <div className="hero-actions">
-            <Link to="/feed" className="primary-action">
-              Browse the feed
+            <Link to="/login" className="primary-action">
+              Create your Basecamp
               <ArrowRight aria-hidden="true" />
             </Link>
-            <Link to="/community" className="secondary-action">
-              Explore community
+            <Link to="/discoveries" className="secondary-action">
+              Browse discoveries
             </Link>
           </div>
         </div>
@@ -39,9 +39,20 @@ export default function Home() {
         <p className="eyebrow">For visitors</p>
         <h2>Start learning before you sign up</h2>
         <div className="feature-grid">
-          <FeaturePanel icon={MapPinned} title="Public locations" description="Browse collecting-region basics, access reminders, and safety context." />
-          <FeaturePanel icon={BookOpen} title="Field guide" description="Learn common minerals, specimen care, and responsible collecting habits." />
-          <FeaturePanel icon={Pickaxe} title="Find stories" description="Read recent community finds and trip notes without needing an account." />
+          <FeaturePanel icon={Pickaxe} title="Latest public discoveries" description="Read recent community finds and trip notes without needing an account." />
+          <FeaturePanel icon={UsersRound} title="Members, clubs, and events" description="Preview featured members, founding hounds, public clubs, and upcoming gatherings." />
+          <FeaturePanel icon={MapPinned} title="Challenges and listings" description="Browse challenge previews, business listings, and membership info before joining." />
+        </div>
+        <div className="hero-actions">
+          <Link to="/members" className="secondary-action">
+            Featured members
+          </Link>
+          <Link to="/clubs" className="secondary-action">
+            Public clubs
+          </Link>
+          <Link to="/membership" className="secondary-action">
+            Membership info
+          </Link>
         </div>
       </section>
     </>

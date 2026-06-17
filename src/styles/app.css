@@ -900,6 +900,7 @@ textarea {
 }
 
 .post-actions button,
+.post-actions a,
 .post-actions span {
   gap: 0.4rem;
   border-radius: 999px;
@@ -910,6 +911,7 @@ textarea {
 }
 
 .post-actions button:hover,
+.post-actions a:hover,
 .post-actions button.is-liked {
   background: rgba(155, 93, 46, 0.12);
   color: #9b5d2e;

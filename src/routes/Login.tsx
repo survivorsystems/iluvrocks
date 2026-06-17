@@ -141,7 +141,8 @@ export default function Login() {
     <section className="auth-page">
       <form className="auth-form" onSubmit={handleSubmit}>
         <p className="eyebrow">Member access</p>
-        <h1>Sign in</h1>
+        <h1>Create your Basecamp</h1>
+        <p className="form-note">New here? Use your email to create your Basecamp. Returning users can sign in with the same code flow.</p>
         <label>
           Email
           <input
@@ -161,7 +162,7 @@ export default function Login() {
           />
         </label>
         <button type="submit" disabled={isSubmitting || isOpeningProfile || auth.isLoading}>
-          {isSubmitting || isOpeningProfile ? 'Working...' : code ? 'Verify code' : 'Request code'}
+          {isSubmitting || isOpeningProfile ? 'Working...' : code ? 'Verify code' : 'Create your Basecamp'}
         </button>
         <p className="form-note">{message}</p>
         <Link to="/feed">Continue to feed</Link>

@@ -5,10 +5,14 @@ import { useAuthProfileState } from '../lib/authState'
 
 const navItems = [
   { to: '/', label: 'Home' },
-  { to: '/feed', label: 'Feed' },
+  { to: '/discoveries', label: 'Discoveries' },
+  { to: '/clubs', label: 'Clubs' },
   { to: '/community', label: 'Community' },
+  { to: '/about', label: 'About' },
+]
+
+const accountNavItems = [
   { to: '/basecamp', label: 'Basecamp' },
-  { to: '/profile', label: 'Profile' },
 ]
 
 export default function Layout() {
@@ -27,6 +31,13 @@ export default function Layout() {
               {item.label}
             </NavLink>
           ))}
+          {auth.isAuthenticated
+            ? accountNavItems.map((item) => (
+                <NavLink key={item.to} to={item.to}>
+                  {item.label}
+                </NavLink>
+              ))
+            : null}
         </nav>
         <DevModeBadge />
         <AuthLink auth={auth} />
@@ -48,9 +59,9 @@ function AuthLink({ auth }: { auth: ReturnType<typeof useAuthProfileState> }) {
   }
 
   return (
-    <NavLink to="/login" className="icon-link" aria-label="Sign in">
+    <NavLink to="/login" className="icon-link" aria-label="Create your Basecamp">
       <UserRound aria-hidden="true" />
-      <span className="sr-only">Sign in</span>
+      <span>Create your Basecamp</span>
     </NavLink>
   )
 }

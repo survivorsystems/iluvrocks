@@ -12,6 +12,7 @@ import CollectionTracker from './routes/CollectionTracker'
 import Community from './routes/Community'
 import LogFind from './routes/LogFind'
 import SavedLocations from './routes/SavedLocations'
+import PublicPage from './routes/PublicPage'
 
 export default function App() {
   return (
@@ -20,6 +21,16 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/feed" element={<Feed />} />
+        <Route path="/discoveries" element={<Feed />} />
+        <Route path="/members" element={<PublicPage page="members" />} />
+        <Route path="/founding-members" element={<PublicPage page="founding-members" />} />
+        <Route path="/clubs" element={<PublicPage page="clubs" />} />
+        <Route path="/events" element={<PublicPage page="events" />} />
+        <Route path="/businesses" element={<PublicPage page="businesses" />} />
+        <Route path="/challenges" element={<PublicPage page="challenges" />} />
+        <Route path="/about" element={<PublicPage page="about" />} />
+        <Route path="/membership" element={<PublicPage page="membership" />} />
+        <Route path="/community" element={<Community />} />
         <Route
           path="/profile"
           element={
@@ -82,14 +93,6 @@ export default function App() {
           element={
             <ProtectedRoute>
               <LogFind />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/community"
-          element={
-            <ProtectedRoute>
-              <Community />
             </ProtectedRoute>
           }
         />
