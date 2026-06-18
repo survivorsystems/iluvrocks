@@ -113,7 +113,7 @@ export default function ProfileSetup() {
         hasProfile: auth.hasProfile,
         error: error instanceof Error ? error.message : 'Unknown error',
       })
-      setStatus(error instanceof Error ? error.message : 'Profile could not be saved.')
+      setStatus(getProfileErrorMessage(error))
     } finally {
       setIsSaving(false)
     }
@@ -145,7 +145,7 @@ export default function ProfileSetup() {
           <p className="eyebrow">Create profile</p>
           <h1>Session could not be confirmed</h1>
           <p className="form-note">
-            RockHound could not confirm your signed-in user. Sign out, then request a fresh code.
+            RockHound could not confirm your signed-in user. Sign out, then sign in again with your email and password.
           </p>
           <button type="button" onClick={() => void auth.signOut()}>
             Sign out
@@ -243,4 +243,31 @@ function splitList(value: string) {
     .map((item) => item.trim())
     .filter(Boolean)
   return items.length ? items : undefined
+}
+
+function getProfileErrorMessage(error: unknown) {
+  const message = error instanceof Error ? error.message : ''
+
+  if (message.includes('Unauthorized')) {
+    return 'Your signed-in session was not confirmed yet. Sign out, sign back in with your password, then save again.'
+  }
+
+  if (message.includes('Authenticated user record was not found')) {
+    return 'RockHound found a session but could not find the matching user record. Sign out and sign back in once.'
+  }
+
+  if (message.includes('Username already taken')) {
+    return 'That handle is already taken. Try a different one.'
+  }
+
+  if (message.includes('Missing environment variable')) {
+    return `RockHound is missing a Convex server setting: ${extractMissingEnvName(message)}.`
+  }
+
+  return message || 'Profile could not be saved.'
+}
+
+function extractMissingEnvName(message: string) {
+  const match = message.match(/`([^`]+)`/)
+  return match?.[1] ?? 'unknown'
 }

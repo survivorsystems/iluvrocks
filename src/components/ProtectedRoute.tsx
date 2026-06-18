@@ -38,7 +38,7 @@ export default function ProtectedRoute({ children, adminOnly = false, requirePro
           <p className="eyebrow">Member access</p>
           <h1>Sign-in needs a fresh try</h1>
           <p className="form-note">
-            RockHound could not confirm your signed-in session. Sign out, then request a new code.
+            RockHound could not confirm your signed-in session. Sign out, then sign in again with your email and password.
           </p>
           <button type="button" onClick={() => void auth.signOut()}>
             Sign out

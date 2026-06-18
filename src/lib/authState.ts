@@ -22,6 +22,7 @@ export function useAuthProfileState(isCreatingProfile = false) {
   const hasAuthToken = !!authToken
   const shouldLoadViewer = !isDevAuthBypass && convexAuth.isAuthenticated
   const shouldLoadAuthDebug = !isDevAuthBypass && hasAuthToken
+  const authRuntimeStatus = useQuery((api as any).users.authRuntimeStatus, !isDevAuthBypass ? {} : 'skip')
   const backendAuthDebug = useQuery((api as any).users.authDebug, shouldLoadAuthDebug ? {} : 'skip')
   const viewer = useQuery(api.users.viewer, shouldLoadViewer ? {} : 'skip')
 
@@ -77,6 +78,7 @@ export function useAuthProfileState(isCreatingProfile = false) {
         convexAuth,
         hasAuthToken,
         authTokenClaims: getPublicTokenClaims(authToken),
+        authRuntimeStatus,
         backendAuthDebug,
       }
   useAuthDebugLog(result, location.pathname)
@@ -120,7 +122,13 @@ function hasBasicProfile(user: unknown) {
     yearsRockhounding?: number
   }
 
-  return !!profile.name?.trim() && !!profile.email?.trim() && !!profile.location?.trim() && profile.yearsRockhounding !== undefined
+  return (
+    !!profile.name?.trim() &&
+    !!profile.email?.trim() &&
+    profile.email.includes('@') &&
+    !!profile.location?.trim() &&
+    profile.yearsRockhounding !== undefined
+  )
 }
 
 function useAuthDebugLog(
@@ -131,6 +139,7 @@ function useAuthDebugLog(
     hasProfile: boolean
     viewer: unknown
     backendAuthDebug?: unknown
+    authRuntimeStatus?: unknown
     authTokenClaims?: unknown
     hasAuthToken?: boolean
     convexAuth?: unknown
@@ -148,10 +157,12 @@ function useAuthDebugLog(
       convexAuth: 'convexAuth' in state ? state.convexAuth : undefined,
       hasAuthToken: 'hasAuthToken' in state ? state.hasAuthToken : undefined,
       tokenClaims: 'authTokenClaims' in state ? state.authTokenClaims : undefined,
+      authRuntimeStatus: 'authRuntimeStatus' in state ? state.authRuntimeStatus : undefined,
       backendAuthDebug: 'backendAuthDebug' in state ? state.backendAuthDebug : undefined,
     })
   }, [
     pathname,
+    state.authRuntimeStatus,
     state.backendAuthDebug,
     state.hasProfile,
     state.isAuthenticated,
@@ -183,3 +194,4 @@ function getPublicTokenClaims(token: string | null) {
     return { error: 'Could not decode token claims' }
   }
 }
+

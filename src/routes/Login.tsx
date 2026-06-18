@@ -320,10 +320,15 @@ function getSignInErrorMessage(error: unknown) {
     return 'An account already exists for that email. Try signing in instead.'
   }
   if (message.includes('Missing environment variable')) {
-    return 'RockHound sign-in is missing a server setting. Please try again after the latest deployment finishes.'
+    return `RockHound sign-in is missing a Convex server setting: ${extractMissingEnvName(message)}.`
   }
 
   return message || 'Sign-in failed. Please try again.'
+}
+
+function extractMissingEnvName(message: string) {
+  const match = message.match(/`([^`]+)`/)
+  return match?.[1] ?? 'unknown'
 }
 
 function PasswordRequirements({ password }: { password: string }) {
