@@ -1,7 +1,6 @@
 import {
   BookOpen,
   Camera,
-  CheckCircle2,
   Compass,
   Diamond,
   Edit3,
@@ -16,7 +15,7 @@ import { Link } from 'react-router-dom'
 import { useQuery } from 'convex/react'
 import { api } from '../../convex/_generated/api'
 import { useAuthProfileState } from '../lib/authState'
-import { Badge, Card, EmptyState, ProgressBar, getInitials } from './ui'
+import { Badge, Card, EmptyState, getInitials } from './ui'
 
 type RockhoundDashboardProps = {
   mode?: 'basecamp' | 'profile'
@@ -26,7 +25,6 @@ const stats = [
   { label: 'Posts', value: '328', icon: BookOpen },
   { label: 'Collections', value: '56', icon: Diamond },
   { label: 'Finds', value: '127', icon: Mountain },
-  { label: 'Challenges', value: '24', icon: CheckCircle2 },
   { label: 'Points', value: '1.2K', icon: Trophy },
   { label: 'Badges', value: '12', icon: Shield },
 ]
@@ -42,7 +40,6 @@ const recentActivity = [
   { label: 'Added 3 new finds to Quartz Collection', time: '2h ago', icon: Mountain },
   { label: 'Posted in Central Washington Rockhounds', time: '5h ago', icon: Mail },
   { label: 'Earned the Trailblazer badge', time: '1d ago', icon: Diamond },
-  { label: 'Completed challenge: First Post', time: '2d ago', icon: CheckCircle2 },
 ]
 
 export default function RockhoundDashboard({ mode = 'basecamp' }: RockhoundDashboardProps) {
@@ -140,7 +137,7 @@ function StatsRow() {
 function ProfileTabs() {
   return (
     <nav className="profile-tabs" aria-label="Profile sections">
-      {['Activity', 'Posts', 'Collections', 'Finds', 'Challenges'].map((tab) => (
+      {['Activity', 'Posts', 'Collections', 'Finds'].map((tab) => (
         <button key={tab} type="button" className={tab === 'Activity' ? 'is-active' : undefined}>
           {tab}
         </button>
@@ -234,7 +231,6 @@ function RightRail() {
   return (
     <aside className="workspace-right-rail">
       <BadgeCard />
-      <ChallengeCard />
       <RecentActivityCard />
     </aside>
   )
@@ -257,25 +253,6 @@ function BadgeCard() {
       <button type="button" className="ui-button ui-button-secondary">
         View All Badges
       </button>
-    </Card>
-  )
-}
-
-function ChallengeCard() {
-  return (
-    <Card className="rail-card challenge-card">
-      <CardTitle title="Next Challenge" />
-      <div className="challenge-body">
-        <span className="challenge-icon is-progress">
-          <MapPin aria-hidden="true" />
-        </span>
-        <div>
-          <h3>Explore a New Area</h3>
-          <p>Visit and add a new rockhounding location.</p>
-          <ProgressBar value={60} label="Explore a New Area progress" />
-        </div>
-        <strong>60%</strong>
-      </div>
     </Card>
   )
 }

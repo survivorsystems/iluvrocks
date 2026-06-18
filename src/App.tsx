@@ -11,7 +11,6 @@ import Basecamp from './routes/Basecamp'
 import CollectionTracker from './routes/CollectionTracker'
 import Community from './routes/Community'
 import LogFind from './routes/LogFind'
-import SavedLocations from './routes/SavedLocations'
 import PublicPage from './routes/PublicPage'
 import SpecimenDetail from './routes/SpecimenDetail'
 
@@ -27,10 +26,7 @@ export default function App() {
         <Route path="/discoveries" element={<Feed />} />
         <Route path="/members" element={<PublicPage page="members" />} />
         <Route path="/founding-members" element={<PublicPage page="founding-members" />} />
-        <Route path="/clubs" element={<PublicPage page="clubs" />} />
-        <Route path="/events" element={<PublicPage page="events" />} />
         <Route path="/businesses" element={<PublicPage page="businesses" />} />
-        <Route path="/challenges" element={<PublicPage page="challenges" />} />
         <Route path="/about" element={<PublicPage page="about" />} />
         <Route path="/membership" element={<PublicPage page="membership" />} />
         <Route path="/community" element={<Community />} />
@@ -100,42 +96,10 @@ export default function App() {
           }
         />
         <Route
-          path="/map"
-          element={
-            <ProtectedRoute>
-              <SavedLocations />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/spots"
-          element={
-            <ProtectedRoute>
-              <SavedLocations />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/saved-locations"
-          element={
-            <ProtectedRoute>
-              <SavedLocations />
-            </ProtectedRoute>
-          }
-        />
-        <Route
           path="/log-find"
           element={
             <ProtectedRoute>
               <LogFind />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/field-guides"
-          element={
-            <ProtectedRoute>
-              <Feed />
             </ProtectedRoute>
           }
         />
