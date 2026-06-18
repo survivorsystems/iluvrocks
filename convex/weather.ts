@@ -1,11 +1,11 @@
-import { action, internalMutation } from "./_generated/server";
+import { action, internalMutation, internalQuery } from "./_generated/server";
 import { v } from "convex/values";
 import { internal } from "./_generated/api";
 
 export const syncWeather = action({
   args: { locationId: v.id("locations") },
   handler: async (ctx, args) => {
-    const location = await ctx.runQuery(internal.locations.getInternal, { id: args.locationId });
+    const location = await ctx.runQuery(internal.weather.getLocationForWeather, { id: args.locationId });
     if (!location) return;
 
     const { lat, lng } = location.coordinates;
@@ -37,6 +37,13 @@ export const syncWeather = action({
       summary: `Weather Code: ${current.weathercode}`,
       impactNote,
     });
+  },
+});
+
+export const getLocationForWeather = internalQuery({
+  args: { id: v.id("locations") },
+  handler: async (ctx, args) => {
+    return await ctx.db.get(args.id);
   },
 });
 
