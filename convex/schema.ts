@@ -117,14 +117,28 @@ export default defineSchema({
 
   collectionItems: defineTable({
     userId: v.id("users"),
-    name: v.string(),
-    origin: v.optional(v.string()),
-    status: v.optional(v.string()),
-    notes: v.optional(v.string()),
     storageId: v.optional(v.id("_storage")),
-    photoUrl: v.optional(v.string()),
+    photoUrl: v.string(),
+    specimenName: v.string(),
+    materialType: v.optional(v.string()),
+    foundLocation: v.optional(v.string()),
+    dateFound: v.optional(v.number()),
+    notes: v.optional(v.string()),
+    status: v.string(),
+    acquisitionType: v.string(),
+    currentOwnerId: v.optional(v.id("users")),
     createdAt: v.number(),
+    updatedAt: v.number(),
   }).index("by_user", ["userId"]),
+
+  specimenReactions: defineTable({
+    collectionItemId: v.id("collectionItems"),
+    userId: v.id("users"),
+    reactionType: v.string(),
+    createdAt: v.number(),
+  }).index("by_item", ["collectionItemId"])
+    .index("by_user_item_type", ["userId", "collectionItemId", "reactionType"])
+    .index("by_item_type", ["collectionItemId", "reactionType"]),
 
   likes: defineTable({
     userId: v.id("users"),

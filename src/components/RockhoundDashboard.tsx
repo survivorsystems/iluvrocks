@@ -13,8 +13,10 @@ import {
   Trophy,
 } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { useQuery } from 'convex/react'
+import { api } from '../../convex/_generated/api'
 import { useAuthProfileState } from '../lib/authState'
-import { Badge, Card, ProgressBar, getInitials } from './ui'
+import { Badge, Card, EmptyState, ProgressBar, getInitials } from './ui'
 
 type RockhoundDashboardProps = {
   mode?: 'basecamp' | 'profile'
@@ -43,23 +45,9 @@ const recentActivity = [
   { label: 'Completed challenge: First Post', time: '2d ago', icon: CheckCircle2 },
 ]
 
-const collectionImages = [
-  {
-    alt: 'Clear quartz cluster',
-    url: 'https://images.unsplash.com/photo-1615486511262-c7a4f07bf2d5?auto=format&fit=crop&w=700&q=80',
-  },
-  {
-    alt: 'Purple amethyst specimen',
-    url: 'https://images.unsplash.com/photo-1615486511484-92e172cc4fe0?auto=format&fit=crop&w=700&q=80',
-  },
-  {
-    alt: 'Banded agate slice',
-    url: 'https://images.unsplash.com/photo-1615484477778-ca3b77940c25?auto=format&fit=crop&w=700&q=80',
-  },
-]
-
 export default function RockhoundDashboard({ mode = 'basecamp' }: RockhoundDashboardProps) {
   const auth = useAuthProfileState()
+  const collection = useQuery(api.collections.listMine, {})
   const viewer = auth.viewer?.user
   const displayName = viewer?.name?.trim() || auth.user?.displayName || 'RockHounder'
   const username = viewer?.username?.trim() || auth.user?.username || 'rockhounder'
@@ -80,7 +68,8 @@ export default function RockhoundDashboard({ mode = 'basecamp' }: RockhoundDashb
         />
         <StatsRow />
         <ProfileTabs />
-        <ActivityFeed displayName={displayName} />
+        <CollectionShowcase collection={collection} />
+        <ActivityFeed displayName={displayName} collection={collection} />
       </Card>
       <RightRail />
     </div>
@@ -160,7 +149,54 @@ function ProfileTabs() {
   )
 }
 
-function ActivityFeed({ displayName }: { displayName: string }) {
+function CollectionShowcase({ collection }: { collection: ReturnType<typeof useQuery<typeof api.collections.listMine>> }) {
+  const items = collection?.items.slice(0, 6) ?? []
+
+  return (
+    <section className="basecamp-collection-showcase">
+      <div className="showcase-title-row">
+        <div>
+          <p className="eyebrow">Collection showcase</p>
+          <h2>{collection ? `${collection.count} specimens` : 'Loading collection'}</h2>
+        </div>
+        <Link to="/collections" className="ui-button ui-button-secondary">
+          Upload specimen
+        </Link>
+      </div>
+      {collection && collection.items.length === 0 ? (
+        <EmptyState
+          title="Show off your first find."
+          description="Upload a specimen photo to start your Basecamp collection showcase."
+          action={
+            <Link to="/collections" className="primary-action">
+              Upload specimen
+            </Link>
+          }
+        />
+      ) : null}
+      {items.length ? (
+        <div className="basecamp-specimen-grid">
+          {items.map((item) => (
+            <Link key={item._id} to={`/collections/${item._id}`}>
+              <img src={item.photoUrl} alt="" />
+              <span>{item.specimenName}</span>
+            </Link>
+          ))}
+        </div>
+      ) : null}
+    </section>
+  )
+}
+
+function ActivityFeed({
+  displayName,
+  collection,
+}: {
+  displayName: string
+  collection: ReturnType<typeof useQuery<typeof api.collections.listMine>>
+}) {
+  const recentItems = collection?.items.slice(0, 3) ?? []
+
   return (
     <article className="activity-card">
       <div className="activity-header">
@@ -169,7 +205,8 @@ function ActivityFeed({ displayName }: { displayName: string }) {
         </div>
         <div>
           <p>
-            <strong>{displayName}</strong> added 3 new finds to Quartz Collection
+            <strong>{displayName}</strong>{' '}
+            {recentItems.length ? `added ${recentItems.length} specimen${recentItems.length === 1 ? '' : 's'} to the collection` : 'is building a collection showcase'}
           </p>
           <span>2 hours ago</span>
         </div>
@@ -177,11 +214,13 @@ function ActivityFeed({ displayName }: { displayName: string }) {
           <MoreHorizontal aria-hidden="true" />
         </button>
       </div>
-      <div className="collection-photo-grid">
-        {collectionImages.map((image) => (
-          <img key={image.alt} src={image.url} alt={image.alt} />
-        ))}
-      </div>
+      {recentItems.length ? (
+        <div className="collection-photo-grid">
+          {recentItems.map((item) => (
+            <img key={item._id} src={item.photoUrl} alt="" />
+          ))}
+        </div>
+      ) : null}
       <footer className="activity-actions">
         <span>Likes 24</span>
         <span>Comments 6</span>

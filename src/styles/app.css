@@ -256,7 +256,8 @@ main {
 
 .ui-input,
 input,
-textarea {
+textarea,
+select {
   width: 100%;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-small);
@@ -267,7 +268,8 @@ textarea {
 
 .ui-input:focus,
 input:focus,
-textarea:focus {
+textarea:focus,
+select:focus {
   outline: 2px solid rgba(242, 201, 76, 0.55);
   outline-offset: 2px;
 }
@@ -828,6 +830,164 @@ label {
 .collection-photo-placeholder svg {
   width: 2.2rem;
   height: 2.2rem;
+}
+
+.collection-card-link {
+  display: block;
+}
+
+.collection-card-link:hover .collection-card,
+.reaction-grid button:hover,
+.reaction-grid button.is-active {
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-1px);
+}
+
+.basecamp-collection-showcase {
+  display: grid;
+  gap: var(--space-4);
+  border-top: 1px solid var(--color-divider);
+  padding: var(--space-5) clamp(var(--space-5), 3vw, var(--space-10));
+}
+
+.showcase-title-row {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-4);
+  align-items: end;
+}
+
+.showcase-title-row h2 {
+  margin: 0;
+  color: var(--color-primary);
+  font-size: var(--font-size-xl);
+}
+
+.basecamp-specimen-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+.basecamp-specimen-grid a {
+  display: grid;
+  gap: var(--space-2);
+  color: var(--color-primary);
+  font-weight: var(--font-weight-bold);
+}
+
+.basecamp-specimen-grid img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius-medium);
+  object-fit: cover;
+  background: var(--color-surface-alt);
+}
+
+.specimen-detail-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.9fr);
+  gap: var(--space-4);
+  align-items: start;
+}
+
+.specimen-photo-card img {
+  width: 100%;
+  max-height: 680px;
+  border-radius: var(--radius-medium);
+  object-fit: cover;
+}
+
+.specimen-info-card {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.specimen-detail-list {
+  display: grid;
+  gap: var(--space-4);
+  margin: 0;
+}
+
+.specimen-detail-list div {
+  display: grid;
+  gap: var(--space-1);
+  border-bottom: 1px solid var(--color-divider);
+  padding-bottom: var(--space-3);
+}
+
+.specimen-detail-list dt {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-black);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.specimen-detail-list dd {
+  margin: 0;
+  color: var(--color-primary);
+  font-weight: var(--font-weight-bold);
+}
+
+.specimen-notes {
+  margin: 0;
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-loose);
+}
+
+.reaction-panel {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.reaction-panel h2 {
+  margin: 0;
+  color: var(--color-primary);
+  font-size: var(--font-size-xl);
+}
+
+.reaction-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+.reaction-grid button {
+  display: grid;
+  gap: var(--space-2);
+  justify-items: center;
+  min-height: 7.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-medium);
+  padding: var(--space-4);
+  background: var(--color-surface);
+  color: var(--color-primary);
+  text-align: center;
+  transition:
+    box-shadow 160ms ease,
+    transform 160ms ease,
+    border-color 160ms ease;
+}
+
+.reaction-grid button.is-active {
+  border-color: var(--color-accent-yellow);
+  background: rgba(242, 201, 76, 0.16);
+}
+
+.reaction-grid button > span {
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+.reaction-grid strong {
+  font-size: var(--font-size-sm);
+}
+
+.reaction-grid em {
+  color: var(--color-text-secondary);
+  font-style: normal;
+  font-weight: var(--font-weight-bold);
 }
 
 .auth-page,
@@ -1598,7 +1758,9 @@ label {
   }
 
   .collection-photo-grid,
-  .workspace-right-rail {
+  .workspace-right-rail,
+  .specimen-detail-grid,
+  .reaction-grid {
     grid-template-columns: 1fr;
   }
 

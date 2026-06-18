@@ -13,6 +13,7 @@ import Community from './routes/Community'
 import LogFind from './routes/LogFind'
 import SavedLocations from './routes/SavedLocations'
 import PublicPage from './routes/PublicPage'
+import SpecimenDetail from './routes/SpecimenDetail'
 
 export default function App() {
   return (
@@ -87,6 +88,14 @@ export default function App() {
           element={
             <ProtectedRoute>
               <CollectionTracker />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/collections/:specimenId"
+          element={
+            <ProtectedRoute>
+              <SpecimenDetail />
             </ProtectedRoute>
           }
         />
