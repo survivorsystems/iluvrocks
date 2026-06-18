@@ -60,6 +60,7 @@ export const createPost = mutation({
     locationId: v.optional(v.id("locations")),
     region: v.optional(v.string()),
     photos: v.optional(v.array(v.string())),
+    storageIds: v.optional(v.array(v.id("_storage"))),
     mineralName: v.optional(v.string()),
     mineralId: v.optional(v.id("minerals")),
     weight: v.optional(v.string()),
@@ -70,8 +71,15 @@ export const createPost = mutation({
     const userId = await getAuthUserId(ctx);
     if (!userId) throw new Error("Unauthorized");
 
+    const photoUrls = args.storageIds
+      ? (await Promise.all(args.storageIds.map((id) => ctx.storage.getUrl(id)))).filter(
+          (url): url is string => url !== null,
+        )
+      : args.photos;
+
     const postId = await ctx.db.insert("posts", {
       ...args,
+      photos: photoUrls,
       userId,
       likeCount: 0,
       commentCount: 0,

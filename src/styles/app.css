@@ -724,6 +724,112 @@ label {
   color: var(--color-primary);
 }
 
+.post-photo-grid,
+.upload-preview-grid,
+.collection-grid {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.post-photo-grid,
+.upload-preview-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: var(--space-4);
+}
+
+.post-photo-grid img,
+.upload-preview-grid img,
+.single-upload-preview img,
+.collection-card > img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius-medium);
+  object-fit: cover;
+  background: var(--color-surface-alt);
+}
+
+.upload-dropzone {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 3.25rem;
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-medium);
+  padding: var(--space-3);
+  background: var(--color-surface-alt);
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-bold);
+}
+
+.upload-dropzone svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: var(--color-primary);
+}
+
+.upload-dropzone input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.single-upload-preview {
+  width: min(260px, 100%);
+}
+
+.collection-form {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.collection-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.collection-card {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.collection-card h2 {
+  margin: 0;
+  color: var(--color-primary);
+  font-size: var(--font-size-lg);
+}
+
+.collection-card p {
+  margin: var(--space-2) 0 0;
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-base);
+}
+
+.collection-card span {
+  display: inline-flex;
+  width: fit-content;
+  margin-top: var(--space-3);
+  border-radius: var(--radius-round);
+  padding: 0.3rem 0.6rem;
+  background: var(--color-surface-alt);
+  color: var(--color-primary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+}
+
+.collection-photo-placeholder {
+  display: grid;
+  aspect-ratio: 4 / 3;
+  place-items: center;
+  border-radius: var(--radius-medium);
+  background: var(--color-surface-alt);
+}
+
+.collection-photo-placeholder svg {
+  width: 2.2rem;
+  height: 2.2rem;
+}
+
 .auth-page,
 .profile-page {
   width: min(760px, 100%);
@@ -1519,7 +1625,10 @@ label {
 
   .feature-grid,
   .stats-grid,
-  .table-row {
+  .table-row,
+  .collection-grid,
+  .post-photo-grid,
+  .upload-preview-grid {
     grid-template-columns: 1fr;
   }
 

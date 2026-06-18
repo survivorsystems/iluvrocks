@@ -115,6 +115,17 @@ export default defineSchema({
     .index("by_location", ["locationId"])
     .index("by_region", ["region"]),
 
+  collectionItems: defineTable({
+    userId: v.id("users"),
+    name: v.string(),
+    origin: v.optional(v.string()),
+    status: v.optional(v.string()),
+    notes: v.optional(v.string()),
+    storageId: v.optional(v.id("_storage")),
+    photoUrl: v.optional(v.string()),
+    createdAt: v.number(),
+  }).index("by_user", ["userId"]),
+
   likes: defineTable({
     userId: v.id("users"),
     postId: v.id("posts"),

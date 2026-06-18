@@ -12,6 +12,7 @@ import type * as ai from "../ai.js";
 import type * as auth from "../auth.js";
 import type * as chat from "../chat.js";
 import type * as classifieds from "../classifieds.js";
+import type * as collections from "../collections.js";
 import type * as http from "../http.js";
 import type * as jobs from "../jobs.js";
 import type * as locationActivity from "../locationActivity.js";
@@ -38,6 +39,7 @@ declare const fullApi: ApiFromModules<{
   auth: typeof auth;
   chat: typeof chat;
   classifieds: typeof classifieds;
+  collections: typeof collections;
   http: typeof http;
   jobs: typeof jobs;
   locationActivity: typeof locationActivity;

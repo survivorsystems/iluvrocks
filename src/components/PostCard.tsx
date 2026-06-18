@@ -69,6 +69,13 @@ export default function PostCard({ post }: PostCardProps) {
             ))}
           </div>
         ) : null}
+        {post.photos?.length ? (
+          <div className="post-photo-grid">
+            {post.photos.map((photo) => (
+              <img key={photo} src={photo} alt="" />
+            ))}
+          </div>
+        ) : null}
       </div>
       <footer className="post-actions">
         {auth.isAuthenticated ? (
