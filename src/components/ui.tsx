@@ -1,22 +1,17 @@
 import type { ComponentType, HTMLAttributes, InputHTMLAttributes, ReactNode, TextareaHTMLAttributes } from 'react'
 import {
   Bell,
-  BookOpen,
   ChevronDown,
   Compass,
   Diamond,
   Home,
   Mail,
-  Map,
-  MapPin,
   Menu,
   MessageCircle,
   Navigation,
   Plus,
   Search,
   Settings,
-  Target,
-  UsersRound,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { Link, NavLink, Outlet } from 'react-router-dom'
@@ -26,14 +21,8 @@ type IconType = LucideIcon | ComponentType<{ 'aria-hidden'?: boolean; className?
 
 const workspaceNavItems = [
   { to: '/basecamp', label: 'Home', icon: Home },
-  { to: '/map', label: 'Map', icon: Map },
-  { to: '/spots', label: 'Spots', icon: MapPin },
   { to: '/collections', label: 'Collections', icon: Diamond },
-  { to: '/challenges', label: 'Challenges', icon: Target },
-  { to: '/clubs', label: 'Clubs', icon: UsersRound },
   { to: '/community', label: 'Community', icon: MessageCircle },
-  { to: '/events', label: 'Events', icon: BookOpen },
-  { to: '/field-guides', label: 'Field Guides', icon: BookOpen },
   { to: '/messages', label: 'Messages', icon: Mail },
   { to: '/notifications', label: 'Notifications', icon: Bell },
   { to: '/settings', label: 'Settings', icon: Settings },
@@ -89,7 +78,7 @@ export function TopNavigation({ avatarLabel = 'RH' }: { avatarLabel?: string }) 
       <label className="app-search">
         <Search aria-hidden="true" />
         <span className="sr-only">Search</span>
-        <input placeholder="Search locations, rocks, users, clubs..." />
+        <input placeholder="Search rocks, users, collections..." />
       </label>
       <div className="app-topnav-actions">
         <button className="icon-button" type="button" aria-label="Explore">

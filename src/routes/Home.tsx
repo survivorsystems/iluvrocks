@@ -1,4 +1,4 @@
-import { ArrowRight, Compass, MapPinned, Pickaxe, UsersRound } from 'lucide-react'
+import { ArrowRight, Compass, Gem, Pickaxe, UsersRound } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import FeaturePanel from '../components/FeaturePanel'
 
@@ -40,15 +40,12 @@ export default function Home() {
         <h2>Start learning before you sign up</h2>
         <div className="feature-grid">
           <FeaturePanel icon={Pickaxe} title="Latest public discoveries" description="Read recent community finds and trip notes without needing an account." />
-          <FeaturePanel icon={UsersRound} title="Members, clubs, and events" description="Preview featured members, founding hounds, public clubs, and upcoming gatherings." />
-          <FeaturePanel icon={MapPinned} title="Challenges and listings" description="Browse challenge previews, business listings, and membership info before joining." />
+          <FeaturePanel icon={UsersRound} title="Featured members" description="Preview member stories, founding hounds, and collection interests before creating your Basecamp." />
+          <FeaturePanel icon={Gem} title="Collection showcases" description="See what members are adding to their collections and how they document each specimen." />
         </div>
         <div className="hero-actions">
           <Link to="/members" className="secondary-action">
             Featured members
-          </Link>
-          <Link to="/clubs" className="secondary-action">
-            Public clubs
           </Link>
           <Link to="/membership" className="secondary-action">
             Membership info

@@ -7,7 +7,6 @@ import { AppShell } from './ui'
 const navItems = [
   { to: '/', label: 'Home' },
   { to: '/discoveries', label: 'Discoveries' },
-  { to: '/clubs', label: 'Clubs' },
   { to: '/community', label: 'Community' },
   { to: '/about', label: 'About' },
 ]
@@ -18,17 +17,10 @@ const accountNavItems = [
 
 const workspaceRoutePrefixes = [
   '/basecamp',
-  '/map',
-  '/spots',
   '/collection',
   '/collections',
-  '/challenges',
-  '/clubs',
   '/community',
-  '/events',
-  '/saved-locations',
   '/log-find',
-  '/field-guides',
   '/messages',
   '/notifications',
   '/settings',
