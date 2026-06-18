@@ -21,8 +21,25 @@ export const authDebug = query({
       hasBasicProfile:
         !!user?.name?.trim() &&
         !!user?.email?.trim() &&
+        user.email.includes("@") &&
         !!user?.location?.trim() &&
         user?.yearsRockhounding !== undefined,
+    };
+  },
+});
+
+export const authRuntimeStatus = query({
+  args: {},
+  handler: async () => {
+    return {
+      provider: "password",
+      hasJwtPrivateKey: !!process.env.JWT_PRIVATE_KEY,
+      hasJwks: !!process.env.JWKS,
+      hasAuthSecret: !!process.env.AUTH_SECRET,
+      hasConvexSiteUrl: !!process.env.CONVEX_SITE_URL,
+      convexSiteUrl: process.env.CONVEX_SITE_URL ?? null,
+      siteUrl: process.env.SITE_URL ?? process.env.FRONTEND_URL ?? null,
+      hasLegacyViteConvexSiteUrl: !!process.env.VITE_CONVEX_SITE_URL,
     };
   },
 });
@@ -182,6 +199,7 @@ export const updateProfile = mutation({
       hasBasicProfile:
         !!updatedUser?.name?.trim() &&
         !!updatedUser?.email?.trim() &&
+        updatedUser.email.includes("@") &&
         !!updatedUser?.location?.trim() &&
         updatedUser?.yearsRockhounding !== undefined,
     };

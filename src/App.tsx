@@ -20,6 +20,8 @@ export default function App() {
       <Route element={<Layout />}>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/create-account" element={<Login initialMode="createAccount" />} />
+        <Route path="/create-basecamp" element={<Login initialMode="createAccount" />} />
         <Route path="/feed" element={<Feed />} />
         <Route path="/discoveries" element={<Feed />} />
         <Route path="/members" element={<PublicPage page="members" />} />

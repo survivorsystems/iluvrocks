@@ -14,13 +14,13 @@ Official domain: iluvrocks.rocks
 - Saved locations for access notes and future scouting.
 - Log-a-find workflow for field notes.
 - Community and admin dashboard foundations.
-- Convex Auth with Resend email codes.
+- Convex Auth email + password accounts.
 
 ## Tech Stack
 
 - Frontend: React, Vite, TypeScript, React Router
 - Backend: Convex
-- Auth: Convex Auth and Resend
+- Auth: Convex Auth Password provider
 - Styling: Plain CSS
 
 ## Local Development
@@ -34,7 +34,7 @@ npm install
 Copy `.env.example` to `.env.local` and set your Convex URL:
 
 ```bash
-VITE_CONVEX_URL=https://tough-emu-800.convex.cloud
+VITE_CONVEX_URL=https://outstanding-chicken-449.convex.cloud
 ```
 
 Run the local app:
@@ -42,6 +42,15 @@ Run the local app:
 ```bash
 npm run dev
 ```
+
+## Account Flow
+
+- Public visitors land on the homepage and can choose **Create your Basecamp**.
+- `/create-basecamp` opens email + password account creation.
+- Passwords must be at least 9 characters and include 1 uppercase letter, 1 number, and 1 special character.
+- New accounts create email + password login credentials first, then continue to profile setup.
+- `/login` handles returning-user email + password sign-in.
+- Verification-code auth is not used for login, signup, or password reset.
 
 ## Development Auth Bypass
 
@@ -86,7 +95,20 @@ For Vercel or Netlify:
 
 - Build command: `npm run build`
 - Output directory: `dist`
-- Required frontend env var: `VITE_CONVEX_URL`
+- Required frontend env var: `VITE_CONVEX_URL=https://outstanding-chicken-449.convex.cloud`
 - Do not set `VITE_DEV_AUTH_BYPASS=true` in production.
+- The Vercel project can remain named `rock-app-ygqf`; the public app domain is `https://iluvrocks.rocks`.
 
-Convex backend environment variables are managed separately with the Convex CLI or dashboard. Auth email delivery requires `SITE_URL=https://iluvrocks.rocks` and `RESEND_API_KEY`.
+Convex backend environment variables are managed separately with the Convex CLI or dashboard.
+
+Required for Convex Auth session/token generation:
+
+```text
+JWT_PRIVATE_KEY=...
+JWKS=...
+AUTH_SECRET=...
+CONVEX_SITE_URL=https://outstanding-chicken-449.convex.site
+SITE_URL=https://iluvrocks.rocks
+```
+
+Do not put backend secrets in Vercel. Vercel only needs the frontend `VITE_CONVEX_URL`.
