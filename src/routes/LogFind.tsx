@@ -1,11 +1,13 @@
+import { SectionHeader } from '../components/ui'
+
 export default function LogFind() {
   return (
     <section className="workspace-page">
-      <div className="workspace-header">
-        <p className="eyebrow">Log a find</p>
-        <h1>Record the field moment</h1>
-        <p>Sketch out the form for saving a find while the memory is fresh.</p>
-      </div>
+      <SectionHeader
+        eyebrow="Log a find"
+        title="Record the field moment"
+        description="Sketch out the form for saving a find while the memory is fresh."
+      />
       <form className="auth-form profile-form">
         <div className="form-grid">
           <label>

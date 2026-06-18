@@ -2,6 +2,7 @@ import { ArrowRight, Building2, CalendarDays, Gem, Medal, ShieldCheck, UsersRoun
 import type { LucideIcon } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import FeaturePanel from '../components/FeaturePanel'
+import { SectionHeader } from '../components/ui'
 
 type PublicPanel = [title: string, description: string, icon: LucideIcon]
 type PublicPageContent = {
@@ -73,9 +74,9 @@ const pages: Record<string, PublicPageContent> = {
     ],
   },
   about: {
-    eyebrow: 'About RockHound',
+    eyebrow: 'About iluvrocks',
     title: 'Built by rockhounds, for rockhounds.',
-    description: 'RockHound exists to make collecting knowledge easier to learn, safer to share, and more connected to real local experience.',
+    description: 'iluvrocks exists to make collecting knowledge easier to learn, safer to share, and more connected to real local experience.',
     panels: [
       ['Field-first', 'Designed around trips, finds, collections, clubs, and real-world learning.', Gem],
       ['Respectful sharing', 'Public previews protect sensitive details while still helping people learn.', ShieldCheck],
@@ -101,20 +102,22 @@ export default function PublicPage({ page }: { page: PublicPageKey }) {
 
   return (
     <section className="workspace-page">
-      <div className="workspace-header">
-        <p className="eyebrow">{content.eyebrow}</p>
-        <h1>{content.title}</h1>
-        <p>{content.description}</p>
-        <div className="hero-actions">
-          <Link to="/login" className="primary-action">
-            Create your Basecamp
-            <ArrowRight aria-hidden="true" />
-          </Link>
-          <Link to="/feed" className="secondary-action">
-            Browse discoveries
-          </Link>
-        </div>
-      </div>
+      <SectionHeader
+        eyebrow={content.eyebrow}
+        title={content.title}
+        description={content.description}
+        action={
+          <div className="hero-actions">
+            <Link to="/login" className="primary-action">
+              Create your Basecamp
+              <ArrowRight aria-hidden="true" />
+            </Link>
+            <Link to="/feed" className="secondary-action">
+              Browse discoveries
+            </Link>
+          </div>
+        }
+      />
       <div className="feature-grid">
         {content.panels.map(([title, description, Icon]) => (
           <FeaturePanel key={title} icon={Icon} title={title} description={description} />

@@ -1,4 +1,5 @@
 import { MapPin } from 'lucide-react'
+import { SectionHeader } from '../components/ui'
 
 const locations = [
   'Damon Point beach gravels',
@@ -10,11 +11,11 @@ const locations = [
 export default function SavedLocations() {
   return (
     <section className="workspace-page">
-      <div className="workspace-header">
-        <p className="eyebrow">Saved locations</p>
-        <h1>Places worth another look</h1>
-        <p>Keep public access notes, safety details, and collection rules close at hand.</p>
-      </div>
+      <SectionHeader
+        eyebrow="Saved locations"
+        title="Places worth another look"
+        description="Keep public access notes, safety details, and collection rules close at hand."
+      />
       <div className="location-list">
         {locations.map((location) => (
           <article key={location} className="location-card">

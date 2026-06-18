@@ -1,7 +1,8 @@
 import { Mountain, UserRound } from 'lucide-react'
-import { NavLink, Outlet } from 'react-router-dom'
+import { NavLink, Outlet, useLocation } from 'react-router-dom'
 import DevModeBadge from './DevModeBadge'
 import { useAuthProfileState } from '../lib/authState'
+import { AppShell } from './ui'
 
 const navItems = [
   { to: '/', label: 'Home' },
@@ -15,15 +16,40 @@ const accountNavItems = [
   { to: '/basecamp', label: 'Basecamp' },
 ]
 
+const workspaceRoutePrefixes = [
+  '/basecamp',
+  '/map',
+  '/spots',
+  '/collection',
+  '/collections',
+  '/challenges',
+  '/clubs',
+  '/community',
+  '/events',
+  '/saved-locations',
+  '/log-find',
+  '/field-guides',
+  '/messages',
+  '/notifications',
+  '/settings',
+  '/admin',
+]
+
 export default function Layout() {
   const auth = useAuthProfileState()
+  const location = useLocation()
+  const isWorkspaceRoute = workspaceRoutePrefixes.some((prefix) => location.pathname.startsWith(prefix))
+
+  if (isWorkspaceRoute && auth.isAuthenticated) {
+    return <AppShell />
+  }
 
   return (
     <div className="app-shell">
       <header className="site-header">
-        <NavLink to="/" className="brand" aria-label="RockHound home">
+        <NavLink to="/" className="brand" aria-label="iluvrocks home">
           <Mountain aria-hidden="true" />
-          <span>RockHound</span>
+          <span>iluvrocks</span>
         </NavLink>
         <nav className="site-nav" aria-label="Primary navigation">
           {navItems.map((item) => (

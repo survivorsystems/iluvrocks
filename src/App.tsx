@@ -83,6 +83,30 @@ export default function App() {
           }
         />
         <Route
+          path="/collections"
+          element={
+            <ProtectedRoute>
+              <CollectionTracker />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/map"
+          element={
+            <ProtectedRoute>
+              <SavedLocations />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/spots"
+          element={
+            <ProtectedRoute>
+              <SavedLocations />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/saved-locations"
           element={
             <ProtectedRoute>
@@ -95,6 +119,38 @@ export default function App() {
           element={
             <ProtectedRoute>
               <LogFind />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/field-guides"
+          element={
+            <ProtectedRoute>
+              <Feed />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/messages"
+          element={
+            <ProtectedRoute>
+              <Community />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/notifications"
+          element={
+            <ProtectedRoute>
+              <Community />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/settings"
+          element={
+            <ProtectedRoute requireProfile={false}>
+              <ProfileSetup />
             </ProtectedRoute>
           }
         />

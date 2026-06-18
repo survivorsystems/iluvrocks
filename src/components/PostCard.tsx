@@ -49,7 +49,7 @@ export default function PostCard({ post }: PostCardProps) {
         <div>
           <p className="post-author">{post.author?.name || 'RockHound member'}</p>
           <p className="post-meta">
-            @{post.author?.username || 'rockhound'} · {formatDate(post._creationTime)}
+            @{post.author?.username || 'rockhound'} / {formatDate(post._creationTime)}
           </p>
         </div>
       </div>

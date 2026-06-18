@@ -8,7 +8,7 @@ export default function Home() {
       <section className="hero">
         <div className="hero-copy">
           <p className="eyebrow">Community field notes</p>
-          <h1>RockHound</h1>
+          <h1>iluvrocks</h1>
           <p className="tagline">Built by rockhounds, for rockhounds.</p>
           <p>
             A field-first home for rockhounds to discover public collecting knowledge,
@@ -24,7 +24,7 @@ export default function Home() {
             </Link>
           </div>
         </div>
-        <div className="hero-panel" aria-label="RockHound highlights">
+        <div className="hero-panel" aria-label="iluvrocks highlights">
           <div>
             <Compass aria-hidden="true" />
             <span>Recent finds</span>

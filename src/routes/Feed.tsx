@@ -2,6 +2,7 @@ import { useQuery } from 'convex/react'
 import { api } from '../../convex/_generated/api'
 import CreatePost from '../components/CreatePost'
 import PostCard from '../components/PostCard'
+import { EmptyState, SectionHeader } from '../components/ui'
 
 export default function Feed() {
   const posts = useQuery(api.social.listFeed, { limit: 20 })
@@ -9,14 +10,16 @@ export default function Feed() {
   return (
     <section className="page-grid">
       <aside className="rail">
-        <p className="eyebrow">RockHound feed</p>
-        <h1>Fresh from the field</h1>
-        <p>Browse recent finds and notes from the community.</p>
+        <SectionHeader
+          eyebrow="RockHound feed"
+          title="Fresh from the field"
+          description="Browse recent finds and notes from the community."
+        />
       </aside>
       <div className="feed-column">
         <CreatePost />
-        {posts === undefined ? <p className="empty-state">Loading feed...</p> : null}
-        {posts?.length === 0 ? <p className="empty-state">No posts yet.</p> : null}
+        {posts === undefined ? <EmptyState title="Loading feed..." /> : null}
+        {posts?.length === 0 ? <EmptyState title="No posts yet" description="Field notes will appear here as members start posting." /> : null}
         {posts?.map((post) => <PostCard key={post._id} post={post} />)}
       </div>
     </section>

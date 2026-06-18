@@ -1,3 +1,5 @@
+import { SectionHeader, StatCard } from '../components/ui'
+
 const queues = [
   { label: 'Location submissions', count: 12 },
   { label: 'Flagged posts', count: 2 },
@@ -7,17 +9,14 @@ const queues = [
 export default function AdminDashboard() {
   return (
     <section className="workspace-page">
-      <div className="workspace-header">
-        <p className="eyebrow">Admin</p>
-        <h1>RockHound operations</h1>
-        <p>Moderate community data, review submissions, and keep public information tidy.</p>
-      </div>
+      <SectionHeader
+        eyebrow="Admin"
+        title="RockHound operations"
+        description="Moderate community data, review submissions, and keep public information tidy."
+      />
       <div className="stats-grid">
         {queues.map((queue) => (
-          <div key={queue.label} className="stat-card">
-            <strong>{queue.count}</strong>
-            <span>{queue.label}</span>
-          </div>
+          <StatCard key={queue.label} label={queue.label} value={queue.count} />
         ))}
       </div>
     </section>
