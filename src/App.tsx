@@ -14,6 +14,7 @@ import LogFind from './routes/LogFind'
 import Messages from './routes/Messages'
 import PublicPage from './routes/PublicPage'
 import PublicCollection from './routes/PublicCollection'
+import Settings from './routes/Settings'
 import SpecimenDetail from './routes/SpecimenDetail'
 
 export default function App() {
@@ -138,7 +139,7 @@ export default function App() {
           path="/settings"
           element={
             <ProtectedRoute requireProfile={false}>
-              <ProfileSetup />
+              <Settings />
             </ProtectedRoute>
           }
         />

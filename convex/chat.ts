@@ -220,6 +220,7 @@ export const startDirectConversation = mutation({
     if (await hasBlockBetween(ctx, userId, args.recipientId)) {
       throw new Error('Messaging is not available for this member.')
     }
+    await assertCanMessage(ctx, userId, args.recipientId)
 
     const [participantAId, participantBId] = sortUserIds(
       userId,
@@ -270,6 +271,7 @@ export const sendDirectMessage = mutation({
     if (await hasBlockBetween(ctx, userId, recipientId)) {
       throw new Error('Messaging is not available for this member.')
     }
+    await assertCanMessage(ctx, userId, recipientId)
 
     const now = Date.now()
     await ctx.db.insert('directMessages', {
@@ -322,6 +324,30 @@ async function hasBlockBetween(
     .unique()
 
   return !!secondBlockedFirst
+}
+
+async function assertCanMessage(
+  ctx: QueryCtx | MutationCtx,
+  senderId: Id<'users'>,
+  recipientId: Id<'users'>,
+) {
+  const recipient = await ctx.db.get(recipientId)
+  if (recipient?.whoCanMessageMe === 'no_one') {
+    throw new Error('This member is not accepting messages right now.')
+  }
+  if (recipient?.whoCanMessageMe === 'following') {
+    const followsSender = await ctx.db
+      .query('follows')
+      .withIndex('by_follower', (q) =>
+        q.eq('followerId', recipientId).eq('followingId', senderId),
+      )
+      .unique()
+    if (!followsSender) {
+      throw new Error(
+        'This member only accepts messages from people they follow.',
+      )
+    }
+  }
 }
 
 async function blockedUserIdsFor(ctx: QueryCtx, userId: Id<'users'>) {

@@ -203,6 +203,10 @@ export const followUser = mutation({
     const userId = await getAuthUserId(ctx)
     if (!userId) throw new Error('Unauthorized')
     if (userId === args.followingId) throw new Error('Cannot follow yourself')
+    const targetUser = await ctx.db.get(args.followingId)
+    if (targetUser?.whoCanFollowMe === 'no_one') {
+      throw new Error('This member is not accepting new followers right now.')
+    }
 
     const existing = await ctx.db
       .query('follows')
