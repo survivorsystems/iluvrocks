@@ -15,7 +15,7 @@ import {
   UserPlus,
   Trophy,
 } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useMutation, useQuery } from 'convex/react'
 import { api } from '../../convex/_generated/api'
@@ -148,6 +148,18 @@ function ProfileHeader({
   const navigate = useNavigate()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [menuMessage, setMenuMessage] = useState<string | null>(null)
+  const [coverFailed, setCoverFailed] = useState(false)
+  const [avatarFailed, setAvatarFailed] = useState(false)
+  const showHeaderImage = !!headerImage && !coverFailed
+  const showProfileImage = !!profileImage && !avatarFailed
+
+  useEffect(() => {
+    setCoverFailed(false)
+  }, [headerImage])
+
+  useEffect(() => {
+    setAvatarFailed(false)
+  }, [profileImage])
 
   const runMenuAction = async (
     action: () => Promise<unknown>,
@@ -173,21 +185,22 @@ function ProfileHeader({
         className="profile-cover"
         role="img"
         aria-label="Alpine field area with mountains and pine trees"
-        style={
-          headerImage ? { backgroundImage: `url(${headerImage})` } : undefined
-        }
-      />
+      >
+        {showHeaderImage ? (
+          <img src={headerImage} alt="" onError={() => setCoverFailed(true)} />
+        ) : null}
+      </div>
       <div className="profile-body">
-        <div
-          className="profile-avatar"
-          aria-hidden="true"
-          style={
-            profileImage
-              ? { backgroundImage: `url(${profileImage})` }
-              : undefined
-          }
-        >
-          {profileImage ? null : avatarLabel}
+        <div className="profile-avatar" aria-hidden="true">
+          {showProfileImage ? (
+            <img
+              src={profileImage}
+              alt=""
+              onError={() => setAvatarFailed(true)}
+            />
+          ) : (
+            avatarLabel
+          )}
         </div>
         <div className="profile-actions">
           <Link to="/settings" className="edit-profile-button">
