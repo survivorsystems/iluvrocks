@@ -192,6 +192,25 @@ export default defineSchema({
     parentId: v.optional(v.id('comments')),
   }).index('by_post', ['postId']),
 
+  forumPosts: defineTable({
+    forumSlug: v.string(),
+    userId: v.id('users'),
+    title: v.string(),
+    body: v.string(),
+    commentCount: v.optional(v.number()),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index('by_forum', ['forumSlug'])
+    .index('by_user', ['userId']),
+
+  forumComments: defineTable({
+    postId: v.id('forumPosts'),
+    userId: v.id('users'),
+    body: v.string(),
+    createdAt: v.number(),
+  }).index('by_post', ['postId']),
+
   follows: defineTable({
     followerId: v.id('users'),
     followingId: v.id('users'),

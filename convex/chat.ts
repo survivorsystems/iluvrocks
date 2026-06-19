@@ -4,6 +4,118 @@ import { getAuthUserId } from '@convex-dev/auth/server'
 import type { Id } from './_generated/dataModel'
 import type { MutationCtx, QueryCtx } from './_generated/server'
 
+const forumSections = [
+  {
+    title: 'Finds & Discoveries',
+    description:
+      'Share finds, collection updates, hunt stories, and ID questions.',
+    forums: [
+      [
+        'todays-finds',
+        "Today's Finds",
+        'Fresh finds from the field and collection table.',
+      ],
+      [
+        'rare-finds',
+        'Rare Finds',
+        'Unusual, hard-to-find, or special pieces worth a closer look.',
+      ],
+      [
+        'recent-hunts',
+        'Recent Hunts',
+        'Trip notes and field-day recaps that belong in the community.',
+      ],
+      [
+        'collection-highlights',
+        'Collection Highlights',
+        'Show favorite finds and collection milestones.',
+      ],
+      [
+        'identification-help',
+        'Identification Help',
+        'Ask for help identifying rocks, minerals, and materials.',
+      ],
+    ],
+  },
+  {
+    title: 'Locations & Trips',
+    description:
+      'Plan trips, share public-access notes, and compare field conditions.',
+    forums: [
+      [
+        'trip-reports',
+        'Trip Reports',
+        'Longer reports from public trips and field days.',
+      ],
+      [
+        'public-collecting-areas',
+        'Public Collecting Areas',
+        'General public-access collecting area discussion.',
+      ],
+      [
+        'roadside-stops',
+        'Roadside Stops',
+        'Easy stops, access notes, and quick-pullout finds.',
+      ],
+      [
+        'club-field-trips',
+        'Club Field Trips',
+        'Club outings, field trip reports, and group plans.',
+      ],
+      [
+        'travel-planning',
+        'Travel Planning',
+        'Route ideas, packing, weather, and timing.',
+      ],
+    ],
+  },
+  {
+    title: 'Lapidary & Crafting',
+    description:
+      'Talk shop about cutting, polishing, wrapping, jewelry, and equipment.',
+    forums: [
+      ['cutting', 'Cutting', 'Sawing, trimming, slabs, and cutting plans.'],
+      [
+        'polishing',
+        'Polishing',
+        'Tumbling, finishing, grit, and shine troubleshooting.',
+      ],
+      [
+        'cabochons',
+        'Cabochons',
+        'Cabs, shaping, templates, and finished pieces.',
+      ],
+      [
+        'wire-wrapping',
+        'Wire Wrapping',
+        'Wraps, settings, tools, and design notes.',
+      ],
+      ['jewelry', 'Jewelry', 'Finished wearable pieces and jewelry questions.'],
+      [
+        'equipment',
+        'Equipment',
+        'Tools, machines, maintenance, and setup advice.',
+      ],
+    ],
+  },
+] as const
+
+type ForumMeta = {
+  slug: string
+  title: string
+  description: string
+  sectionTitle: string
+}
+
+const forumMap: Map<string, ForumMeta> = new Map(
+  forumSections.flatMap((section) =>
+    section.forums.map(([slug, title, description]) => [
+      slug,
+      { slug, title, description, sectionTitle: section.title },
+    ]),
+  ),
+)
+
 export const listRooms = query({
   args: {},
   returns: v.array(
@@ -99,6 +211,149 @@ export const sendMessage = mutation({
       imageUrl: args.imageUrl,
     })
     return null
+  },
+})
+
+export const listForumSections = query({
+  args: {},
+  handler: async (ctx) => {
+    const counts = await Promise.all(
+      [...forumMap.values()].map(async (forum) => {
+        const posts = await ctx.db
+          .query('forumPosts')
+          .withIndex('by_forum', (q) => q.eq('forumSlug', forum.slug))
+          .collect()
+        return [forum.slug, posts.length] as const
+      }),
+    )
+    const countMap = Object.fromEntries(counts)
+
+    return forumSections.map((section) => ({
+      title: section.title,
+      description: section.description,
+      forums: section.forums.map(([slug, title, description]) => ({
+        slug,
+        title,
+        description,
+        postCount: countMap[slug] ?? 0,
+      })),
+    }))
+  },
+})
+
+export const getForum = query({
+  args: { forumSlug: v.string() },
+  handler: async (_ctx, args) => {
+    return forumMap.get(args.forumSlug) ?? null
+  },
+})
+
+export const listForumPosts = query({
+  args: { forumSlug: v.string() },
+  handler: async (ctx, args) => {
+    if (!forumMap.has(args.forumSlug)) return []
+
+    const posts = await ctx.db
+      .query('forumPosts')
+      .withIndex('by_forum', (q) => q.eq('forumSlug', args.forumSlug))
+      .order('desc')
+      .take(50)
+
+    return await Promise.all(
+      posts.map(async (post) => {
+        const author = await ctx.db.get(post.userId)
+        return {
+          ...post,
+          author: {
+            name: author?.name,
+            username: author?.username,
+            image: author?.image,
+          },
+        }
+      }),
+    )
+  },
+})
+
+export const listForumComments = query({
+  args: { postId: v.id('forumPosts') },
+  handler: async (ctx, args) => {
+    const comments = await ctx.db
+      .query('forumComments')
+      .withIndex('by_post', (q) => q.eq('postId', args.postId))
+      .order('asc')
+      .take(100)
+
+    return await Promise.all(
+      comments.map(async (comment) => {
+        const author = await ctx.db.get(comment.userId)
+        return {
+          ...comment,
+          author: {
+            name: author?.name,
+            username: author?.username,
+            image: author?.image,
+          },
+        }
+      }),
+    )
+  },
+})
+
+export const createForumPost = mutation({
+  args: {
+    forumSlug: v.string(),
+    title: v.string(),
+    body: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx)
+    if (!userId) throw new Error('Sign in before posting in the forums.')
+    if (!forumMap.has(args.forumSlug)) throw new Error('Forum not found.')
+
+    const title = args.title.trim()
+    const body = args.body.trim()
+    if (!title || !body)
+      throw new Error('Add a title and post before publishing.')
+
+    const now = Date.now()
+    return await ctx.db.insert('forumPosts', {
+      forumSlug: args.forumSlug,
+      userId,
+      title,
+      body,
+      commentCount: 0,
+      createdAt: now,
+      updatedAt: now,
+    })
+  },
+})
+
+export const addForumComment = mutation({
+  args: {
+    postId: v.id('forumPosts'),
+    body: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx)
+    if (!userId) throw new Error('Sign in before commenting.')
+
+    const post = await ctx.db.get(args.postId)
+    if (!post) throw new Error('Forum post not found.')
+
+    const body = args.body.trim()
+    if (!body) throw new Error('Add a comment before posting.')
+
+    await ctx.db.insert('forumComments', {
+      postId: args.postId,
+      userId,
+      body,
+      createdAt: Date.now(),
+    })
+    await ctx.db.patch(args.postId, {
+      commentCount: (post.commentCount ?? 0) + 1,
+      updatedAt: Date.now(),
+    })
   },
 })
 

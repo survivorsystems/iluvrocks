@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 import Layout from './components/Layout'
 import Feed from './routes/Feed'
+import ForumBoard from './routes/ForumBoard'
 import Home from './routes/Home'
 import Login from './routes/Login'
 import Profile from './routes/Profile'
@@ -42,6 +43,7 @@ export default function App() {
         <Route path="/about" element={<PublicPage page="about" />} />
         <Route path="/membership" element={<PublicPage page="membership" />} />
         <Route path="/community" element={<Community />} />
+        <Route path="/community/:forumSlug" element={<ForumBoard />} />
         <Route
           path="/profile"
           element={
