@@ -5,11 +5,11 @@ import { useAuthProfileState } from '../lib/authState'
 import { AppShell } from './ui'
 
 const navItems = [
-  { to: '/', label: 'Home' },
-  { to: '/discoveries', label: 'Discoveries' },
-  { to: '/community', label: 'Community' },
-  { to: '/businesses', label: 'Businesses' },
-  { to: '/about', label: 'About' },
+  { to: '/destinations', label: 'Destinations' },
+  { to: '/materials', label: 'Materials' },
+  { to: '/trip-planner', label: 'Trip Planner' },
+  { to: '/businesses', label: 'Business Directory' },
+  { to: '/guides', label: 'Guides' },
 ]
 
 const accountNavItems = [{ to: '/basecamp', label: 'Basecamp' }]

@@ -33,11 +33,24 @@ export const overview = query({
   handler: async (ctx) => {
     await requireOwner(ctx)
 
-    const [pages, resources, businesses, featured] = await Promise.all([
+    const [
+      pages,
+      resources,
+      businesses,
+      featured,
+      destinations,
+      materials,
+      itineraries,
+      places,
+    ] = await Promise.all([
       ctx.db.query('contentPages').collect(),
       ctx.db.query('resourceLibraryItems').collect(),
       ctx.db.query('businesses').collect(),
       ctx.db.query('featuredContent').collect(),
+      ctx.db.query('destinations').collect(),
+      ctx.db.query('materials').collect(),
+      ctx.db.query('itineraries').collect(),
+      ctx.db.query('destinationPlaces').collect(),
     ])
 
     return {
@@ -51,6 +64,13 @@ export const overview = query({
         (business) => business.plan === 'premium',
       ).length,
       featuredItems: featured.filter((item) => item.isActive).length,
+      destinations: destinations.length,
+      publishedDestinations: destinations.filter(
+        (destination) => destination.status === 'published',
+      ).length,
+      materials: materials.length,
+      itineraries: itineraries.length,
+      places: places.length,
       stripeMode: process.env.STRIPE_SECRET_KEY?.startsWith('sk_test_')
         ? 'test'
         : 'not configured',

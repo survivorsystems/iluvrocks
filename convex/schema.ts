@@ -115,6 +115,94 @@ export default defineSchema({
     likelihood: v.string(), // "Common", "Occasional", "Rare"
   }).index('by_location', ['locationId']),
 
+  destinations: defineTable({
+    name: v.string(),
+    slug: v.string(),
+    region: v.string(),
+    county: v.optional(v.string()),
+    status: v.string(),
+    summary: v.string(),
+    description: v.optional(v.string()),
+    tripPlanning: v.optional(v.string()),
+    safetyInfo: v.optional(v.string()),
+    permitInfo: v.optional(v.string()),
+    localTips: v.optional(v.string()),
+    mapEmbedUrl: v.optional(v.string()),
+    latitude: v.optional(v.number()),
+    longitude: v.optional(v.number()),
+    photos: v.optional(v.array(v.string())),
+    relatedGuideSlugs: v.optional(v.array(v.string())),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+    updatedBy: v.id('users'),
+  })
+    .index('by_slug', ['slug'])
+    .index('by_status', ['status'])
+    .index('by_region', ['region']),
+
+  materials: defineTable({
+    name: v.string(),
+    slug: v.string(),
+    status: v.string(),
+    summary: v.string(),
+    description: v.optional(v.string()),
+    identificationTips: v.optional(v.string()),
+    safetyNotes: v.optional(v.string()),
+    photos: v.optional(v.array(v.string())),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+    updatedBy: v.id('users'),
+  })
+    .index('by_slug', ['slug'])
+    .index('by_status', ['status']),
+
+  destinationMaterials: defineTable({
+    destinationId: v.id('destinations'),
+    materialId: v.id('materials'),
+    likelihood: v.optional(v.string()),
+    notes: v.optional(v.string()),
+  })
+    .index('by_destination', ['destinationId'])
+    .index('by_material', ['materialId']),
+
+  itineraries: defineTable({
+    destinationId: v.id('destinations'),
+    title: v.string(),
+    slug: v.string(),
+    status: v.string(),
+    duration: v.optional(v.string()),
+    difficulty: v.optional(v.string()),
+    overview: v.string(),
+    stopsJson: v.optional(v.string()),
+    packingList: v.optional(v.string()),
+    safetyNotes: v.optional(v.string()),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+    updatedBy: v.id('users'),
+  })
+    .index('by_destination', ['destinationId'])
+    .index('by_slug', ['slug'])
+    .index('by_status', ['status']),
+
+  destinationPlaces: defineTable({
+    destinationId: v.id('destinations'),
+    businessId: v.optional(v.id('businesses')),
+    name: v.string(),
+    placeType: v.string(),
+    description: v.optional(v.string()),
+    website: v.optional(v.string()),
+    phone: v.optional(v.string()),
+    address: v.optional(v.string()),
+    latitude: v.optional(v.number()),
+    longitude: v.optional(v.number()),
+    isFeatured: v.boolean(),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+    updatedBy: v.id('users'),
+  })
+    .index('by_destination', ['destinationId'])
+    .index('by_type', ['placeType']),
+
   // Unified Social Feed Post
   posts: defineTable({
     userId: v.id('users'),

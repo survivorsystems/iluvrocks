@@ -14,12 +14,17 @@ import BusinessManage from './routes/BusinessManage'
 import BusinessProfile from './routes/BusinessProfile'
 import CollectionTracker from './routes/CollectionTracker'
 import Community from './routes/Community'
+import DestinationDetail from './routes/DestinationDetail'
+import Destinations from './routes/Destinations'
 import LogFind from './routes/LogFind'
+import Guides from './routes/Guides'
+import Materials from './routes/Materials'
 import Messages from './routes/Messages'
 import PublicPage from './routes/PublicPage'
 import PublicCollection from './routes/PublicCollection'
 import Settings from './routes/Settings'
 import SpecimenDetail from './routes/SpecimenDetail'
+import TripPlanner from './routes/TripPlanner'
 
 export default function App() {
   return (
@@ -37,6 +42,11 @@ export default function App() {
         />
         <Route path="/feed" element={<Feed />} />
         <Route path="/discoveries" element={<Feed />} />
+        <Route path="/destinations" element={<Destinations />} />
+        <Route path="/destinations/:slug" element={<DestinationDetail />} />
+        <Route path="/materials" element={<Materials />} />
+        <Route path="/trip-planner" element={<TripPlanner />} />
+        <Route path="/guides" element={<Guides />} />
         <Route path="/members" element={<PublicPage page="members" />} />
         <Route
           path="/founding-members"

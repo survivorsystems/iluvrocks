@@ -8,7 +8,9 @@ import {
   Image,
   LayoutDashboard,
   Library,
+  Map,
   Paintbrush,
+  Route,
   Star,
   Upload,
 } from 'lucide-react'
@@ -20,6 +22,10 @@ import { Badge, Button, Card, SectionHeader, StatCard } from '../components/ui'
 type AdminTab =
   | 'overview'
   | 'appearance'
+  | 'destinations'
+  | 'materials'
+  | 'itineraries'
+  | 'places'
   | 'pages'
   | 'resources'
   | 'featured'
@@ -33,6 +39,10 @@ const tabs: Array<{
 }> = [
   { id: 'overview', label: 'Overview', icon: LayoutDashboard },
   { id: 'appearance', label: 'Appearance', icon: Paintbrush },
+  { id: 'destinations', label: 'Destinations', icon: Map },
+  { id: 'materials', label: 'Materials', icon: Image },
+  { id: 'itineraries', label: 'Itineraries', icon: Route },
+  { id: 'places', label: 'Places', icon: BriefcaseBusiness },
   { id: 'pages', label: 'Pages', icon: FileText },
   { id: 'resources', label: 'Resources', icon: Library },
   { id: 'featured', label: 'Featured', icon: Star },
@@ -68,6 +78,10 @@ export default function AdminDashboard() {
 
       {activeTab === 'overview' ? <OverviewPanel overview={overview} /> : null}
       {activeTab === 'appearance' ? <AppearancePanel /> : null}
+      {activeTab === 'destinations' ? <DestinationsPanel /> : null}
+      {activeTab === 'materials' ? <MaterialsPanel /> : null}
+      {activeTab === 'itineraries' ? <ItinerariesPanel /> : null}
+      {activeTab === 'places' ? <PlacesPanel /> : null}
       {activeTab === 'pages' ? <PagesPanel /> : null}
       {activeTab === 'resources' ? <ResourcesPanel /> : null}
       {activeTab === 'featured' ? <FeaturedPanel /> : null}
@@ -79,6 +93,15 @@ export default function AdminDashboard() {
 
 function OverviewPanel({ overview }: { overview: any }) {
   const stats = [
+    { label: 'Destinations', value: overview?.destinations ?? 0, icon: Map },
+    {
+      label: 'Published destinations',
+      value: overview?.publishedDestinations ?? 0,
+      icon: Map,
+    },
+    { label: 'Materials', value: overview?.materials ?? 0, icon: Image },
+    { label: 'Itineraries', value: overview?.itineraries ?? 0, icon: Route },
+    { label: 'Places', value: overview?.places ?? 0, icon: BriefcaseBusiness },
     { label: 'Pages', value: overview?.pages ?? 0, icon: FileText },
     { label: 'Draft pages', value: overview?.draftPages ?? 0, icon: FileText },
     { label: 'Resources', value: overview?.resources ?? 0, icon: Library },
@@ -213,6 +236,571 @@ function AppearancePanel() {
         <AdminSaveBar status={status} label="Save appearance" />
       </form>
     </Card>
+  )
+}
+
+function DestinationsPanel() {
+  const data = useQuery((api as any).tripPlanning.ownerListAll, {})
+  const saveDestination = useMutation((api as any).tripPlanning.saveDestination)
+  const [status, setStatus] = useState('')
+  const [form, setForm] = useState({
+    name: '',
+    slug: '',
+    region: 'Washington',
+    county: '',
+    status: 'draft',
+    summary: '',
+    description: '',
+    tripPlanning: '',
+    safetyInfo: '',
+    permitInfo: '',
+    localTips: '',
+    mapEmbedUrl: '',
+    latitude: '',
+    longitude: '',
+    relatedGuideSlugs: '',
+  })
+
+  const submit = async (event: FormEvent) => {
+    event.preventDefault()
+    setStatus('Saving destination...')
+    try {
+      await saveDestination({
+        ...form,
+        county: emptyToUndefined(form.county),
+        slug: emptyToUndefined(form.slug),
+        description: emptyToUndefined(form.description),
+        tripPlanning: emptyToUndefined(form.tripPlanning),
+        safetyInfo: emptyToUndefined(form.safetyInfo),
+        permitInfo: emptyToUndefined(form.permitInfo),
+        localTips: emptyToUndefined(form.localTips),
+        mapEmbedUrl: emptyToUndefined(form.mapEmbedUrl),
+        latitude: form.latitude ? Number(form.latitude) : undefined,
+        longitude: form.longitude ? Number(form.longitude) : undefined,
+        relatedGuideSlugs: splitList(form.relatedGuideSlugs),
+      })
+      setStatus('Destination saved.')
+    } catch (error) {
+      setStatus(
+        error instanceof Error ? error.message : 'Could not save destination.',
+      )
+    }
+  }
+
+  return (
+    <div className="admin-split">
+      <Card className="admin-panel">
+        <AdminPanelHeader
+          title="Destination manager"
+          description="Create Washington destination pages with materials, trip planning, safety, permits, local tips, photos, maps, and related guides."
+        />
+        <form className="admin-form" onSubmit={submit}>
+          <div className="form-grid">
+            <AdminInput
+              label="Name"
+              value={form.name}
+              onChange={(value) => setForm({ ...form, name: value })}
+            />
+            <AdminInput
+              label="Slug"
+              value={form.slug}
+              onChange={(value) => setForm({ ...form, slug: value })}
+            />
+            <AdminInput
+              label="Region"
+              value={form.region}
+              onChange={(value) => setForm({ ...form, region: value })}
+            />
+            <AdminInput
+              label="County"
+              value={form.county}
+              onChange={(value) => setForm({ ...form, county: value })}
+            />
+            <label>
+              Status
+              <select
+                value={form.status}
+                onChange={(event) =>
+                  setForm({ ...form, status: event.target.value })
+                }
+              >
+                <option value="draft">Draft</option>
+                <option value="published">Published</option>
+              </select>
+            </label>
+            <AdminInput
+              label="Map embed URL"
+              value={form.mapEmbedUrl}
+              onChange={(value) => setForm({ ...form, mapEmbedUrl: value })}
+            />
+          </div>
+          <AdminInput
+            label="Summary"
+            value={form.summary}
+            onChange={(value) => setForm({ ...form, summary: value })}
+          />
+          <AdminTextarea
+            label="Description"
+            value={form.description}
+            onChange={(value) => setForm({ ...form, description: value })}
+          />
+          <AdminTextarea
+            label="Trip planning"
+            value={form.tripPlanning}
+            onChange={(value) => setForm({ ...form, tripPlanning: value })}
+          />
+          <AdminTextarea
+            label="Safety information"
+            value={form.safetyInfo}
+            onChange={(value) => setForm({ ...form, safetyInfo: value })}
+          />
+          <AdminTextarea
+            label="Permit information"
+            value={form.permitInfo}
+            onChange={(value) => setForm({ ...form, permitInfo: value })}
+          />
+          <AdminTextarea
+            label="Local tips"
+            value={form.localTips}
+            onChange={(value) => setForm({ ...form, localTips: value })}
+          />
+          <AdminInput
+            label="Related guide slugs"
+            value={form.relatedGuideSlugs}
+            onChange={(value) => setForm({ ...form, relatedGuideSlugs: value })}
+          />
+          <AdminSaveBar status={status} label="Save destination" />
+        </form>
+      </Card>
+      <AdminList
+        title="Destinations"
+        items={(data?.destinations ?? []).map((destination: any) => ({
+          title: destination.name,
+          meta: `${destination.region} | ${destination.status}`,
+        }))}
+      />
+    </div>
+  )
+}
+
+function MaterialsPanel() {
+  const data = useQuery((api as any).tripPlanning.ownerListAll, {})
+  const saveMaterial = useMutation((api as any).tripPlanning.saveMaterial)
+  const linkMaterial = useMutation(
+    (api as any).tripPlanning.linkDestinationMaterial,
+  )
+  const [status, setStatus] = useState('')
+  const [form, setForm] = useState({
+    name: '',
+    slug: '',
+    status: 'draft',
+    summary: '',
+    description: '',
+    identificationTips: '',
+    safetyNotes: '',
+    destinationId: '',
+    materialId: '',
+    likelihood: 'Common',
+  })
+
+  const submit = async (event: FormEvent) => {
+    event.preventDefault()
+    setStatus('Saving material...')
+    try {
+      await saveMaterial({
+        name: form.name,
+        slug: emptyToUndefined(form.slug),
+        status: form.status,
+        summary: form.summary,
+        description: emptyToUndefined(form.description),
+        identificationTips: emptyToUndefined(form.identificationTips),
+        safetyNotes: emptyToUndefined(form.safetyNotes),
+      })
+      setStatus('Material saved.')
+    } catch (error) {
+      setStatus(
+        error instanceof Error ? error.message : 'Could not save material.',
+      )
+    }
+  }
+
+  const link = async () => {
+    if (!form.destinationId || !form.materialId) return
+    setStatus('Linking material to destination...')
+    try {
+      await linkMaterial({
+        destinationId: form.destinationId,
+        materialId: form.materialId,
+        likelihood: form.likelihood,
+      })
+      setStatus('Material linked.')
+    } catch (error) {
+      setStatus(
+        error instanceof Error ? error.message : 'Could not link material.',
+      )
+    }
+  }
+
+  return (
+    <div className="admin-split">
+      <Card className="admin-panel">
+        <AdminPanelHeader
+          title="Material manager"
+          description="Create materials and connect them to destinations so search results work both ways."
+        />
+        <form className="admin-form" onSubmit={submit}>
+          <div className="form-grid">
+            <AdminInput
+              label="Name"
+              value={form.name}
+              onChange={(value) => setForm({ ...form, name: value })}
+            />
+            <AdminInput
+              label="Slug"
+              value={form.slug}
+              onChange={(value) => setForm({ ...form, slug: value })}
+            />
+            <label>
+              Status
+              <select
+                value={form.status}
+                onChange={(event) =>
+                  setForm({ ...form, status: event.target.value })
+                }
+              >
+                <option value="draft">Draft</option>
+                <option value="published">Published</option>
+              </select>
+            </label>
+          </div>
+          <AdminInput
+            label="Summary"
+            value={form.summary}
+            onChange={(value) => setForm({ ...form, summary: value })}
+          />
+          <AdminTextarea
+            label="Description"
+            value={form.description}
+            onChange={(value) => setForm({ ...form, description: value })}
+          />
+          <AdminTextarea
+            label="Identification tips"
+            value={form.identificationTips}
+            onChange={(value) =>
+              setForm({ ...form, identificationTips: value })
+            }
+          />
+          <AdminTextarea
+            label="Safety notes"
+            value={form.safetyNotes}
+            onChange={(value) => setForm({ ...form, safetyNotes: value })}
+          />
+          <AdminSaveBar status={status} label="Save material" />
+        </form>
+        <div className="admin-form">
+          <h3>Link material to destination</h3>
+          <div className="form-grid">
+            <label>
+              Destination
+              <select
+                value={form.destinationId}
+                onChange={(event) =>
+                  setForm({ ...form, destinationId: event.target.value })
+                }
+              >
+                <option value="">Choose destination</option>
+                {(data?.destinations ?? []).map((destination: any) => (
+                  <option key={destination._id} value={destination._id}>
+                    {destination.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              Material
+              <select
+                value={form.materialId}
+                onChange={(event) =>
+                  setForm({ ...form, materialId: event.target.value })
+                }
+              >
+                <option value="">Choose material</option>
+                {(data?.materials ?? []).map((material: any) => (
+                  <option key={material._id} value={material._id}>
+                    {material.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <AdminInput
+              label="Likelihood"
+              value={form.likelihood}
+              onChange={(value) => setForm({ ...form, likelihood: value })}
+            />
+          </div>
+          <Button type="button" variant="secondary" onClick={() => void link()}>
+            Link material
+          </Button>
+        </div>
+      </Card>
+      <AdminList
+        title="Materials"
+        items={(data?.materials ?? []).map((material: any) => ({
+          title: material.name,
+          meta: material.status,
+        }))}
+      />
+    </div>
+  )
+}
+
+function ItinerariesPanel() {
+  const data = useQuery((api as any).tripPlanning.ownerListAll, {})
+  const saveItinerary = useMutation((api as any).tripPlanning.saveItinerary)
+  const [status, setStatus] = useState('')
+  const [form, setForm] = useState({
+    destinationId: '',
+    title: '',
+    slug: '',
+    status: 'draft',
+    duration: '',
+    difficulty: '',
+    overview: '',
+    stopsJson: '',
+    packingList: '',
+    safetyNotes: '',
+  })
+
+  const submit = async (event: FormEvent) => {
+    event.preventDefault()
+    setStatus('Saving itinerary...')
+    try {
+      await saveItinerary({
+        ...form,
+        slug: emptyToUndefined(form.slug),
+        duration: emptyToUndefined(form.duration),
+        difficulty: emptyToUndefined(form.difficulty),
+        stopsJson: emptyToUndefined(form.stopsJson),
+        packingList: emptyToUndefined(form.packingList),
+        safetyNotes: emptyToUndefined(form.safetyNotes),
+      })
+      setStatus('Itinerary saved.')
+    } catch (error) {
+      setStatus(
+        error instanceof Error ? error.message : 'Could not save itinerary.',
+      )
+    }
+  }
+
+  return (
+    <div className="admin-split">
+      <Card className="admin-panel">
+        <AdminPanelHeader
+          title="Itinerary manager"
+          description="Create curated trip plans connected to destinations."
+        />
+        <form className="admin-form" onSubmit={submit}>
+          <label>
+            Destination
+            <select
+              value={form.destinationId}
+              onChange={(event) =>
+                setForm({ ...form, destinationId: event.target.value })
+              }
+              required
+            >
+              <option value="">Choose destination</option>
+              {(data?.destinations ?? []).map((destination: any) => (
+                <option key={destination._id} value={destination._id}>
+                  {destination.name}
+                </option>
+              ))}
+            </select>
+          </label>
+          <div className="form-grid">
+            <AdminInput
+              label="Title"
+              value={form.title}
+              onChange={(value) => setForm({ ...form, title: value })}
+            />
+            <AdminInput
+              label="Slug"
+              value={form.slug}
+              onChange={(value) => setForm({ ...form, slug: value })}
+            />
+            <AdminInput
+              label="Duration"
+              value={form.duration}
+              onChange={(value) => setForm({ ...form, duration: value })}
+            />
+            <AdminInput
+              label="Difficulty"
+              value={form.difficulty}
+              onChange={(value) => setForm({ ...form, difficulty: value })}
+            />
+          </div>
+          <AdminTextarea
+            label="Overview"
+            value={form.overview}
+            onChange={(value) => setForm({ ...form, overview: value })}
+          />
+          <AdminTextarea
+            label="Stops JSON / notes"
+            value={form.stopsJson}
+            onChange={(value) => setForm({ ...form, stopsJson: value })}
+          />
+          <AdminTextarea
+            label="Packing list"
+            value={form.packingList}
+            onChange={(value) => setForm({ ...form, packingList: value })}
+          />
+          <AdminTextarea
+            label="Safety notes"
+            value={form.safetyNotes}
+            onChange={(value) => setForm({ ...form, safetyNotes: value })}
+          />
+          <AdminSaveBar status={status} label="Save itinerary" />
+        </form>
+      </Card>
+      <AdminList
+        title="Itineraries"
+        items={(data?.itineraries ?? []).map((item: any) => ({
+          title: item.title,
+          meta: item.status,
+        }))}
+      />
+    </div>
+  )
+}
+
+function PlacesPanel() {
+  const data = useQuery((api as any).tripPlanning.ownerListAll, {})
+  const savePlace = useMutation((api as any).tripPlanning.savePlace)
+  const [status, setStatus] = useState('')
+  const [form, setForm] = useState({
+    destinationId: '',
+    name: '',
+    placeType: 'rock_shop',
+    description: '',
+    website: '',
+    phone: '',
+    address: '',
+    isFeatured: false,
+  })
+
+  const submit = async (event: FormEvent) => {
+    event.preventDefault()
+    setStatus('Saving place...')
+    try {
+      await savePlace({
+        ...form,
+        description: emptyToUndefined(form.description),
+        website: emptyToUndefined(form.website),
+        phone: emptyToUndefined(form.phone),
+        address: emptyToUndefined(form.address),
+      })
+      setStatus('Place saved.')
+    } catch (error) {
+      setStatus(
+        error instanceof Error ? error.message : 'Could not save place.',
+      )
+    }
+  }
+
+  return (
+    <div className="admin-split">
+      <Card className="admin-panel">
+        <AdminPanelHeader
+          title="Places and businesses"
+          description="Link campgrounds, hotels, grocery stores, gas stations, rock shops, lapidaries, museums, clubs, and permit offices to destinations."
+        />
+        <form className="admin-form" onSubmit={submit}>
+          <label>
+            Destination
+            <select
+              value={form.destinationId}
+              onChange={(event) =>
+                setForm({ ...form, destinationId: event.target.value })
+              }
+              required
+            >
+              <option value="">Choose destination</option>
+              {(data?.destinations ?? []).map((destination: any) => (
+                <option key={destination._id} value={destination._id}>
+                  {destination.name}
+                </option>
+              ))}
+            </select>
+          </label>
+          <div className="form-grid">
+            <AdminInput
+              label="Name"
+              value={form.name}
+              onChange={(value) => setForm({ ...form, name: value })}
+            />
+            <label>
+              Type
+              <select
+                value={form.placeType}
+                onChange={(event) =>
+                  setForm({ ...form, placeType: event.target.value })
+                }
+              >
+                <option value="campground">Campground</option>
+                <option value="lodging">Hotel / lodging</option>
+                <option value="grocery">Grocery store</option>
+                <option value="gas">Gas station</option>
+                <option value="rock_shop">Rock shop</option>
+                <option value="lapidary">Lapidary</option>
+                <option value="museum">Museum</option>
+                <option value="club">Club</option>
+                <option value="permit_office">
+                  Permit office / ranger station
+                </option>
+              </select>
+            </label>
+            <AdminInput
+              label="Website"
+              value={form.website}
+              onChange={(value) => setForm({ ...form, website: value })}
+            />
+            <AdminInput
+              label="Phone"
+              value={form.phone}
+              onChange={(value) => setForm({ ...form, phone: value })}
+            />
+          </div>
+          <AdminInput
+            label="Address"
+            value={form.address}
+            onChange={(value) => setForm({ ...form, address: value })}
+          />
+          <AdminTextarea
+            label="Description"
+            value={form.description}
+            onChange={(value) => setForm({ ...form, description: value })}
+          />
+          <label className="settings-toggle">
+            <span>Featured place</span>
+            <input
+              type="checkbox"
+              checked={form.isFeatured}
+              onChange={(event) =>
+                setForm({ ...form, isFeatured: event.target.checked })
+              }
+            />
+          </label>
+          <AdminSaveBar status={status} label="Save place" />
+        </form>
+      </Card>
+      <AdminList
+        title="Places"
+        items={(data?.places ?? []).map((place: any) => ({
+          title: place.name,
+          meta: place.placeType,
+        }))}
+      />
+    </div>
   )
 }
 
@@ -717,6 +1305,26 @@ function AdminInput({
   )
 }
 
+function AdminTextarea({
+  label,
+  value,
+  onChange,
+}: {
+  label: string
+  value: string
+  onChange: (value: string) => void
+}) {
+  return (
+    <label>
+      {label}
+      <textarea
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+      />
+    </label>
+  )
+}
+
 function AdminSaveBar({ status, label }: { status: string; label: string }) {
   return (
     <div className="settings-save-bar">
@@ -771,4 +1379,12 @@ async function uploadFile(
 function emptyToUndefined(value: string) {
   const clean = value.trim()
   return clean || undefined
+}
+
+function splitList(value: string) {
+  const items = value
+    .split(',')
+    .map((item) => item.trim())
+    .filter(Boolean)
+  return items.length ? items : undefined
 }

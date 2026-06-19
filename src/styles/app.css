@@ -3216,3 +3216,183 @@ label {
     grid-template-columns: 1fr;
   }
 }
+
+.trip-hero {
+  align-items: center;
+}
+
+.home-search-form,
+.trip-search-card label {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.home-search-form {
+  position: relative;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.78);
+  border-radius: var(--radius-round);
+  padding: var(--space-2);
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(18px);
+}
+
+.home-search-form svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-left: var(--space-3);
+  color: var(--color-surface);
+}
+
+.home-search-form input {
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-surface);
+  outline: 0;
+}
+
+.home-search-form input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.home-search-form button {
+  min-height: 2.8rem;
+  border-radius: var(--radius-round);
+  padding: 0.75rem 1.1rem;
+  background: var(--color-accent-yellow);
+  color: var(--color-primary);
+  font-weight: var(--font-weight-black);
+}
+
+.trip-hero-panel {
+  display: grid;
+  gap: var(--space-3);
+  align-self: stretch;
+  color: var(--color-surface);
+}
+
+.trip-hero-panel strong {
+  font-size: var(--font-size-xl);
+}
+
+.trip-search-card {
+  margin-bottom: var(--space-5);
+}
+
+.trip-search-card input {
+  width: 100%;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-round);
+  padding: 0.95rem 1.15rem;
+  background: var(--color-surface);
+  color: var(--color-primary);
+}
+
+.trip-search-grid,
+.destination-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(300px, 0.75fr);
+  gap: var(--space-4);
+  align-items: start;
+}
+
+.trip-result-column,
+.destination-main,
+.destination-rail,
+.trip-planner-steps {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.trip-result-column h2,
+.destination-info-card h2 {
+  margin: 0;
+}
+
+.trip-result-card {
+  display: grid;
+  gap: var(--space-3);
+  height: 100%;
+}
+
+.trip-result-card h2,
+.trip-result-card h3,
+.trip-result-card p {
+  margin: 0;
+}
+
+.trip-result-card > span {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+}
+
+.trip-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.trip-chip-row em,
+.trip-chip-row a {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-round);
+  padding: 0.35rem 0.65rem;
+  background: var(--color-surface-alt);
+  color: var(--color-primary);
+  font-style: normal;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+}
+
+.destination-info-card {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.destination-info-card p {
+  margin: 0;
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-base);
+}
+
+.trip-planner-steps {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-bottom: var(--space-5);
+}
+
+.trip-step-card {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.trip-step-card strong {
+  display: grid;
+  width: 2.4rem;
+  height: 2.4rem;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--color-accent-yellow);
+  color: var(--color-primary);
+}
+
+@media (max-width: 900px) {
+  .trip-search-grid,
+  .destination-layout,
+  .trip-planner-steps {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .home-search-form {
+    grid-template-columns: 1fr;
+    border-radius: var(--radius-large);
+  }
+
+  .home-search-form svg {
+    display: none;
+  }
+}

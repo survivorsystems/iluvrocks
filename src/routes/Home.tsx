@@ -1,170 +1,174 @@
+import { useState } from 'react'
+import type { FormEvent } from 'react'
 import {
   ArrowRight,
-  Bell,
   BookOpen,
+  Building2,
   Compass,
-  Diamond,
   Gem,
-  Mail,
-  Pickaxe,
-  Settings,
-  UsersRound,
+  Map,
+  Route,
+  Search,
 } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { useQuery } from 'convex/react'
+import { api } from '../../convex/_generated/api'
 import FeaturePanel from '../components/FeaturePanel'
 import PageBackgroundLayout from '../components/PageBackgroundLayout'
 import { Card, SectionHeader } from '../components/ui'
 import { useAuthProfileState } from '../lib/authState'
 
-const memberFeatures = [
+const memberLinks = [
+  {
+    to: '/destinations',
+    icon: Map,
+    title: 'Search destinations',
+    description:
+      'Browse Washington destinations and what materials are found there.',
+  },
+  {
+    to: '/trip-planner',
+    icon: Route,
+    title: 'Plan a trip',
+    description:
+      'Check safety, permits, places nearby, and curated itineraries.',
+  },
+  {
+    to: '/businesses',
+    icon: Building2,
+    title: 'Find local support',
+    description:
+      'Rock shops, lapidaries, lodging, supplies, museums, and permit offices.',
+  },
   {
     to: '/basecamp',
     icon: Compass,
-    title: 'Basecamp',
+    title: 'Open Basecamp',
     description:
-      'Open your member profile, recent activity, and collection showcase.',
-  },
-  {
-    to: '/collections',
-    icon: Diamond,
-    title: 'Collections',
-    description:
-      'Upload finds, build catalogs, and manage public or private visibility.',
-  },
-  {
-    to: '/feed',
-    icon: BookOpen,
-    title: 'Community feed',
-    description:
-      'Post updates, browse recent finds, and react to collection activity.',
-  },
-  {
-    to: '/messages',
-    icon: Mail,
-    title: 'Messages',
-    description: 'Start direct conversations with other iluvrocks members.',
-  },
-  {
-    to: '/community',
-    icon: UsersRound,
-    title: 'Community',
-    description: 'Find people, discussions, and public member activity.',
-  },
-  {
-    to: '/notifications',
-    icon: Bell,
-    title: 'Notifications',
-    description: 'Review follows, reactions, comments, and account activity.',
-  },
-  {
-    to: '/settings',
-    icon: Settings,
-    title: 'Profile settings',
-    description:
-      'Update your profile details, profile photo, and Basecamp header.',
+      'Your profile and member tools are still here when you need them.',
   },
 ]
 
 export default function Home() {
   const auth = useAuthProfileState()
 
-  if (auth.isAuthenticated) {
-    return <MemberHome />
-  }
-
   return (
     <PageBackgroundLayout background="skagit">
-      <section className="hero">
-        <div className="hero-copy">
-          <p className="eyebrow">Community field notes</p>
-          <h1>iluvrocks</h1>
-          <p className="tagline">Built by rockhounds, for rockhounds.</p>
-          <p>
-            A field-first home for rockhounds to discover public collecting
-            knowledge, learn rock and mineral basics, and connect with careful
-            local explorers.
-          </p>
-          <div className="hero-actions">
-            <Link to="/login" className="primary-action">
-              Create your Basecamp
-              <ArrowRight aria-hidden="true" />
-            </Link>
-            <Link to="/discoveries" className="secondary-action">
-              Browse discoveries
-            </Link>
-          </div>
-        </div>
-        <div
-          className="hero-panel visitor-hero-panel"
-          aria-label="iluvrocks highlights"
-        >
-          <div>
-            <Compass aria-hidden="true" />
-            <span>Recent finds</span>
-          </div>
-          <div>
-            <UsersRound aria-hidden="true" />
-            <span>Local collectors</span>
-          </div>
-        </div>
-      </section>
-      <section className="public-section">
-        <p className="eyebrow">For visitors</p>
-        <h2>Start learning before you sign up</h2>
-        <div className="feature-grid">
-          <FeaturePanel
-            icon={Pickaxe}
-            title="Latest public discoveries"
-            description="Read recent community finds and trip notes without needing an account."
-          />
-          <FeaturePanel
-            icon={UsersRound}
-            title="Featured members"
-            description="Preview member stories, founding hounds, and collection interests before creating your Basecamp."
-          />
-          <FeaturePanel
-            icon={Gem}
-            title="Collection showcases"
-            description="See what members are adding to their collections and how they document each find."
-          />
-        </div>
-        <div className="hero-actions">
-          <Link to="/members" className="secondary-action">
-            Featured members
-          </Link>
-          <Link to="/membership" className="secondary-action">
-            Membership info
-          </Link>
-        </div>
-      </section>
+      <TripSearchHero isAuthenticated={auth.isAuthenticated} />
+      {auth.isAuthenticated ? <MemberTripHome /> : <VisitorSections />}
     </PageBackgroundLayout>
   )
 }
 
-function MemberHome() {
+function TripSearchHero({ isAuthenticated }: { isAuthenticated: boolean }) {
+  const navigate = useNavigate()
+  const [query, setQuery] = useState('')
+
+  const submit = (event: FormEvent) => {
+    event.preventDefault()
+    navigate(
+      `/destinations${query.trim() ? `?q=${encodeURIComponent(query.trim())}` : ''}`,
+    )
+  }
+
   return (
-    <PageBackgroundLayout background="skagit">
-      <section className="workspace-page member-home">
-        <SectionHeader
-          eyebrow="Member home"
-          title="Where do you want to go next?"
-          description="Use this as the main navigation page while the deeper feature pages grow out."
-        />
-        <div className="member-home-grid">
-          {memberFeatures.map(({ to, icon: Icon, title, description }) => (
-            <Link key={to} to={to}>
-              <Card as="article" className="member-feature-card">
-                <Icon aria-hidden="true" />
-                <div>
-                  <h2>{title}</h2>
-                  <p>{description}</p>
-                </div>
-                <ArrowRight aria-hidden="true" />
-              </Card>
-            </Link>
-          ))}
+    <section className="hero trip-hero">
+      <div className="hero-copy">
+        <p className="eyebrow">Washington rockhounding trip planner</p>
+        <h1>Search where to go and what you might find.</h1>
+        <p className="tagline">
+          Destinations, materials, safety notes, permits, local stops, and
+          curated trip plans.
+        </p>
+        <form className="home-search-form" onSubmit={submit}>
+          <Search aria-hidden="true" />
+          <input
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="Search agate, jade, jasper, quartz, petrified wood, beaches, rivers..."
+          />
+          <button type="submit">Search</button>
+        </form>
+        <div className="hero-actions">
+          <Link to="/destinations" className="primary-action">
+            Browse destinations
+            <ArrowRight aria-hidden="true" />
+          </Link>
+          <Link
+            to={isAuthenticated ? '/basecamp' : '/login'}
+            className="secondary-action"
+          >
+            {isAuthenticated ? 'Open Basecamp' : 'Create your Basecamp'}
+          </Link>
         </div>
-      </section>
-    </PageBackgroundLayout>
+      </div>
+      <Card className="trip-hero-panel">
+        <strong>Washington-first</strong>
+        <span>Search by place or material</span>
+        <span>
+          Connect destinations to rock shops, lodging, permits, guides, and
+          safety info
+        </span>
+      </Card>
+    </section>
+  )
+}
+
+function VisitorSections() {
+  const results = useQuery((api as any).tripPlanning.publicSearch, {})
+  const destinationCount = results?.destinations?.length ?? 0
+  const materialCount = results?.materials?.length ?? 0
+
+  return (
+    <section className="public-section">
+      <SectionHeader
+        eyebrow="Plan before you sign up"
+        title="Public browsing comes first"
+        description="Visitors can browse destinations, materials, guides, itineraries, and business listings without creating an account."
+      />
+      <div className="feature-grid">
+        <FeaturePanel
+          icon={Map}
+          title={`${destinationCount} destinations`}
+          description="Washington trip pages with materials, permits, safety, maps, photos, and local tips."
+        />
+        <FeaturePanel
+          icon={Gem}
+          title={`${materialCount} materials`}
+          description="Search by agate, jade, jasper, quartz, petrified wood, and other finds."
+        />
+        <FeaturePanel
+          icon={BookOpen}
+          title="Guides and resources"
+          description="Safety, ethics, laws by state, beginner guides, and educational resources."
+        />
+      </div>
+    </section>
+  )
+}
+
+function MemberTripHome() {
+  return (
+    <section className="workspace-page member-home">
+      <SectionHeader
+        eyebrow="Member home"
+        title="Plan trips first. Use Basecamp when you need it."
+        description="Your profile and collection tools are still available, but the main iluvrocks experience now starts with Washington destination search."
+      />
+      <div className="member-home-grid">
+        {memberLinks.map(({ to, icon: Icon, title, description }) => (
+          <Link key={to} to={to}>
+            <Card as="article" className="member-feature-card">
+              <Icon aria-hidden="true" />
+              <div>
+                <h2>{title}</h2>
+                <p>{description}</p>
+              </div>
+              <ArrowRight aria-hidden="true" />
+            </Card>
+          </Link>
+        ))}
+      </div>
+    </section>
   )
 }
