@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import type { FormEvent } from 'react'
 import { Camera, Image as ImageIcon } from 'lucide-react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
@@ -46,6 +46,22 @@ export default function ProfileSetup() {
   const [headerPhoto, setHeaderPhoto] = useState<File | null>(null)
   const [profileImageUrl, setProfileImageUrl] = useState('')
   const [headerImageUrl, setHeaderImageUrl] = useState('')
+  const profilePreviewUrl = useMemo(
+    () => (profilePhoto ? URL.createObjectURL(profilePhoto) : profileImageUrl),
+    [profilePhoto, profileImageUrl],
+  )
+  const headerPreviewUrl = useMemo(
+    () => (headerPhoto ? URL.createObjectURL(headerPhoto) : headerImageUrl),
+    [headerPhoto, headerImageUrl],
+  )
+
+  useEffect(() => {
+    return () => {
+      if (profilePreviewUrl && profilePhoto)
+        URL.revokeObjectURL(profilePreviewUrl)
+      if (headerPreviewUrl && headerPhoto) URL.revokeObjectURL(headerPreviewUrl)
+    }
+  }, [headerPhoto, headerPreviewUrl, profilePhoto, profilePreviewUrl])
 
   useEffect(() => {
     if (!initial) return
@@ -97,6 +113,9 @@ export default function ProfileSetup() {
       })
       let saveResult: { hasBasicProfile?: boolean } | null = null
       if (!isDevAuthBypass) {
+        if (profilePhoto || headerPhoto) {
+          setStatus('Uploading your profile images...')
+        }
         const uploadedProfileImage = profilePhoto
           ? await uploadProfileImage(
               profilePhoto,
@@ -111,6 +130,7 @@ export default function ProfileSetup() {
               getStorageUrl,
             )
           : headerImageUrl
+        setStatus('Saving your profile...')
         saveResult = await updateProfile({
           name: emptyToUndefined(name),
           email: emptyToUndefined(email),
@@ -143,8 +163,8 @@ export default function ProfileSetup() {
         profileState: 'saved-basic-profile',
         decision: 'open-basecamp-after-profile-save',
       })
-      setStatus('Basic profile saved. Opening Basecamp...')
-      navigate('/basecamp', { replace: true })
+      setStatus('Profile saved. Opening Basecamp...')
+      window.setTimeout(() => navigate('/basecamp', { replace: true }), 300)
     } catch (error) {
       console.info('[RockHound profile]', {
         decision: 'save-basic-profile-failed',
@@ -212,15 +232,8 @@ export default function ProfileSetup() {
         <div className="profile-image-editor">
           <label className="profile-header-upload">
             <span className="profile-header-preview">
-              {headerPhoto || headerImageUrl ? (
-                <img
-                  src={
-                    headerPhoto
-                      ? URL.createObjectURL(headerPhoto)
-                      : headerImageUrl
-                  }
-                  alt=""
-                />
+              {headerPreviewUrl ? (
+                <img src={headerPreviewUrl} alt="" />
               ) : (
                 <ImageIcon aria-hidden="true" />
               )}
@@ -237,15 +250,8 @@ export default function ProfileSetup() {
           </label>
           <label className="profile-avatar-upload">
             <span className="profile-avatar-preview">
-              {profilePhoto || profileImageUrl ? (
-                <img
-                  src={
-                    profilePhoto
-                      ? URL.createObjectURL(profilePhoto)
-                      : profileImageUrl
-                  }
-                  alt=""
-                />
+              {profilePreviewUrl ? (
+                <img src={profilePreviewUrl} alt="" />
               ) : (
                 <Camera aria-hidden="true" />
               )}

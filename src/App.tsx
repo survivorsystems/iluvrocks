@@ -11,6 +11,7 @@ import Basecamp from './routes/Basecamp'
 import CollectionTracker from './routes/CollectionTracker'
 import Community from './routes/Community'
 import LogFind from './routes/LogFind'
+import Messages from './routes/Messages'
 import PublicPage from './routes/PublicPage'
 import PublicCollection from './routes/PublicCollection'
 import SpecimenDetail from './routes/SpecimenDetail'
@@ -121,7 +122,7 @@ export default function App() {
           path="/messages"
           element={
             <ProtectedRoute>
-              <Community />
+              <Messages />
             </ProtectedRoute>
           }
         />

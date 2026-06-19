@@ -266,6 +266,28 @@ export default defineSchema({
     imageUrl: v.optional(v.string()),
   }).index('by_room', ['roomId']),
 
+  directConversations: defineTable({
+    participantAId: v.id('users'),
+    participantBId: v.id('users'),
+    lastMessageText: v.optional(v.string()),
+    lastMessageAt: v.optional(v.number()),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index('by_participant_a', ['participantAId'])
+    .index('by_participant_b', ['participantBId'])
+    .index('by_pair', ['participantAId', 'participantBId']),
+
+  directMessages: defineTable({
+    conversationId: v.id('directConversations'),
+    senderId: v.id('users'),
+    recipientId: v.id('users'),
+    text: v.string(),
+    createdAt: v.number(),
+  })
+    .index('by_conversation', ['conversationId'])
+    .index('by_recipient', ['recipientId']),
+
   favorites: defineTable({
     userId: v.id('users'),
     locationId: v.id('locations'),

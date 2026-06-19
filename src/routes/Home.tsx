@@ -1,11 +1,82 @@
-import { ArrowRight, Compass, Gem, Pickaxe, UsersRound } from 'lucide-react'
+import {
+  ArrowRight,
+  Bell,
+  BookOpen,
+  Compass,
+  Diamond,
+  Gem,
+  Mail,
+  Pickaxe,
+  Settings,
+  UsersRound,
+} from 'lucide-react'
 import { Link } from 'react-router-dom'
 import FeaturePanel from '../components/FeaturePanel'
+import { Card, SectionHeader } from '../components/ui'
+import { useAuthProfileState } from '../lib/authState'
+
+const memberFeatures = [
+  {
+    to: '/basecamp',
+    icon: Compass,
+    title: 'Basecamp',
+    description:
+      'Open your member profile, recent activity, and collection showcase.',
+  },
+  {
+    to: '/collections',
+    icon: Diamond,
+    title: 'Collections',
+    description:
+      'Upload finds, build catalogs, and manage public or private visibility.',
+  },
+  {
+    to: '/feed',
+    icon: BookOpen,
+    title: 'Community feed',
+    description:
+      'Post updates, browse recent finds, and react to collection activity.',
+  },
+  {
+    to: '/messages',
+    icon: Mail,
+    title: 'Messages',
+    description: 'Start direct conversations with other iluvrocks members.',
+  },
+  {
+    to: '/community',
+    icon: UsersRound,
+    title: 'Community',
+    description: 'Find people, discussions, and public member activity.',
+  },
+  {
+    to: '/notifications',
+    icon: Bell,
+    title: 'Notifications',
+    description: 'Review follows, reactions, comments, and account activity.',
+  },
+  {
+    to: '/settings',
+    icon: Settings,
+    title: 'Profile settings',
+    description:
+      'Update your profile details, profile photo, and Basecamp header.',
+  },
+]
 
 export default function Home() {
+  const auth = useAuthProfileState()
+
+  if (auth.isAuthenticated) {
+    return <MemberHome />
+  }
+
   return (
     <>
-      <section className="hero">
+      <section className="hero hero-with-image">
+        <div className="hero-image-panel" aria-hidden="true">
+          <img src="/iluvrocks-homepage-mountains.png" alt="" />
+        </div>
         <div className="hero-copy">
           <p className="eyebrow">Community field notes</p>
           <h1>iluvrocks</h1>
@@ -25,7 +96,10 @@ export default function Home() {
             </Link>
           </div>
         </div>
-        <div className="hero-panel" aria-label="iluvrocks highlights">
+        <div
+          className="hero-panel visitor-hero-panel"
+          aria-label="iluvrocks highlights"
+        >
           <div>
             <Compass aria-hidden="true" />
             <span>Recent finds</span>
@@ -66,5 +140,31 @@ export default function Home() {
         </div>
       </section>
     </>
+  )
+}
+
+function MemberHome() {
+  return (
+    <section className="workspace-page member-home">
+      <SectionHeader
+        eyebrow="Member home"
+        title="Where do you want to go next?"
+        description="Use this as the main navigation page while the deeper feature pages grow out."
+      />
+      <div className="member-home-grid">
+        {memberFeatures.map(({ to, icon: Icon, title, description }) => (
+          <Link key={to} to={to}>
+            <Card as="article" className="member-feature-card">
+              <Icon aria-hidden="true" />
+              <div>
+                <h2>{title}</h2>
+                <p>{description}</p>
+              </div>
+              <ArrowRight aria-hidden="true" />
+            </Card>
+          </Link>
+        ))}
+      </div>
+    </section>
   )
 }
