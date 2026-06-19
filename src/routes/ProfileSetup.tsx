@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
 import type { FormEvent } from 'react'
+import { Camera, Image as ImageIcon } from 'lucide-react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useMutation } from 'convex/react'
 import { api } from '../../convex/_generated/api'
+import type { Id } from '../../convex/_generated/dataModel'
 import { devUser, isDevAuthBypass } from '../lib/devAuth'
 import { useAuthProfileState } from '../lib/authState'
 
@@ -12,6 +14,8 @@ export default function ProfileSetup() {
   const [isSaving, setIsSaving] = useState(false)
   const auth = useAuthProfileState(isSaving)
   const updateProfile = useMutation(api.users.updateProfile)
+  const generateUploadUrl = useMutation(api.uploads.generateUploadUrl)
+  const getStorageUrl = useMutation(api.uploads.getStorageUrl)
   const [status, setStatus] = useState<string | null>(null)
 
   const initial = isDevAuthBypass
@@ -25,6 +29,8 @@ export default function ProfileSetup() {
         favoriteMinerals: ['Agate', 'Jasper', 'Quartz'],
         collectingStyles: ['Beach walks', 'River bars'],
         yearsRockhounding: 4,
+        image: '',
+        bannerImage: '',
       }
     : auth.viewer?.user
   const [name, setName] = useState('')
@@ -36,6 +42,10 @@ export default function ProfileSetup() {
   const [favoriteMinerals, setFavoriteMinerals] = useState('')
   const [collectingStyles, setCollectingStyles] = useState('')
   const [yearsRockhounding, setYearsRockhounding] = useState('')
+  const [profilePhoto, setProfilePhoto] = useState<File | null>(null)
+  const [headerPhoto, setHeaderPhoto] = useState<File | null>(null)
+  const [profileImageUrl, setProfileImageUrl] = useState('')
+  const [headerImageUrl, setHeaderImageUrl] = useState('')
 
   useEffect(() => {
     if (!initial) return
@@ -48,10 +58,15 @@ export default function ProfileSetup() {
     setFavoriteMinerals(initial.favoriteMinerals?.join(', ') ?? '')
     setCollectingStyles(initial.collectingStyles?.join(', ') ?? '')
     setYearsRockhounding(initial.yearsRockhounding?.toString() ?? '')
+    setProfileImageUrl(getOptionalProfileImage(initial, 'image') ?? '')
+    setHeaderImageUrl(getOptionalProfileImage(initial, 'bannerImage') ?? '')
   }, [initial])
 
   useEffect(() => {
-    if (routeLocation.pathname === '/onboarding/profile' && auth.state === 'authenticatedWithProfile') {
+    if (
+      routeLocation.pathname === '/onboarding/profile' &&
+      auth.state === 'authenticatedWithProfile'
+    ) {
       console.info('[RockHound redirect]', {
         route: routeLocation.pathname,
         authState: auth.state,
@@ -82,6 +97,20 @@ export default function ProfileSetup() {
       })
       let saveResult: { hasBasicProfile?: boolean } | null = null
       if (!isDevAuthBypass) {
+        const uploadedProfileImage = profilePhoto
+          ? await uploadProfileImage(
+              profilePhoto,
+              generateUploadUrl,
+              getStorageUrl,
+            )
+          : profileImageUrl
+        const uploadedHeaderImage = headerPhoto
+          ? await uploadProfileImage(
+              headerPhoto,
+              generateUploadUrl,
+              getStorageUrl,
+            )
+          : headerImageUrl
         saveResult = await updateProfile({
           name: emptyToUndefined(name),
           email: emptyToUndefined(email),
@@ -91,11 +120,21 @@ export default function ProfileSetup() {
           homeRegion: emptyToUndefined(homeRegion),
           favoriteMinerals: splitList(favoriteMinerals),
           collectingStyles: splitList(collectingStyles),
-          yearsRockhounding: yearsRockhounding ? Number(yearsRockhounding) : undefined,
+          yearsRockhounding: yearsRockhounding
+            ? Number(yearsRockhounding)
+            : undefined,
+          image: emptyToUndefined(uploadedProfileImage),
+          bannerImage: emptyToUndefined(uploadedHeaderImage),
         })
+        setProfileImageUrl(uploadedProfileImage)
+        setHeaderImageUrl(uploadedHeaderImage)
+        setProfilePhoto(null)
+        setHeaderPhoto(null)
       }
       if (!isDevAuthBypass && !saveResult?.hasBasicProfile) {
-        setStatus('Profile saved, but RockHound could not confirm the required fields yet. Please try Save again.')
+        setStatus(
+          'Profile saved, but RockHound could not confirm the required fields yet. Please try Save again.',
+        )
         return
       }
       console.info('[RockHound redirect]', {
@@ -120,7 +159,11 @@ export default function ProfileSetup() {
   }
 
   if (auth.state === 'loadingAuth' || auth.state === 'creatingProfile') {
-    return <p className="empty-state">Finishing sign-in before saving your profile...</p>
+    return (
+      <p className="empty-state">
+        Finishing sign-in before saving your profile...
+      </p>
+    )
   }
 
   if (auth.state === 'unauthenticated') {
@@ -129,7 +172,9 @@ export default function ProfileSetup() {
         <div className="auth-form">
           <p className="eyebrow">Create profile</p>
           <h1>Sign in first</h1>
-          <p className="form-note">Your profile is created from your signed-in account.</p>
+          <p className="form-note">
+            Your profile is created from your signed-in account.
+          </p>
           <Link to="/login" className="primary-action">
             Sign in
           </Link>
@@ -145,7 +190,8 @@ export default function ProfileSetup() {
           <p className="eyebrow">Create profile</p>
           <h1>Session could not be confirmed</h1>
           <p className="form-note">
-            RockHound could not confirm your signed-in user. Sign out, then sign in again with your email and password.
+            RockHound could not confirm your signed-in user. Sign out, then sign
+            in again with your email and password.
           </p>
           <button type="button" onClick={() => void auth.signOut()}>
             Sign out
@@ -163,26 +209,102 @@ export default function ProfileSetup() {
       <form className="auth-form profile-form" onSubmit={handleSubmit}>
         <p className="eyebrow">Basic profile</p>
         <h1>Create your Basecamp profile</h1>
+        <div className="profile-image-editor">
+          <label className="profile-header-upload">
+            <span className="profile-header-preview">
+              {headerPhoto || headerImageUrl ? (
+                <img
+                  src={
+                    headerPhoto
+                      ? URL.createObjectURL(headerPhoto)
+                      : headerImageUrl
+                  }
+                  alt=""
+                />
+              ) : (
+                <ImageIcon aria-hidden="true" />
+              )}
+            </span>
+            <strong>Header photo</strong>
+            <span>Upload a wide Basecamp cover image.</span>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(event) =>
+                setHeaderPhoto(event.target.files?.[0] ?? null)
+              }
+            />
+          </label>
+          <label className="profile-avatar-upload">
+            <span className="profile-avatar-preview">
+              {profilePhoto || profileImageUrl ? (
+                <img
+                  src={
+                    profilePhoto
+                      ? URL.createObjectURL(profilePhoto)
+                      : profileImageUrl
+                  }
+                  alt=""
+                />
+              ) : (
+                <Camera aria-hidden="true" />
+              )}
+            </span>
+            <strong>Profile photo</strong>
+            <span>Upload your main member photo.</span>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(event) =>
+                setProfilePhoto(event.target.files?.[0] ?? null)
+              }
+            />
+          </label>
+        </div>
         <div className="form-grid">
           <label>
             Name
-            <input value={name} onChange={(event) => setName(event.target.value)} placeholder="Jane Rockhound" required />
+            <input
+              value={name}
+              onChange={(event) => setName(event.target.value)}
+              placeholder="Jane Rockhound"
+              required
+            />
           </label>
           <label>
             Email
-            <input type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="you@example.com" required />
+            <input
+              type="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              placeholder="you@example.com"
+              required
+            />
           </label>
           <label>
             Handle
-            <input value={username} onChange={(event) => setUsername(event.target.value)} placeholder="jane-agates" />
+            <input
+              value={username}
+              onChange={(event) => setUsername(event.target.value)}
+              placeholder="jane-agates"
+            />
           </label>
           <label>
             Location
-            <input value={location} onChange={(event) => setLocation(event.target.value)} placeholder="Olympia, WA" required />
+            <input
+              value={location}
+              onChange={(event) => setLocation(event.target.value)}
+              placeholder="Olympia, WA"
+              required
+            />
           </label>
           <label>
             Home region
-            <input value={homeRegion} onChange={(event) => setHomeRegion(event.target.value)} placeholder="Puget Sound" />
+            <input
+              value={homeRegion}
+              onChange={(event) => setHomeRegion(event.target.value)}
+              placeholder="Puget Sound"
+            />
           </label>
           <label>
             Years rockhounding
@@ -223,7 +345,16 @@ export default function ProfileSetup() {
         </label>
         <div className="form-footer">
           <span>{status}</span>
-          <button type="submit" disabled={isSaving || !name.trim() || !email.trim() || !location.trim() || !yearsRockhounding}>
+          <button
+            type="submit"
+            disabled={
+              isSaving ||
+              !name.trim() ||
+              !email.trim() ||
+              !location.trim() ||
+              !yearsRockhounding
+            }
+          >
             {isSaving ? 'Saving...' : 'Save profile'}
           </button>
         </div>
@@ -243,6 +374,22 @@ function splitList(value: string) {
     .map((item) => item.trim())
     .filter(Boolean)
   return items.length ? items : undefined
+}
+
+async function uploadProfileImage(
+  file: File,
+  generateUploadUrl: () => Promise<string>,
+  getStorageUrl: (args: { storageId: Id<'_storage'> }) => Promise<string>,
+) {
+  const uploadUrl = await generateUploadUrl()
+  const response = await fetch(uploadUrl, {
+    method: 'POST',
+    headers: { 'Content-Type': file.type },
+    body: file,
+  })
+  if (!response.ok) throw new Error('Photo upload failed.')
+  const { storageId } = (await response.json()) as { storageId: Id<'_storage'> }
+  return await getStorageUrl({ storageId })
 }
 
 function getProfileErrorMessage(error: unknown) {
@@ -270,4 +417,10 @@ function getProfileErrorMessage(error: unknown) {
 function extractMissingEnvName(message: string) {
   const match = message.match(/`([^`]+)`/)
   return match?.[1] ?? 'unknown'
+}
+
+function getOptionalProfileImage(user: unknown, key: 'image' | 'bannerImage') {
+  if (!user || typeof user !== 'object' || !(key in user)) return undefined
+  const value = (user as Record<string, unknown>)[key]
+  return typeof value === 'string' ? value : undefined
 }

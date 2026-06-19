@@ -73,6 +73,8 @@ export default function RockhoundDashboard({
   const bio =
     viewer?.bio?.trim() ||
     'Always outside. Always hunting for the next cool find.'
+  const profileImage = getOptionalUserImage(viewer, 'image')
+  const headerImage = getOptionalUserImage(viewer, 'bannerImage')
   const avatarLabel = getInitials(displayName || username || email)
   const viewerId = viewer?._id === 'dev-user' ? undefined : viewer?._id
 
@@ -90,6 +92,8 @@ export default function RockhoundDashboard({
           username={username}
           location={location}
           bio={bio}
+          profileImage={profileImage}
+          headerImage={headerImage}
           targetUserId={viewerId}
           isOwnProfile
           collectionVisibility={collection?.visibility ?? 'public'}
@@ -116,6 +120,8 @@ function ProfileHeader({
   username,
   location,
   bio,
+  profileImage,
+  headerImage,
   targetUserId,
   isOwnProfile,
   isFollowing = false,
@@ -129,6 +135,8 @@ function ProfileHeader({
   username: string
   location: string
   bio: string
+  profileImage?: string
+  headerImage?: string
   targetUserId?: Id<'users'>
   isOwnProfile?: boolean
   isFollowing?: boolean
@@ -165,10 +173,21 @@ function ProfileHeader({
         className="profile-cover"
         role="img"
         aria-label="Alpine field area with mountains and pine trees"
+        style={
+          headerImage ? { backgroundImage: `url(${headerImage})` } : undefined
+        }
       />
       <div className="profile-body">
-        <div className="profile-avatar" aria-hidden="true">
-          {avatarLabel}
+        <div
+          className="profile-avatar"
+          aria-hidden="true"
+          style={
+            profileImage
+              ? { backgroundImage: `url(${profileImage})` }
+              : undefined
+          }
+        >
+          {profileImage ? null : avatarLabel}
         </div>
         <div className="profile-actions">
           <Link to="/settings" className="edit-profile-button">
@@ -429,4 +448,10 @@ function CardTitle({ title }: { title: string }) {
       <button type="button">View all</button>
     </header>
   )
+}
+
+function getOptionalUserImage(user: unknown, key: 'image' | 'bannerImage') {
+  if (!user || typeof user !== 'object' || !(key in user)) return undefined
+  const value = (user as Record<string, unknown>)[key]
+  return typeof value === 'string' ? value.trim() || undefined : undefined
 }

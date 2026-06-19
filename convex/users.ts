@@ -189,6 +189,7 @@ export const updateProfile = mutation({
     yearsRockhounding: v.optional(v.number()),
     favoriteMinerals: v.optional(v.array(v.string())),
     collectingStyles: v.optional(v.array(v.string())),
+    image: v.optional(v.string()),
     bannerImage: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
