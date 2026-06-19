@@ -1,4 +1,5 @@
-import type { CSSProperties, ReactNode } from 'react'
+import { useEffect } from 'react'
+import type { ReactNode } from 'react'
 import alseaBackground from '../assets/backgrounds/alsea.png'
 import cascadesBackground from '../assets/backgrounds/cascades.png'
 import haystacksBackground from '../assets/backgrounds/haystacks.png'
@@ -24,16 +25,22 @@ export default function PageBackgroundLayout({
   children,
   className = '',
 }: PageBackgroundLayoutProps) {
+  useEffect(() => {
+    const root = document.documentElement
+    root.classList.add('has-page-background')
+    root.style.setProperty(
+      '--active-page-background-image',
+      `url(${backgroundImages[background]})`,
+    )
+
+    return () => {
+      root.classList.remove('has-page-background')
+      root.style.removeProperty('--active-page-background-image')
+    }
+  }, [background])
+
   return (
-    <div
-      className={`page-background-layout ${className}`.trim()}
-      style={
-        {
-          '--page-background-image': `url(${backgroundImages[background]})`,
-        } as CSSProperties
-      }
-    >
-      <div className="page-background-layer" aria-hidden="true" />
+    <div className={`page-background-layout ${className}`.trim()}>
       <div className="page-background-content">{children}</div>
     </div>
   )
