@@ -31,6 +31,7 @@ type IconType =
 
 const workspaceNavItems = [
   { to: '/basecamp', label: 'Home', icon: Home },
+  { to: '/trip-planner', label: 'Trip Planner', icon: Compass },
   { to: '/collections', label: 'Collections', icon: Diamond },
   { to: '/community', label: 'Community', icon: MessageCircle },
   { to: '/messages', label: 'Messages', icon: Mail },
@@ -66,7 +67,7 @@ export function Sidebar() {
   const isOwner =
     auth.viewer?.user?.email?.toLowerCase() === 'chickensweets87@gmail.com'
   const navItems = isOwner
-    ? [...workspaceNavItems, { to: '/admin', label: 'Owner', icon: Settings }]
+    ? [...workspaceNavItems, { to: '/admin', label: 'Admin', icon: Settings }]
     : workspaceNavItems
 
   const handleSignOut = async () => {
