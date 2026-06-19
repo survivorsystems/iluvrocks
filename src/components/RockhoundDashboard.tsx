@@ -1,6 +1,5 @@
 import {
   BookOpen,
-  Camera,
   Compass,
   Diamond,
   Edit3,
@@ -11,7 +10,6 @@ import {
   MoreHorizontal,
   Mountain,
   ShieldOff,
-  Shield,
   UserPlus,
   Trophy,
 } from 'lucide-react'
@@ -21,7 +19,7 @@ import { useMutation, useQuery } from 'convex/react'
 import { api } from '../../convex/_generated/api'
 import type { Id } from '../../convex/_generated/dataModel'
 import { useAuthProfileState } from '../lib/authState'
-import { Badge, Card, EmptyState, getInitials } from './ui'
+import { Card, EmptyState, getInitials } from './ui'
 
 type RockhoundDashboardProps = {
   mode?: 'basecamp' | 'profile'
@@ -32,14 +30,6 @@ const stats = [
   { label: 'Collections', value: '56', icon: Diamond },
   { label: 'Finds', value: '127', icon: Mountain },
   { label: 'Points', value: '1.2K', icon: Trophy },
-  { label: 'Badges', value: '12', icon: Shield },
-]
-
-const badges = [
-  { label: 'Trailblazer', icon: Mountain, earned: true },
-  { label: 'Collector', icon: Diamond, earned: true },
-  { label: 'Photographer', icon: Camera, earned: false },
-  { label: 'Explorer', icon: Compass, earned: false },
 ]
 
 const recentActivity = [
@@ -53,7 +43,7 @@ const recentActivity = [
     time: '5h ago',
     icon: Mail,
   },
-  { label: 'Earned the Trailblazer badge', time: '1d ago', icon: Diamond },
+  { label: 'Added a new trip planning note', time: '1d ago', icon: Diamond },
 ]
 
 export default function RockhoundDashboard({
@@ -270,7 +260,6 @@ function ProfileHeader({
         ) : null}
         <div className="profile-title-row">
           <h1>{displayName}</h1>
-          <Badge tone="dark">Founding Member #18</Badge>
         </div>
         <p className="profile-meta">
           <MapPin aria-hidden="true" />
@@ -408,30 +397,8 @@ function ActivityFeed({
 function RightRail() {
   return (
     <aside className="workspace-right-rail">
-      <BadgeCard />
       <RecentActivityCard />
     </aside>
-  )
-}
-
-function BadgeCard() {
-  return (
-    <Card className="rail-card">
-      <CardTitle title="My Badges" />
-      <div className="mini-badge-grid">
-        {badges.map(({ label, icon: Icon, earned }) => (
-          <div key={label}>
-            <span className={earned ? 'is-earned' : undefined}>
-              <Icon aria-hidden="true" />
-            </span>
-            <p>{label}</p>
-          </div>
-        ))}
-      </div>
-      <button type="button" className="ui-button ui-button-secondary">
-        View All Badges
-      </button>
-    </Card>
   )
 }
 

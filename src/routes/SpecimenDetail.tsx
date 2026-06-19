@@ -2,7 +2,7 @@ import { Link, useParams } from 'react-router-dom'
 import { useMutation, useQuery } from 'convex/react'
 import { api } from '../../convex/_generated/api'
 import type { Id } from '../../convex/_generated/dataModel'
-import { Badge, Card, EmptyState, SectionHeader } from '../components/ui'
+import { Card, EmptyState, SectionHeader } from '../components/ui'
 
 const reactions = [
   { type: 'nice_find', label: 'Nice Find', icon: '🪨' },
@@ -54,7 +54,9 @@ export default function SpecimenDetail() {
         eyebrow="Collection detail"
         title={item.specimenName}
         description="A closer look at this piece from the collection showcase."
-        action={<Badge tone="neutral">{formatStatus(item.status)}</Badge>}
+        action={
+          <span className="plain-status-chip">{formatStatus(item.status)}</span>
+        }
       />
 
       <div className="specimen-detail-grid">

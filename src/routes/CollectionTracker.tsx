@@ -6,7 +6,7 @@ import { useMutation, useQuery } from 'convex/react'
 import { api } from '../../convex/_generated/api'
 import type { Id } from '../../convex/_generated/dataModel'
 import PageBackgroundLayout from '../components/PageBackgroundLayout'
-import { Badge, Card, EmptyState, SectionHeader } from '../components/ui'
+import { Card, EmptyState, SectionHeader } from '../components/ui'
 
 export default function CollectionTracker() {
   const collection = useQuery(api.collections.listMine, {})
@@ -148,11 +148,7 @@ export default function CollectionTracker() {
           eyebrow="Collection showcase"
           title="Show off the keepers"
           description="Upload finds, build your gallery, and give other collectors something to react to."
-          action={
-            <Badge tone={isAtLimit ? 'achievement' : 'neutral'}>
-              {usageText}
-            </Badge>
-          }
+          action={<span className="plain-status-chip">{usageText}</span>}
         />
 
         <Card className="collection-settings-card">

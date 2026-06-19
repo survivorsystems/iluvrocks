@@ -48,7 +48,7 @@ export default function BusinessManage() {
       <SectionHeader
         eyebrow="Business onboarding"
         title="Create or manage your business profile"
-        description="Businesses can manage only their own profile. Owner approval controls public visibility, featured placement, and Founding Business badges."
+        description="Businesses can manage only their own profile. Owner approval controls public visibility and featured placement."
       />
       <div className="admin-split">
         <Card className="admin-panel">

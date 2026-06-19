@@ -1,7 +1,6 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { FormEvent } from 'react'
 import {
-  BadgeCheck,
   BriefcaseBusiness,
   CreditCard,
   FileText,
@@ -17,7 +16,7 @@ import {
 import { useMutation, useQuery } from 'convex/react'
 import { api } from '../../convex/_generated/api'
 import type { Id } from '../../convex/_generated/dataModel'
-import { Badge, Button, Card, SectionHeader, StatCard } from '../components/ui'
+import { Button, Card, SectionHeader, StatCard } from '../components/ui'
 
 type AdminTab =
   | 'overview'
@@ -113,7 +112,7 @@ function OverviewPanel({ overview }: { overview: any }) {
     {
       label: 'Premium businesses',
       value: overview?.premiumBusinesses ?? 0,
-      icon: BadgeCheck,
+      icon: Star,
     },
     {
       label: 'Featured items',
@@ -154,7 +153,30 @@ function AppearancePanel() {
       'Featured members, Latest discoveries, Beginner guides, Business directory',
   })
 
-  const current = useMemo(() => appearance ?? form, [appearance, form])
+  useEffect(() => {
+    if (!appearance) return
+    setForm({
+      logoUrl: appearance.logoUrl ?? '',
+      primaryColor: appearance.primaryColor ?? '#050505',
+      accentColor: appearance.accentColor ?? '#f2c94c',
+      homepageHeadline:
+        appearance.homepageHeadline ||
+        'A field journal for people who love rocks.',
+      homepageIntro:
+        appearance.homepageIntro ||
+        'Build your Basecamp, show your finds, learn safely, and connect with collectors.',
+      homepageCtaLabel: appearance.homepageCtaLabel || 'Create your Basecamp',
+      navigationJson:
+        appearance.navigationJson ||
+        'Home, Discoveries, Community, Businesses, About',
+      backgroundJson:
+        appearance.backgroundJson ||
+        '{"home":"skagit","basecamp":"skagit","community":"alsea","collections":"haystacks","settings":"cascades"}',
+      featuredSectionsJson:
+        appearance.featuredSectionsJson ||
+        'Featured members, Latest discoveries, Beginner guides, Business directory',
+    })
+  }, [appearance])
 
   const submit = async (event: FormEvent) => {
     event.preventDefault()
@@ -162,7 +184,7 @@ function AppearancePanel() {
     try {
       const logoUrl = logo
         ? await uploadFile(logo, generateUploadUrl, getStorageUrl)
-        : form.logoUrl || current.logoUrl
+        : form.logoUrl
       await saveAppearance({ ...form, logoUrl })
       setStatus('Appearance saved.')
     } catch (error) {
@@ -188,24 +210,24 @@ function AppearancePanel() {
         <div className="form-grid">
           <AdminInput
             label="Primary color"
-            value={current.primaryColor ?? form.primaryColor}
+            value={form.primaryColor}
             onChange={(value) => setForm({ ...form, primaryColor: value })}
           />
           <AdminInput
             label="Yellow accent"
-            value={current.accentColor ?? form.accentColor}
+            value={form.accentColor}
             onChange={(value) => setForm({ ...form, accentColor: value })}
           />
         </div>
         <AdminInput
           label="Homepage headline"
-          value={current.homepageHeadline ?? form.homepageHeadline}
+          value={form.homepageHeadline}
           onChange={(value) => setForm({ ...form, homepageHeadline: value })}
         />
         <label>
           Homepage intro
           <textarea
-            value={current.homepageIntro ?? form.homepageIntro}
+            value={form.homepageIntro}
             onChange={(event) =>
               setForm({ ...form, homepageIntro: event.target.value })
             }
@@ -213,22 +235,22 @@ function AppearancePanel() {
         </label>
         <AdminInput
           label="CTA label"
-          value={current.homepageCtaLabel ?? form.homepageCtaLabel}
+          value={form.homepageCtaLabel}
           onChange={(value) => setForm({ ...form, homepageCtaLabel: value })}
         />
         <AdminInput
           label="Navigation"
-          value={current.navigationJson ?? form.navigationJson}
+          value={form.navigationJson}
           onChange={(value) => setForm({ ...form, navigationJson: value })}
         />
         <AdminInput
           label="Background assignments"
-          value={current.backgroundJson ?? form.backgroundJson}
+          value={form.backgroundJson}
           onChange={(value) => setForm({ ...form, backgroundJson: value })}
         />
         <AdminInput
           label="Featured sections"
-          value={current.featuredSectionsJson ?? form.featuredSectionsJson}
+          value={form.featuredSectionsJson}
           onChange={(value) =>
             setForm({ ...form, featuredSectionsJson: value })
           }
@@ -1156,7 +1178,7 @@ function BusinessesPanel() {
     <Card className="admin-panel">
       <AdminPanelHeader
         title="Business approval and subscriptions"
-        description="Approve listings, assign Founding Business badges, feature premium profiles, and manage plan/status fields."
+        description="Approve listings, feature premium profiles, and manage plan/status fields."
       />
       <div className="admin-business-list">
         {businesses.map((business: any) => (
@@ -1168,13 +1190,8 @@ function BusinessesPanel() {
                 {business.subscriptionStatus}
               </p>
               <div className="admin-badge-row">
-                {business.isApproved ? <Badge>Approved</Badge> : null}
-                {business.isFeatured ? (
-                  <Badge tone="achievement">Featured</Badge>
-                ) : null}
-                {business.isFoundingBusiness ? (
-                  <Badge tone="achievement">Founding Business</Badge>
-                ) : null}
+                {business.isApproved ? <span>Approved</span> : null}
+                {business.isFeatured ? <span>Featured</span> : null}
               </div>
             </div>
             <div className="admin-row-actions">
@@ -1197,16 +1214,6 @@ function BusinessesPanel() {
                 }
               >
                 {business.isFeatured ? 'Unfeature' : 'Feature'}
-              </Button>
-              <Button
-                variant="secondary"
-                onClick={() =>
-                  void update(business._id, {
-                    isFoundingBusiness: !business.isFoundingBusiness,
-                  })
-                }
-              >
-                Toggle founding badge
               </Button>
             </div>
           </article>
@@ -1238,7 +1245,7 @@ function StripePanel({ overview }: { overview: any }) {
         <BusinessPlan
           title="Premium Business Account"
           price="$24.99/month"
-          features="Featured placement, priority placement, lead forms, sponsor badge, and analytics."
+          features="Featured placement, priority placement, lead forms, and analytics."
         />
       </div>
       <p className="form-note">

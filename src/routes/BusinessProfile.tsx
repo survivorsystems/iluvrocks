@@ -1,7 +1,7 @@
 import { Link, useParams } from 'react-router-dom'
 import { useQuery } from 'convex/react'
 import { api } from '../../convex/_generated/api'
-import { Badge, Card, EmptyState, SectionHeader } from '../components/ui'
+import { Card, EmptyState, SectionHeader } from '../components/ui'
 
 export default function BusinessProfile() {
   const { slug = '' } = useParams()
@@ -55,15 +55,6 @@ export default function BusinessProfile() {
             </div>
           }
         />
-        <div className="admin-badge-row">
-          {business.isFoundingBusiness ? (
-            <Badge tone="achievement">Founding Business</Badge>
-          ) : null}
-          {business.plan === 'premium' ? (
-            <Badge tone="achievement">Sponsor</Badge>
-          ) : null}
-          {business.isFeatured ? <Badge>Featured</Badge> : null}
-        </div>
         <div className="business-profile-details">
           <p>
             <strong>Location</strong>

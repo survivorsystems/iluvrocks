@@ -195,22 +195,6 @@ export function Textarea(props: TextareaHTMLAttributes<HTMLTextAreaElement>) {
   return <textarea className="ui-input" {...props} />
 }
 
-export function Badge({
-  children,
-  tone = 'neutral',
-  className = '',
-}: {
-  children: ReactNode
-  tone?: 'neutral' | 'achievement' | 'dark'
-  className?: string
-}) {
-  return (
-    <span className={`ui-badge ui-badge-${tone} ${className}`.trim()}>
-      {children}
-    </span>
-  )
-}
-
 export function StatCard({
   label,
   value,

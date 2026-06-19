@@ -1,5 +1,8 @@
+import { useEffect, useMemo } from 'react'
 import { Mountain, UserRound } from 'lucide-react'
 import { NavLink, Outlet, useLocation } from 'react-router-dom'
+import { useQuery } from 'convex/react'
+import { api } from '../../convex/_generated/api'
 import DevModeBadge from './DevModeBadge'
 import { useAuthProfileState } from '../lib/authState'
 import { AppShell } from './ui'
@@ -30,9 +33,26 @@ const workspaceRoutePrefixes = [
 export default function Layout() {
   const auth = useAuthProfileState()
   const location = useLocation()
+  const appearance = useQuery((api as any).adminPublic.getSiteAppearance, {})
   const isWorkspaceRoute = workspaceRoutePrefixes.some((prefix) =>
     location.pathname.startsWith(prefix),
   )
+  const publicNavItems = useMemo(
+    () => parseNavigation(appearance?.navigationJson),
+    [appearance?.navigationJson],
+  )
+
+  useEffect(() => {
+    const root = document.documentElement
+    if (appearance?.primaryColor) {
+      root.style.setProperty('--color-primary', appearance.primaryColor)
+      root.style.setProperty('--color-active', appearance.primaryColor)
+      root.style.setProperty('--color-selected', appearance.primaryColor)
+    }
+    if (appearance?.accentColor) {
+      root.style.setProperty('--color-accent-yellow', appearance.accentColor)
+    }
+  }, [appearance?.accentColor, appearance?.primaryColor])
 
   if (isWorkspaceRoute && auth.isAuthenticated) {
     return <AppShell />
@@ -42,11 +62,15 @@ export default function Layout() {
     <div className="app-shell">
       <header className="site-header">
         <NavLink to="/" className="brand" aria-label="iluvrocks home">
-          <Mountain aria-hidden="true" />
+          {appearance?.logoUrl ? (
+            <img src={appearance.logoUrl} alt="" className="brand-logo-image" />
+          ) : (
+            <Mountain aria-hidden="true" />
+          )}
           <span>iluvrocks</span>
         </NavLink>
         <nav className="site-nav" aria-label="Primary navigation">
-          {navItems.map((item) => (
+          {publicNavItems.map((item) => (
             <NavLink key={item.to} to={item.to}>
               {item.label}
             </NavLink>
@@ -67,6 +91,35 @@ export default function Layout() {
       </main>
     </div>
   )
+}
+
+function parseNavigation(value?: string) {
+  if (!value?.trim()) return navItems
+
+  const routeMap: Record<string, string> = {
+    home: '/',
+    destinations: '/destinations',
+    materials: '/materials',
+    'trip planner': '/trip-planner',
+    'business directory': '/businesses',
+    businesses: '/businesses',
+    guides: '/guides',
+    about: '/about',
+    community: '/community',
+  }
+
+  const parsed = value
+    .split(',')
+    .map((label) => label.trim())
+    .filter(Boolean)
+    .map((label) => ({
+      label,
+      to:
+        routeMap[label.toLowerCase()] ||
+        `/${label.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
+    }))
+
+  return parsed.length ? parsed : navItems
 }
 
 function AuthLink({ auth }: { auth: ReturnType<typeof useAuthProfileState> }) {

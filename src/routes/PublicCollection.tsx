@@ -1,13 +1,7 @@
 import { Link, useParams } from 'react-router-dom'
 import { useQuery } from 'convex/react'
 import { api } from '../../convex/_generated/api'
-import {
-  Badge,
-  Card,
-  EmptyState,
-  SectionHeader,
-  getInitials,
-} from '../components/ui'
+import { Card, EmptyState, SectionHeader, getInitials } from '../components/ui'
 
 export default function PublicCollection() {
   const { handle = '' } = useParams()
@@ -47,7 +41,7 @@ export default function PublicCollection() {
           eyebrow="Public collection"
           title={`${ownerName}'s collection`}
           description="This rockhound has set their collection to private."
-          action={<Badge tone="neutral">Private</Badge>}
+          action={<span className="plain-status-chip">Private</span>}
         />
         <EmptyState
           title="Private collection"
@@ -63,7 +57,7 @@ export default function PublicCollection() {
         eyebrow="Public collection"
         title={`${ownerName}'s collection`}
         description={`${collection.count} find${collection.count === 1 ? '' : 's'} shared with the iluvrocks community.`}
-        action={<Badge tone="neutral">Public</Badge>}
+        action={<span className="plain-status-chip">Public</span>}
       />
 
       <Card className="public-collection-owner">

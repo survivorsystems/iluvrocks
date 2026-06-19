@@ -1,7 +1,7 @@
 import { Link, useParams } from 'react-router-dom'
 import { useQuery } from 'convex/react'
 import { api } from '../../convex/_generated/api'
-import { Badge, Card, EmptyState, SectionHeader } from '../components/ui'
+import { Card, EmptyState, SectionHeader } from '../components/ui'
 
 const placeLabels: Record<string, string> = {
   campground: 'Campgrounds',
@@ -57,10 +57,10 @@ export default function DestinationDetail() {
             <div className="trip-chip-row">
               {data.materials.length ? (
                 data.materials.map((material: any) => (
-                  <Badge key={material._id} tone="achievement">
+                  <em key={material._id}>
                     {material.name}
                     {material.likelihood ? ` | ${material.likelihood}` : ''}
-                  </Badge>
+                  </em>
                 ))
               ) : (
                 <p>No materials linked yet.</p>

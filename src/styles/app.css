@@ -221,6 +221,13 @@ img {
   height: 1.25rem;
 }
 
+.brand-logo-image {
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--radius-small);
+  object-fit: cover;
+}
+
 .site-nav {
   justify-content: center;
   gap: var(--space-2);
@@ -524,7 +531,6 @@ textarea {
   resize: vertical;
 }
 
-.ui-badge,
 .tag-row span,
 .stats-row span {
   display: inline-flex;
@@ -535,20 +541,9 @@ textarea {
   font-weight: var(--font-weight-bold);
 }
 
-.ui-badge-neutral,
 .tag-row span,
 .stats-row span {
   background: var(--color-surface-alt);
-  color: var(--color-primary);
-}
-
-.ui-badge-dark {
-  background: var(--color-primary);
-  color: var(--color-surface);
-}
-
-.ui-badge-achievement {
-  background: var(--color-accent-yellow);
   color: var(--color-primary);
 }
 
@@ -1892,7 +1887,7 @@ label {
 .profile-avatar-preview {
   width: 8rem;
   height: 8rem;
-  border-radius: 50%;
+  border-radius: var(--radius-large);
 }
 
 .profile-header-preview img,
@@ -2304,10 +2299,7 @@ label {
 .profile-cover {
   min-height: 15rem;
   border-bottom: 1px solid var(--color-divider);
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.08)),
-    url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80')
-      center / cover;
+  background: var(--color-primary);
 }
 
 .profile-cover img {
@@ -2331,11 +2323,8 @@ label {
   height: 8rem;
   place-items: center;
   border: 5px solid var(--color-surface);
-  border-radius: 50%;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.18)),
-    url('https://images.unsplash.com/photo-1501555088652-021faa106b9b?auto=format&fit=crop&w=600&q=80')
-      center / cover;
+  border-radius: var(--radius-large);
+  background: var(--color-primary);
   color: var(--color-surface);
   font-size: 1.85rem;
   font-weight: var(--font-weight-black);
@@ -2348,6 +2337,19 @@ label {
   height: 100%;
   border-radius: inherit;
   object-fit: cover;
+}
+
+.plain-status-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-round);
+  padding: 0.35rem 0.75rem;
+  background: var(--color-surface-alt);
+  color: var(--color-primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
 }
 
 .profile-actions {
@@ -2638,20 +2640,6 @@ label {
   color: var(--color-primary);
 }
 
-.mini-badge-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: var(--space-3);
-  text-align: center;
-}
-
-.mini-badge-grid div {
-  display: grid;
-  gap: var(--space-2);
-  justify-items: center;
-}
-
-.mini-badge-grid span,
 .challenge-icon {
   display: grid;
   width: 4.2rem;
@@ -2662,23 +2650,15 @@ label {
   background: var(--color-surface);
 }
 
-.mini-badge-grid .is-earned,
 .challenge-icon.is-progress {
   border-color: var(--color-accent-yellow);
   background: rgba(242, 201, 76, 0.16);
 }
 
-.mini-badge-grid svg,
 .challenge-icon svg {
   width: 2rem;
   height: 2rem;
   stroke-width: 1.8;
-}
-
-.mini-badge-grid p {
-  margin: 0;
-  color: var(--color-primary);
-  font-size: var(--font-size-sm);
 }
 
 .challenge-body {
@@ -2886,10 +2866,6 @@ label {
 
   .collection-settings-card {
     display: grid;
-  }
-
-  .mini-badge-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 

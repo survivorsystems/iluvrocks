@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useQuery } from 'convex/react'
 import { api } from '../../convex/_generated/api'
-import { Badge, Card, SectionHeader } from '../components/ui'
+import { Card, SectionHeader } from '../components/ui'
 
 const categories = [
   'All',
@@ -28,7 +28,7 @@ export default function BusinessDirectory() {
       <SectionHeader
         eyebrow="Business directory"
         title="Rock shops, guides, lapidary services, and local resources"
-        description="Browse approved iluvrocks business profiles. Premium members receive featured placement, priority listing, lead forms, sponsor badges, and analytics."
+        description="Browse approved iluvrocks business profiles. Premium members receive featured placement, priority listing, lead forms, and analytics."
         action={
           <Link to="/business/manage" className="primary-action">
             Create a business profile
@@ -76,14 +76,6 @@ export default function BusinessDirectory() {
                 <div>
                   <h2>{business.name}</h2>
                   <p>{business.location || business.category}</p>
-                </div>
-                <div className="admin-badge-row">
-                  {business.isFoundingBusiness ? (
-                    <Badge tone="achievement">Founding Business</Badge>
-                  ) : null}
-                  {business.plan === 'premium' ? (
-                    <Badge tone="achievement">Sponsor</Badge>
-                  ) : null}
                 </div>
                 <p>{business.description || 'Business profile coming soon.'}</p>
               </div>

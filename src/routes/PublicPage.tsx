@@ -51,8 +51,8 @@ const pages: Record<string, PublicPageContent> = {
       'A public preview of the people helping shape RockHound during its earliest season.',
     panels: [
       [
-        'Founding Hound',
-        'Early supporters helping test Basecamp, profiles, and public discovery pages.',
+        'Early members',
+        'Early supporters helping test Basecamp, profiles, and public trip-planning pages.',
         Medal,
       ],
       [
@@ -140,7 +140,7 @@ const pages: Record<string, PublicPageContent> = {
     eyebrow: 'Challenge previews',
     title: 'Preview seasonal collecting challenges',
     description:
-      'See challenge themes publicly. Entering, submitting finds, and earning badges require a Basecamp.',
+      'See trip-planning prompts publicly. Saving plans and member actions require a Basecamp.',
     panels: [
       [
         'First five finds',

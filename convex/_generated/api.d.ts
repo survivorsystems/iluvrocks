@@ -9,6 +9,7 @@
  */
 
 import type * as admin from "../admin.js";
+import type * as adminPublic from "../adminPublic.js";
 import type * as ai from "../ai.js";
 import type * as auth from "../auth.js";
 import type * as businesses from "../businesses.js";
@@ -26,6 +27,7 @@ import type * as seedExpandedWA from "../seedExpandedWA.js";
 import type * as seedMassiveWA from "../seedMassiveWA.js";
 import type * as seedRegional from "../seedRegional.js";
 import type * as social from "../social.js";
+import type * as tripPlanning from "../tripPlanning.js";
 import type * as uploads from "../uploads.js";
 import type * as users from "../users.js";
 import type * as weather from "../weather.js";
@@ -38,6 +40,7 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   admin: typeof admin;
+  adminPublic: typeof adminPublic;
   ai: typeof ai;
   auth: typeof auth;
   businesses: typeof businesses;
@@ -55,6 +58,7 @@ declare const fullApi: ApiFromModules<{
   seedMassiveWA: typeof seedMassiveWA;
   seedRegional: typeof seedRegional;
   social: typeof social;
+  tripPlanning: typeof tripPlanning;
   uploads: typeof uploads;
   users: typeof users;
   weather: typeof weather;

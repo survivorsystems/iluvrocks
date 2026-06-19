@@ -51,16 +51,26 @@ const memberLinks = [
 
 export default function Home() {
   const auth = useAuthProfileState()
+  const appearance = useQuery((api as any).adminPublic.getSiteAppearance, {})
 
   return (
     <PageBackgroundLayout background="skagit">
-      <TripSearchHero isAuthenticated={auth.isAuthenticated} />
+      <TripSearchHero
+        isAuthenticated={auth.isAuthenticated}
+        appearance={appearance}
+      />
       {auth.isAuthenticated ? <MemberTripHome /> : <VisitorSections />}
     </PageBackgroundLayout>
   )
 }
 
-function TripSearchHero({ isAuthenticated }: { isAuthenticated: boolean }) {
+function TripSearchHero({
+  isAuthenticated,
+  appearance,
+}: {
+  isAuthenticated: boolean
+  appearance: any
+}) {
   const navigate = useNavigate()
   const [query, setQuery] = useState('')
 
@@ -75,10 +85,13 @@ function TripSearchHero({ isAuthenticated }: { isAuthenticated: boolean }) {
     <section className="hero trip-hero">
       <div className="hero-copy">
         <p className="eyebrow">Washington rockhounding trip planner</p>
-        <h1>Search where to go and what you might find.</h1>
+        <h1>
+          {appearance?.homepageHeadline ||
+            'Search where to go and what you might find.'}
+        </h1>
         <p className="tagline">
-          Destinations, materials, safety notes, permits, local stops, and
-          curated trip plans.
+          {appearance?.homepageIntro ||
+            'Destinations, materials, safety notes, permits, local stops, and curated trip plans.'}
         </p>
         <form className="home-search-form" onSubmit={submit}>
           <Search aria-hidden="true" />
@@ -98,7 +111,9 @@ function TripSearchHero({ isAuthenticated }: { isAuthenticated: boolean }) {
             to={isAuthenticated ? '/basecamp' : '/login'}
             className="secondary-action"
           >
-            {isAuthenticated ? 'Open Basecamp' : 'Create your Basecamp'}
+            {isAuthenticated
+              ? 'Open Basecamp'
+              : appearance?.homepageCtaLabel || 'Create your Basecamp'}
           </Link>
         </div>
       </div>
