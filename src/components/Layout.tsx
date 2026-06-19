@@ -1,8 +1,9 @@
 import { useEffect, useMemo } from 'react'
-import { Mountain, UserRound } from 'lucide-react'
+import { UserRound } from 'lucide-react'
 import { NavLink, Outlet, useLocation } from 'react-router-dom'
 import { useQuery } from 'convex/react'
 import { api } from '../../convex/_generated/api'
+import iluvrocksLogo from '../assets/brand/iluvrocks-logo-wide.png'
 import DevModeBadge from './DevModeBadge'
 import { useAuthProfileState } from '../lib/authState'
 import { AppShell } from './ui'
@@ -62,12 +63,12 @@ export default function Layout() {
     <div className="app-shell">
       <header className="site-header">
         <NavLink to="/" className="brand" aria-label="iluvrocks home">
-          {appearance?.logoUrl ? (
-            <img src={appearance.logoUrl} alt="" className="brand-logo-image" />
-          ) : (
-            <Mountain aria-hidden="true" />
-          )}
-          <span>iluvrocks</span>
+          <img
+            src={appearance?.logoUrl || iluvrocksLogo}
+            alt=""
+            className="brand-logo-image brand-logo-wide"
+          />
+          <span className="sr-only">iluvrocks</span>
         </NavLink>
         <nav className="site-nav" aria-label="Primary navigation">
           {publicNavItems.map((item) => (

@@ -82,7 +82,7 @@ function TripSearchHero({
   }
 
   return (
-    <section className="hero trip-hero">
+    <section className="hero trip-hero trip-hero-centered">
       <div className="hero-copy">
         <p className="eyebrow">Washington rockhounding trip planner</p>
         <h1>
@@ -117,14 +117,6 @@ function TripSearchHero({
           </Link>
         </div>
       </div>
-      <Card className="trip-hero-panel">
-        <strong>Washington-first</strong>
-        <span>Search by place or material</span>
-        <span>
-          Connect destinations to rock shops, lodging, permits, guides, and
-          safety info
-        </span>
-      </Card>
     </section>
   )
 }

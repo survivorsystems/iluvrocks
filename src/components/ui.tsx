@@ -23,6 +23,7 @@ import {
 import type { LucideIcon } from 'lucide-react'
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { useAuthProfileState } from '../lib/authState'
+import iluvrocksLogo from '../assets/brand/iluvrocks-logo-wide.png'
 
 type IconType =
   | LucideIcon
@@ -76,8 +77,8 @@ export function Sidebar() {
   return (
     <aside className="app-sidebar" aria-label="Logged-in navigation">
       <Link to="/basecamp" className="app-logo" aria-label="iluvrocks home">
-        <span className="app-logo-mark" aria-hidden="true" />
-        <span>iluvrocks</span>
+        <img src={iluvrocksLogo} alt="" className="app-logo-image" />
+        <span className="sr-only">iluvrocks</span>
       </Link>
       <nav className="app-sidebar-nav">
         {navItems.map(({ to, label, icon: Icon }) => (

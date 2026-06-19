@@ -222,10 +222,14 @@ img {
 }
 
 .brand-logo-image {
-  width: 2rem;
-  height: 2rem;
-  border-radius: var(--radius-small);
-  object-fit: cover;
+  display: block;
+  width: auto;
+  height: 3rem;
+  object-fit: contain;
+}
+
+.brand-logo-wide {
+  max-width: min(14rem, 42vw);
 }
 
 .site-nav {
@@ -683,6 +687,10 @@ progress::-moz-progress-bar {
   gap: clamp(var(--space-8), 5vw, var(--space-16));
   align-items: center;
   min-height: calc(100vh - 11rem);
+}
+
+.trip-hero-centered {
+  grid-template-columns: minmax(0, 1fr);
 }
 
 .hero-with-image {
@@ -2033,47 +2041,16 @@ label {
 }
 
 .app-logo {
-  display: grid;
-  gap: var(--space-1);
+  display: inline-flex;
+  align-items: center;
   color: var(--color-primary);
-  font-size: 2.15rem;
-  font-weight: var(--font-weight-black);
-  letter-spacing: -0.03em;
-  line-height: 1;
 }
 
-.app-logo-mark {
-  width: 9.25rem;
-  height: 1.25rem;
-  background:
-    linear-gradient(
-        135deg,
-        transparent 44%,
-        var(--color-primary) 45% 49%,
-        transparent 50%
-      )
-      0.45rem 0.1rem / 3rem 1rem no-repeat,
-    linear-gradient(
-        45deg,
-        transparent 44%,
-        var(--color-primary) 45% 49%,
-        transparent 50%
-      )
-      2.05rem 0.1rem / 3rem 1rem no-repeat,
-    linear-gradient(
-        135deg,
-        transparent 44%,
-        var(--color-primary) 45% 49%,
-        transparent 50%
-      )
-      3.7rem 0.25rem / 2.4rem 0.85rem no-repeat,
-    linear-gradient(
-        45deg,
-        transparent 44%,
-        var(--color-primary) 45% 49%,
-        transparent 50%
-      )
-      5rem 0.25rem / 2.4rem 0.85rem no-repeat;
+.app-logo-image {
+  display: block;
+  width: min(12rem, 100%);
+  height: auto;
+  object-fit: contain;
 }
 
 .app-sidebar-nav {
@@ -2723,19 +2700,14 @@ label {
     padding: var(--space-4) var(--space-3);
   }
 
-  .app-logo span:last-child,
   .app-sidebar-nav span,
   .app-sidebar-action span,
   .app-sidebar-signout span {
     display: none;
   }
 
-  .app-logo {
-    font-size: 0;
-  }
-
-  .app-logo-mark {
-    width: 3.2rem;
+  .app-logo-image {
+    width: 3.4rem;
   }
 
   .app-sidebar-nav a,

@@ -1,16 +1,16 @@
 {
-  "name": "RockHound",
-  "short_name": "RockHound",
-  "description": "Built by rockhounds, for rockhounds.",
+  "name": "iluvrocks",
+  "short_name": "iluvrocks",
+  "description": "A Washington-first rockhounding trip planner.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#F4EFE3",
   "theme_color": "#1E3D2F",
   "icons": [
     {
-      "src": "/favicon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml"
+      "src": "/iluvrocks-logo-square.png",
+      "sizes": "512x512",
+      "type": "image/png"
     }
   ]
 }
