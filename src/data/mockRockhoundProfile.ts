@@ -12,14 +12,26 @@ export const mockRockhoundProfile = {
   },
   stats: [
     { label: 'Finds logged', value: '28' },
-    { label: 'Specimens cataloged', value: '143' },
+    { label: 'Finds cataloged', value: '143' },
     { label: 'Saved locations', value: '16' },
     { label: 'Contributor score', value: '92' },
   ],
   collectionShowcase: [
-    { name: 'Carnelian agate', detail: 'Damon Point', tone: 'Warm orange bands' },
-    { name: 'Picture jasper', detail: 'Central WA', tone: 'Desert landscape pattern' },
-    { name: 'Quartz point', detail: 'Cascade foothills', tone: 'Clear termination' },
+    {
+      name: 'Carnelian agate',
+      detail: 'Damon Point',
+      tone: 'Warm orange bands',
+    },
+    {
+      name: 'Picture jasper',
+      detail: 'Central WA',
+      tone: 'Desert landscape pattern',
+    },
+    {
+      name: 'Quartz point',
+      detail: 'Cascade foothills',
+      tone: 'Clear termination',
+    },
   ],
   rockhoundCard: {
     focus: 'Agates, jasper, quartz, field notes',
@@ -28,14 +40,35 @@ export const mockRockhoundProfile = {
     motto: 'Leave the site better than you found it.',
   },
   adventureLog: [
-    { title: 'Scouted a new river bend', meta: 'Teanaway River - light rain', status: 'Needs return trip' },
-    { title: 'Cataloged beach agates', meta: 'Damon Point - low tide', status: 'Photos pending' },
-    { title: 'Updated access notes', meta: 'Greenwater area', status: 'Shared with community' },
+    {
+      title: 'Scouted a new river bend',
+      meta: 'Teanaway River - light rain',
+      status: 'Needs return trip',
+    },
+    {
+      title: 'Cataloged beach agates',
+      meta: 'Damon Point - low tide',
+      status: 'Photos pending',
+    },
+    {
+      title: 'Updated access notes',
+      meta: 'Greenwater area',
+      status: 'Shared with community',
+    },
   ],
   badges: [
-    { title: 'Founding Hound', description: 'Early member helping shape RockHound.' },
-    { title: 'Verified Contributor', description: 'Shares useful, respectful field knowledge.' },
-    { title: 'First Field Trip', description: 'Logged the first RockHound adventure.' },
+    {
+      title: 'Founding Hound',
+      description: 'Early member helping shape RockHound.',
+    },
+    {
+      title: 'Verified Contributor',
+      description: 'Shares useful, respectful field knowledge.',
+    },
+    {
+      title: 'First Field Trip',
+      description: 'Logged the first RockHound adventure.',
+    },
   ],
   bucketList: [
     'Build a complete Washington agate reference tray',
@@ -54,8 +87,17 @@ export const mockRockhoundProfile = {
     { label: 'Trip notes shared', value: '19' },
   ],
   basecamp: [
-    { title: 'Next field day', detail: 'Check tides, weather, and access notes for Damon Point.' },
-    { title: 'Collection task', detail: 'Photograph the carnelian tray and add dimensions.' },
-    { title: 'Community task', detail: 'Draft a beginner note on responsible beach collecting.' },
+    {
+      title: 'Next field day',
+      detail: 'Check tides, weather, and access notes for Damon Point.',
+    },
+    {
+      title: 'Collection task',
+      detail: 'Photograph the carnelian tray and add dimensions.',
+    },
+    {
+      title: 'Community task',
+      detail: 'Draft a beginner note on responsible beach collecting.',
+    },
   ],
 }

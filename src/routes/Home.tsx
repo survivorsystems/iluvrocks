@@ -11,8 +11,9 @@ export default function Home() {
           <h1>iluvrocks</h1>
           <p className="tagline">Built by rockhounds, for rockhounds.</p>
           <p>
-            A field-first home for rockhounds to discover public collecting knowledge,
-            learn specimen basics, and connect with careful local explorers.
+            A field-first home for rockhounds to discover public collecting
+            knowledge, learn rock and mineral basics, and connect with careful
+            local explorers.
           </p>
           <div className="hero-actions">
             <Link to="/login" className="primary-action">
@@ -39,9 +40,21 @@ export default function Home() {
         <p className="eyebrow">For visitors</p>
         <h2>Start learning before you sign up</h2>
         <div className="feature-grid">
-          <FeaturePanel icon={Pickaxe} title="Latest public discoveries" description="Read recent community finds and trip notes without needing an account." />
-          <FeaturePanel icon={UsersRound} title="Featured members" description="Preview member stories, founding hounds, and collection interests before creating your Basecamp." />
-          <FeaturePanel icon={Gem} title="Collection showcases" description="See what members are adding to their collections and how they document each specimen." />
+          <FeaturePanel
+            icon={Pickaxe}
+            title="Latest public discoveries"
+            description="Read recent community finds and trip notes without needing an account."
+          />
+          <FeaturePanel
+            icon={UsersRound}
+            title="Featured members"
+            description="Preview member stories, founding hounds, and collection interests before creating your Basecamp."
+          />
+          <FeaturePanel
+            icon={Gem}
+            title="Collection showcases"
+            description="See what members are adding to their collections and how they document each find."
+          />
         </div>
         <div className="hero-actions">
           <Link to="/members" className="secondary-action">

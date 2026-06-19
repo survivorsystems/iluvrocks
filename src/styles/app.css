@@ -1321,24 +1321,30 @@ label {
 }
 
 .app-sidebar-nav a,
-.app-sidebar-action {
+.app-sidebar-action,
+.app-sidebar-signout {
   display: flex;
   align-items: center;
   gap: var(--space-3);
   min-height: 3rem;
+  border: 0;
   border-radius: var(--radius-medium);
   padding: 0.72rem 1rem;
+  background: transparent;
   color: var(--color-primary);
   font-weight: var(--font-weight-bold);
+  text-align: left;
 }
 
 .app-sidebar-nav a svg,
-.app-sidebar-action svg {
+.app-sidebar-action svg,
+.app-sidebar-signout svg {
   width: 1.35rem;
   height: 1.35rem;
 }
 
-.app-sidebar-nav a:hover {
+.app-sidebar-nav a:hover,
+.app-sidebar-signout:hover {
   background: var(--color-hover);
 }
 
@@ -1351,6 +1357,10 @@ label {
 .app-sidebar-action {
   justify-content: center;
   margin-top: auto;
+}
+
+.app-sidebar-signout {
+  justify-content: center;
 }
 
 .app-workspace-content {
@@ -1900,7 +1910,8 @@ label {
 
   .app-logo span:last-child,
   .app-sidebar-nav span,
-  .app-sidebar-action span {
+  .app-sidebar-action span,
+  .app-sidebar-signout span {
     display: none;
   }
 
@@ -1913,7 +1924,8 @@ label {
   }
 
   .app-sidebar-nav a,
-  .app-sidebar-action {
+  .app-sidebar-action,
+  .app-sidebar-signout {
     justify-content: center;
     width: 3.1rem;
     padding: 0;
@@ -1949,7 +1961,8 @@ label {
   }
 
   .app-logo,
-  .app-sidebar-action {
+  .app-sidebar-action,
+  .app-sidebar-signout {
     display: none;
   }
 

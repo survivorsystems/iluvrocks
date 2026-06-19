@@ -21,15 +21,25 @@ export default function SpecimenDetail() {
   const toggleReaction = useMutation(api.collections.toggleReaction)
 
   if (!specimenId) {
-    return <EmptyState title="Specimen not found" description="This collection item link is missing an ID." />
+    return (
+      <EmptyState
+        title="Find not found"
+        description="This collection item link is missing an ID."
+      />
+    )
   }
 
   if (detail === undefined) {
-    return <EmptyState title="Loading specimen..." />
+    return <EmptyState title="Loading find..." />
   }
 
   if (!detail) {
-    return <EmptyState title="Specimen not found" description="This collection item may have been removed." />
+    return (
+      <EmptyState
+        title="Find not found"
+        description="This collection item may have been removed."
+      />
+    )
   }
 
   const { item, collector, reactionCounts, viewerReactions } = detail
@@ -41,7 +51,7 @@ export default function SpecimenDetail() {
   return (
     <section className="workspace-page">
       <SectionHeader
-        eyebrow="Specimen detail"
+        eyebrow="Collection detail"
         title={item.specimenName}
         description="A closer look at this piece from the collection showcase."
         action={<Badge tone="neutral">{formatStatus(item.status)}</Badge>}
@@ -63,7 +73,11 @@ export default function SpecimenDetail() {
             </div>
             <div>
               <dt>Date found</dt>
-              <dd>{item.dateFound ? new Date(item.dateFound).toLocaleDateString() : 'Not added yet'}</dd>
+              <dd>
+                {item.dateFound
+                  ? new Date(item.dateFound).toLocaleDateString()
+                  : 'Not added yet'}
+              </dd>
             </div>
             <div>
               <dt>Acquisition</dt>
@@ -73,7 +87,9 @@ export default function SpecimenDetail() {
               <dt>Collector</dt>
               <dd>
                 {collector?.username ? (
-                  <Link to={`/profile/${collector.username}`}>{collector.name || collector.username}</Link>
+                  <Link to={`/profile/${collector.username}`}>
+                    {collector.name || collector.username}
+                  </Link>
                 ) : (
                   collector?.name || 'Rockhound member'
                 )}

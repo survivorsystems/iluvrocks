@@ -1,4 +1,10 @@
-import type { ComponentType, HTMLAttributes, InputHTMLAttributes, ReactNode, TextareaHTMLAttributes } from 'react'
+import type {
+  ComponentType,
+  HTMLAttributes,
+  InputHTMLAttributes,
+  ReactNode,
+  TextareaHTMLAttributes,
+} from 'react'
 import {
   Bell,
   ChevronDown,
@@ -10,14 +16,17 @@ import {
   MessageCircle,
   Navigation,
   Plus,
+  LogOut,
   Search,
   Settings,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
-import { Link, NavLink, Outlet } from 'react-router-dom'
+import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { useAuthProfileState } from '../lib/authState'
 
-type IconType = LucideIcon | ComponentType<{ 'aria-hidden'?: boolean; className?: string }>
+type IconType =
+  | LucideIcon
+  | ComponentType<{ 'aria-hidden'?: boolean; className?: string }>
 
 const workspaceNavItems = [
   { to: '/basecamp', label: 'Home', icon: Home },
@@ -31,7 +40,11 @@ const workspaceNavItems = [
 export function AppShell() {
   const auth = useAuthProfileState()
   const viewer = auth.viewer?.user
-  const displayName = viewer?.name?.trim() || auth.user?.displayName || viewer?.username || 'RockHounder'
+  const displayName =
+    viewer?.name?.trim() ||
+    auth.user?.displayName ||
+    viewer?.username ||
+    'RockHounder'
 
   return (
     <div className="app-workspace">
@@ -47,6 +60,14 @@ export function AppShell() {
 }
 
 export function Sidebar() {
+  const navigate = useNavigate()
+  const auth = useAuthProfileState()
+
+  const handleSignOut = async () => {
+    await auth.signOut()
+    navigate('/login', { replace: true })
+  }
+
   return (
     <aside className="app-sidebar" aria-label="Logged-in navigation">
       <Link to="/basecamp" className="app-logo" aria-label="iluvrocks home">
@@ -55,7 +76,11 @@ export function Sidebar() {
       </Link>
       <nav className="app-sidebar-nav">
         {workspaceNavItems.map(({ to, label, icon: Icon }) => (
-          <NavLink key={label} to={to} className={({ isActive }) => (isActive ? 'is-active' : undefined)}>
+          <NavLink
+            key={label}
+            to={to}
+            className={({ isActive }) => (isActive ? 'is-active' : undefined)}
+          >
             <Icon aria-hidden="true" />
             <span>{label}</span>
           </NavLink>
@@ -65,14 +90,30 @@ export function Sidebar() {
         <Plus aria-hidden="true" />
         <span>Create Post</span>
       </Link>
+      <button
+        type="button"
+        className="app-sidebar-signout"
+        onClick={() => void handleSignOut()}
+      >
+        <LogOut aria-hidden="true" />
+        <span>Sign out</span>
+      </button>
     </aside>
   )
 }
 
-export function TopNavigation({ avatarLabel = 'RH' }: { avatarLabel?: string }) {
+export function TopNavigation({
+  avatarLabel = 'RH',
+}: {
+  avatarLabel?: string
+}) {
   return (
     <header className="app-topnav">
-      <button className="icon-button topnav-menu" type="button" aria-label="Open navigation">
+      <button
+        className="icon-button topnav-menu"
+        type="button"
+        aria-label="Open navigation"
+      >
         <Menu aria-hidden="true" />
       </button>
       <label className="app-search">
@@ -87,7 +128,11 @@ export function TopNavigation({ avatarLabel = 'RH' }: { avatarLabel?: string }) 
         <button className="icon-button" type="button" aria-label="Messages">
           <MessageCircle aria-hidden="true" />
         </button>
-        <button className="icon-button notification-action" type="button" aria-label="Notifications">
+        <button
+          className="icon-button notification-action"
+          type="button"
+          aria-label="Notifications"
+        >
           <Bell aria-hidden="true" />
           <NotificationIndicator count={3} />
         </button>
@@ -128,7 +173,10 @@ export function Button({
   className?: string
 } & React.ButtonHTMLAttributes<HTMLButtonElement>) {
   return (
-    <button className={`ui-button ui-button-${variant} ${className}`.trim()} {...props}>
+    <button
+      className={`ui-button ui-button-${variant} ${className}`.trim()}
+      {...props}
+    >
       {children}
     </button>
   )
@@ -151,10 +199,22 @@ export function Badge({
   tone?: 'neutral' | 'achievement' | 'dark'
   className?: string
 }) {
-  return <span className={`ui-badge ui-badge-${tone} ${className}`.trim()}>{children}</span>
+  return (
+    <span className={`ui-badge ui-badge-${tone} ${className}`.trim()}>
+      {children}
+    </span>
+  )
 }
 
-export function StatCard({ label, value, icon: Icon }: { label: string; value: string | number; icon?: IconType }) {
+export function StatCard({
+  label,
+  value,
+  icon: Icon,
+}: {
+  label: string
+  value: string | number
+  icon?: IconType
+}) {
   return (
     <Card className="ui-stat-card" as="div">
       {Icon ? <Icon aria-hidden={true} /> : null}
@@ -205,11 +265,23 @@ export function SectionHeader({
   )
 }
 
-export function ProgressBar({ value, label }: { value: number; label?: string }) {
+export function ProgressBar({
+  value,
+  label,
+}: {
+  value: number
+  label?: string
+}) {
   const safeValue = Math.min(100, Math.max(0, value))
 
   return (
-    <div className="ui-progress" aria-label={label} aria-valuenow={safeValue} aria-valuemin={0} aria-valuemax={100}>
+    <div
+      className="ui-progress"
+      aria-label={label}
+      aria-valuenow={safeValue}
+      aria-valuemin={0}
+      aria-valuemax={100}
+    >
       <span style={{ width: `${safeValue}%` }} />
     </div>
   )
@@ -217,7 +289,9 @@ export function ProgressBar({ value, label }: { value: number; label?: string })
 
 export function NotificationIndicator({ count }: { count?: number }) {
   if (!count) return null
-  return <span className="notification-indicator">{count > 9 ? '9+' : count}</span>
+  return (
+    <span className="notification-indicator">{count > 9 ? '9+' : count}</span>
+  )
 }
 
 export function getInitials(name?: string) {

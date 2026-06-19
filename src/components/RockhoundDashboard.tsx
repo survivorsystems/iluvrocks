@@ -316,22 +316,20 @@ function CollectionShowcase({
         <div>
           <p className="eyebrow">Collection showcase</p>
           <h2>
-            {collection
-              ? `${collection.count} specimens`
-              : 'Loading collection'}
+            {collection ? `${collection.count} finds` : 'Loading collection'}
           </h2>
         </div>
         <Link to="/collections" className="ui-button ui-button-secondary">
-          Upload specimen
+          Upload find
         </Link>
       </div>
       {collection && collection.items.length === 0 ? (
         <EmptyState
           title="Show off your first find."
-          description="Upload a specimen photo to start your Basecamp collection showcase."
+          description="Upload a find photo to start your Basecamp collection showcase."
           action={
             <Link to="/collections" className="primary-action">
-              Upload specimen
+              Upload find
             </Link>
           }
         />
@@ -369,7 +367,7 @@ function ActivityFeed({
           <p>
             <strong>{displayName}</strong>{' '}
             {recentItems.length
-              ? `added ${recentItems.length} specimen${recentItems.length === 1 ? '' : 's'} to the collection`
+              ? `added ${recentItems.length} find${recentItems.length === 1 ? '' : 's'} to the collection`
               : 'is building a collection showcase'}
           </p>
           <span>2 hours ago</span>

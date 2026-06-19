@@ -275,7 +275,7 @@ export const createItem = mutation({
         `${args.specimenName} is now part of the collection showcase.`,
       photos: [photoUrl],
       storageIds: [args.storageId],
-      tags: ['collection', 'specimen'],
+      tags: ['collection', 'find'],
       likeCount: 0,
       commentCount: 0,
       shareCount: 0,
@@ -302,7 +302,7 @@ export const toggleReaction = mutation({
     }
 
     const item = await ctx.db.get(args.collectionItemId)
-    if (!item) throw new Error('Specimen not found.')
+    if (!item) throw new Error('Find not found.')
     if (item.userId !== userId) {
       const collector = await ctx.db.get(item.userId)
       if ((collector?.collectionVisibility ?? 'public') === 'private')

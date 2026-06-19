@@ -32,7 +32,7 @@ export default function CollectionTracker() {
   const [isCatalogSaving, setIsCatalogSaving] = useState(false)
 
   const usageText = collection
-    ? `${collection.count} / ${collection.limit} Specimens Used`
+    ? `${collection.count} / ${collection.limit} Finds Used`
     : 'Loading collection usage...'
   const isAtLimit = collection?.isAtLimit ?? false
   const previewUrl = useMemo(
@@ -50,7 +50,7 @@ export default function CollectionTracker() {
     }
 
     if (!photo) {
-      setMessage('Add a specimen photo before saving.')
+      setMessage('Add a find photo before saving.')
       return
     }
 
@@ -78,7 +78,7 @@ export default function CollectionTracker() {
       setAcquisitionType('found')
       setNotes('')
       setPhoto(null)
-      setMessage('Specimen added to your collection.')
+      setMessage('Find added to your collection.')
     } catch (error) {
       const detail = error instanceof Error ? error.message : ''
       setMessage(
@@ -145,7 +145,7 @@ export default function CollectionTracker() {
       <SectionHeader
         eyebrow="Collection showcase"
         title="Show off the keepers"
-        description="Upload specimens, build your gallery, and give other collectors something to react to."
+        description="Upload finds, build your gallery, and give other collectors something to react to."
         action={
           <Badge tone={isAtLimit ? 'achievement' : 'neutral'}>
             {usageText}
@@ -201,7 +201,7 @@ export default function CollectionTracker() {
             <p className="eyebrow">Collection catalogs</p>
             <h2>Organize by folder</h2>
             <p>
-              Create empty catalogs now, then we can add specimen sorting later.
+              Create empty catalogs now, then we can add find sorting later.
             </p>
           </div>
           <label>
@@ -238,7 +238,7 @@ export default function CollectionTracker() {
           {collection.catalogs.map((catalog) => (
             <Card key={catalog._id} className="catalog-card">
               <h2>{catalog.name}</h2>
-              <p>{catalog.description || 'Ready for specimens later.'}</p>
+              <p>{catalog.description || 'Ready for finds later.'}</p>
               <span>Empty catalog</span>
             </Card>
           ))}
@@ -254,7 +254,7 @@ export default function CollectionTracker() {
           ) : null}
           <div className="form-grid">
             <label>
-              Specimen name
+              Find name
               <input
                 value={specimenName}
                 onChange={(event) => setSpecimenName(event.target.value)}
@@ -315,7 +315,7 @@ export default function CollectionTracker() {
               Photo
               <span className="upload-dropzone">
                 <Camera aria-hidden="true" />
-                <span>{photo ? photo.name : 'Upload specimen photo'}</span>
+                <span>{photo ? photo.name : 'Upload find photo'}</span>
                 <input
                   type="file"
                   accept="image/*"
@@ -348,7 +348,7 @@ export default function CollectionTracker() {
               disabled={isSaving || isAtLimit || !specimenName.trim() || !photo}
             >
               <Upload aria-hidden="true" />
-              {isSaving ? 'Saving...' : 'Add specimen'}
+              {isSaving ? 'Saving...' : 'Add find'}
             </button>
           </div>
         </form>
@@ -378,7 +378,7 @@ export default function CollectionTracker() {
                   <p>
                     {item.materialType ||
                       item.foundLocation ||
-                      'Specimen details coming soon'}
+                      'Collection details coming soon'}
                   </p>
                   <span>{formatStatus(item.status)}</span>
                 </div>

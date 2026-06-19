@@ -10,7 +10,7 @@ Official domain: iluvrocks.rocks
 
 - Public feed and visitor-friendly landing pages.
 - Basecamp dashboard for trip planning and field workflows.
-- Collection tracker for specimen records.
+- Collection tracker for find records.
 - Saved locations for access notes and future scouting.
 - Log-a-find workflow for field notes.
 - Community and admin dashboard foundations.

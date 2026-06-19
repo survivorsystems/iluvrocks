@@ -51,7 +51,7 @@ export default function PublicCollection() {
         />
         <EmptyState
           title="Private collection"
-          description="Only the owner can view these specimens right now."
+          description="Only the owner can view these finds right now."
         />
       </section>
     )
@@ -62,7 +62,7 @@ export default function PublicCollection() {
       <SectionHeader
         eyebrow="Public collection"
         title={`${ownerName}'s collection`}
-        description={`${collection.count} specimen${collection.count === 1 ? '' : 's'} shared with the iluvrocks community.`}
+        description={`${collection.count} find${collection.count === 1 ? '' : 's'} shared with the iluvrocks community.`}
         action={<Badge tone="neutral">Public</Badge>}
       />
 
@@ -96,7 +96,7 @@ export default function PublicCollection() {
 
       {collection.items.length === 0 ? (
         <EmptyState
-          title="No public specimens yet"
+          title="No public finds yet"
           description="Collection photos will appear here once this member uploads them."
         />
       ) : (
@@ -114,7 +114,7 @@ export default function PublicCollection() {
                   <p>
                     {item.materialType ||
                       item.foundLocation ||
-                      'Specimen details coming soon'}
+                      'Collection details coming soon'}
                   </p>
                   <span>{item.status.replace(/_/g, ' ')}</span>
                 </div>
