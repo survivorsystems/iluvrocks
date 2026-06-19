@@ -190,8 +190,9 @@ img {
 .has-page-background .site-nav a.active,
 .has-page-background .site-nav a:hover,
 .has-page-background .icon-link:hover {
-  border: 1px solid rgba(255, 255, 255, 0.65);
-  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid var(--color-accent-yellow);
+  background: var(--color-accent-yellow);
+  color: var(--color-primary);
 }
 
 .brand,
@@ -351,6 +352,41 @@ main {
   border: 1px solid rgba(255, 255, 255, 0.76);
   background: rgba(255, 255, 255, 0.12);
   color: var(--color-surface);
+}
+
+.page-background-content .primary-action:hover,
+.page-background-content .secondary-action:hover,
+.page-background-content .ui-button:hover,
+.page-background-content .form-footer button:hover,
+.page-background-content .settings-save-bar button:hover,
+.page-background-content .message-composer button:hover,
+.page-background-content .forum-comment-form button:hover,
+.page-background-content .profile-menu button:hover,
+.page-background-content .profile-public-actions button:hover,
+.page-background-content .profile-public-actions a:hover,
+.page-background-content .conversation-list button:hover,
+.page-background-content .member-message-list button:hover,
+.page-background-content .forum-board-link:hover,
+.page-background-content .post-actions button:hover,
+.page-background-content .post-actions a:hover,
+.page-background-content .reaction-grid button:hover,
+.page-background-content .auth-switcher button:hover,
+.page-background-content .privacy-toggle button:hover,
+.page-background-content .profile-tabs button:hover,
+.page-background-content .activity-header button:hover,
+.page-background-content .activity-actions button:hover,
+.page-background-content .rail-card-title button:hover {
+  border-color: var(--color-accent-yellow);
+  background: var(--color-accent-yellow);
+  color: var(--color-primary);
+}
+
+.page-background-content .primary-action:hover svg,
+.page-background-content .secondary-action:hover svg,
+.page-background-content .ui-button:hover svg,
+.page-background-content button:hover svg,
+.page-background-content a:hover svg {
+  color: var(--color-primary);
 }
 
 .page-background-content .settings-save-bar,
@@ -2081,7 +2117,14 @@ label {
 
 .has-page-background .app-sidebar-nav a:hover,
 .has-page-background .app-sidebar-signout:hover {
-  background: rgba(255, 255, 255, 0.14);
+  border-color: var(--color-accent-yellow);
+  background: var(--color-accent-yellow);
+  color: var(--color-primary);
+}
+
+.has-page-background .app-sidebar-nav a:hover svg,
+.has-page-background .app-sidebar-signout:hover svg {
+  color: var(--color-primary);
 }
 
 .app-sidebar-nav a.is-active,
@@ -2186,6 +2229,27 @@ label {
 .avatar-action:hover,
 .overflow-button:hover {
   background: var(--color-hover);
+}
+
+.has-page-background .icon-button:hover,
+.has-page-background .avatar-action:hover,
+.has-page-background .overflow-button:hover,
+.has-page-background .edit-profile-button:hover {
+  border-color: var(--color-accent-yellow);
+  background: var(--color-accent-yellow);
+  color: var(--color-primary);
+}
+
+.has-page-background .icon-button:hover svg,
+.has-page-background .avatar-action:hover svg,
+.has-page-background .overflow-button:hover svg,
+.has-page-background .edit-profile-button:hover svg {
+  color: var(--color-primary);
+}
+
+.has-page-background .avatar-action:hover span {
+  background: var(--color-accent-yellow);
+  color: var(--color-primary);
 }
 
 .icon-button svg,
