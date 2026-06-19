@@ -56,12 +56,12 @@ export default function AdminDashboard() {
   return (
     <section className="workspace-page admin-dashboard">
       <SectionHeader
-        eyebrow="Owner Dashboard"
+        eyebrow="Admin Dashboard"
         title="Manage iluvrocks"
         description="Control site content, appearance, resources, businesses, subscriptions, featured sections, and page drafts from one place."
       />
 
-      <div className="admin-tabbar" role="tablist" aria-label="Owner tools">
+      <div className="admin-tabbar" role="tablist" aria-label="Admin tools">
         {tabs.map(({ id, label, icon: Icon }) => (
           <button
             key={id}

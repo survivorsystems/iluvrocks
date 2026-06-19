@@ -2943,10 +2943,45 @@ label {
   gap: var(--space-5);
 }
 
+.admin-dashboard .section-header {
+  border: 1px solid rgba(255, 255, 255, 0.62);
+  border-radius: var(--radius-xl);
+  padding: var(--space-5);
+  background: rgba(0, 0, 0, 0.78);
+  color: var(--color-surface);
+  box-shadow: var(--shadow-card);
+  backdrop-filter: blur(18px);
+}
+
+.admin-dashboard .section-header h1,
+.admin-dashboard .section-header p,
+.admin-dashboard .section-header .eyebrow {
+  color: var(--color-surface);
+}
+
+.admin-dashboard .stat-card {
+  border-color: rgba(255, 255, 255, 0.62);
+  background: rgba(0, 0, 0, 0.78);
+  color: var(--color-surface);
+  backdrop-filter: blur(18px);
+}
+
+.admin-dashboard .stat-card svg,
+.admin-dashboard .stat-card strong,
+.admin-dashboard .stat-card span {
+  color: var(--color-surface);
+}
+
 .admin-tabbar {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2);
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  border-radius: var(--radius-xl);
+  padding: var(--space-3);
+  background: rgba(0, 0, 0, 0.68);
+  box-shadow: var(--shadow-card);
+  backdrop-filter: blur(18px);
 }
 
 .admin-tabbar button,
@@ -2955,11 +2990,11 @@ label {
   align-items: center;
   gap: var(--space-2);
   min-height: 2.6rem;
-  border: 1px solid var(--color-border);
+  border: 1px solid rgba(255, 255, 255, 0.48);
   border-radius: var(--radius-round);
   padding: 0.65rem 0.9rem;
-  background: var(--color-surface);
-  color: var(--color-primary);
+  background: rgba(0, 0, 0, 0.35);
+  color: var(--color-surface);
   font-weight: var(--font-weight-bold);
 }
 
@@ -2970,8 +3005,8 @@ label {
 
 .admin-tabbar button.is-active,
 .directory-chip-row button.is-active {
-  border-color: var(--color-primary);
-  background: var(--color-primary);
+  border-color: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.16);
   color: var(--color-surface);
 }
 
@@ -2988,6 +3023,10 @@ label {
 .business-profile-card {
   display: grid;
   gap: var(--space-5);
+  border-color: rgba(255, 255, 255, 0.62);
+  background: rgba(0, 0, 0, 0.78);
+  color: var(--color-surface);
+  backdrop-filter: blur(18px);
 }
 
 .admin-panel-header {
@@ -3000,13 +3039,14 @@ label {
 .business-card-body h2,
 .business-profile-card h2 {
   margin: 0;
+  color: var(--color-surface);
 }
 
 .admin-panel-header p,
 .business-card-body p,
 .business-profile-details span {
   margin: 0;
-  color: var(--color-text-secondary);
+  color: rgba(255, 255, 255, 0.72);
 }
 
 .admin-form {
@@ -3018,7 +3058,7 @@ label {
 .directory-filter-card label {
   display: grid;
   gap: var(--space-2);
-  color: var(--color-text-secondary);
+  color: rgba(255, 255, 255, 0.78);
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-bold);
 }
@@ -3028,11 +3068,17 @@ label {
 .admin-form select,
 .directory-filter-card input {
   width: 100%;
-  border: 1px solid var(--color-border);
+  border: 1px solid rgba(255, 255, 255, 0.55);
   border-radius: var(--radius-medium);
   padding: 0.8rem 0.9rem;
-  background: var(--color-surface);
-  color: var(--color-primary);
+  background: rgba(0, 0, 0, 0.5);
+  color: var(--color-surface);
+}
+
+.admin-form input::placeholder,
+.admin-form textarea::placeholder,
+.directory-filter-card input::placeholder {
+  color: rgba(255, 255, 255, 0.56);
 }
 
 .admin-form textarea {
@@ -3057,15 +3103,16 @@ label {
 .admin-business-row {
   display: grid;
   gap: var(--space-2);
-  border: 1px solid var(--color-border);
+  border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: var(--radius-medium);
   padding: var(--space-4);
-  background: var(--color-surface-alt);
+  background: rgba(0, 0, 0, 0.5);
+  color: var(--color-surface);
 }
 
 .admin-list article span,
 .admin-business-row p {
-  color: var(--color-text-secondary);
+  color: rgba(255, 255, 255, 0.72);
 }
 
 .admin-business-row {
@@ -3090,10 +3137,11 @@ label {
 .business-plan-card {
   display: grid;
   gap: var(--space-3);
-  border: 1px solid var(--color-border);
+  border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: var(--radius-large);
   padding: var(--space-5);
-  background: var(--color-surface-alt);
+  background: rgba(0, 0, 0, 0.5);
+  color: var(--color-surface);
 }
 
 .business-plan-card h3,
@@ -3102,6 +3150,7 @@ label {
 }
 
 .business-plan-card strong {
+  color: var(--color-surface);
   font-size: var(--font-size-xl);
 }
 
