@@ -12,6 +12,7 @@ import {
 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import FeaturePanel from '../components/FeaturePanel'
+import PageBackgroundLayout from '../components/PageBackgroundLayout'
 import { Card, SectionHeader } from '../components/ui'
 import { useAuthProfileState } from '../lib/authState'
 
@@ -72,11 +73,8 @@ export default function Home() {
   }
 
   return (
-    <>
-      <section className="hero hero-with-image">
-        <div className="hero-image-panel" aria-hidden="true">
-          <img src="/iluvrocks-homepage-mountains.png" alt="" />
-        </div>
+    <PageBackgroundLayout background="skagit">
+      <section className="hero">
         <div className="hero-copy">
           <p className="eyebrow">Community field notes</p>
           <h1>iluvrocks</h1>
@@ -139,32 +137,34 @@ export default function Home() {
           </Link>
         </div>
       </section>
-    </>
+    </PageBackgroundLayout>
   )
 }
 
 function MemberHome() {
   return (
-    <section className="workspace-page member-home">
-      <SectionHeader
-        eyebrow="Member home"
-        title="Where do you want to go next?"
-        description="Use this as the main navigation page while the deeper feature pages grow out."
-      />
-      <div className="member-home-grid">
-        {memberFeatures.map(({ to, icon: Icon, title, description }) => (
-          <Link key={to} to={to}>
-            <Card as="article" className="member-feature-card">
-              <Icon aria-hidden="true" />
-              <div>
-                <h2>{title}</h2>
-                <p>{description}</p>
-              </div>
-              <ArrowRight aria-hidden="true" />
-            </Card>
-          </Link>
-        ))}
-      </div>
-    </section>
+    <PageBackgroundLayout background="skagit">
+      <section className="workspace-page member-home">
+        <SectionHeader
+          eyebrow="Member home"
+          title="Where do you want to go next?"
+          description="Use this as the main navigation page while the deeper feature pages grow out."
+        />
+        <div className="member-home-grid">
+          {memberFeatures.map(({ to, icon: Icon, title, description }) => (
+            <Link key={to} to={to}>
+              <Card as="article" className="member-feature-card">
+                <Icon aria-hidden="true" />
+                <div>
+                  <h2>{title}</h2>
+                  <p>{description}</p>
+                </div>
+                <ArrowRight aria-hidden="true" />
+              </Card>
+            </Link>
+          ))}
+        </div>
+      </section>
+    </PageBackgroundLayout>
   )
 }

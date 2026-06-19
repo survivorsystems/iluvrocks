@@ -180,6 +180,82 @@ main {
   padding: clamp(var(--space-8), 5vw, var(--space-16)) 0;
 }
 
+.page-background-layout {
+  position: relative;
+  isolation: isolate;
+  min-height: calc(100vh - 8rem);
+  margin: calc(clamp(var(--space-8), 5vw, var(--space-16)) * -1) 50%
+    calc(clamp(var(--space-8), 5vw, var(--space-16)) * -1);
+  padding: clamp(var(--space-8), 5vw, var(--space-16)) 0;
+  transform: translateX(-50%);
+  width: 100vw;
+}
+
+.page-background-layer {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background-image: var(--page-background-image);
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+.page-background-layer::after {
+  position: absolute;
+  inset: 0;
+  content: '';
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.46), rgba(0, 0, 0, 0.58)),
+    radial-gradient(
+      circle at 50% 18%,
+      rgba(255, 255, 255, 0.18),
+      transparent 38%
+    );
+}
+
+.page-background-content {
+  position: relative;
+  z-index: 1;
+  width: min(1120px, calc(100% - 2rem));
+  margin: 0 auto;
+}
+
+.page-background-content .ui-card,
+.page-background-content .feature-panel,
+.page-background-content .auth-form,
+.page-background-content .profile-header,
+.page-background-content .post-card,
+.page-background-content .composer {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(16px);
+}
+
+.page-background-content .section-header,
+.page-background-content .hero-copy,
+.page-background-content .public-section > h2,
+.page-background-content .public-section > .eyebrow {
+  text-shadow: 0 1px 18px rgba(0, 0, 0, 0.28);
+}
+
+.page-background-content .section-header h1,
+.page-background-content .section-header p,
+.page-background-content .section-header .eyebrow,
+.page-background-content .hero-copy h1,
+.page-background-content .hero-copy p,
+.page-background-content .hero-copy .eyebrow,
+.page-background-content .public-section > h2,
+.page-background-content .public-section > p,
+.page-background-content .public-section > .eyebrow {
+  color: var(--color-surface);
+}
+
+.page-background-content .tagline {
+  color: var(--color-surface) !important;
+}
+
 .dev-mode-badge {
   display: inline-flex;
   align-items: center;

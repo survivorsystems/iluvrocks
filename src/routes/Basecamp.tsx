@@ -1,5 +1,10 @@
 import RockhoundDashboard from '../components/RockhoundDashboard'
+import PageBackgroundLayout from '../components/PageBackgroundLayout'
 
 export default function Basecamp() {
-  return <RockhoundDashboard mode="basecamp" />
+  return (
+    <PageBackgroundLayout background="skagit">
+      <RockhoundDashboard mode="basecamp" />
+    </PageBackgroundLayout>
+  )
 }
