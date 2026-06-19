@@ -9,6 +9,9 @@ import ProfileSetup from './routes/ProfileSetup'
 import ProtectedRoute from './components/ProtectedRoute'
 import AdminDashboard from './routes/AdminDashboard'
 import Basecamp from './routes/Basecamp'
+import BusinessDirectory from './routes/BusinessDirectory'
+import BusinessManage from './routes/BusinessManage'
+import BusinessProfile from './routes/BusinessProfile'
 import CollectionTracker from './routes/CollectionTracker'
 import Community from './routes/Community'
 import LogFind from './routes/LogFind'
@@ -39,7 +42,16 @@ export default function App() {
           path="/founding-members"
           element={<PublicPage page="founding-members" />}
         />
-        <Route path="/businesses" element={<PublicPage page="businesses" />} />
+        <Route path="/businesses" element={<BusinessDirectory />} />
+        <Route path="/businesses/:slug" element={<BusinessProfile />} />
+        <Route
+          path="/business/manage"
+          element={
+            <ProtectedRoute requireProfile={false}>
+              <BusinessManage />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/about" element={<PublicPage page="about" />} />
         <Route path="/membership" element={<PublicPage page="membership" />} />
         <Route path="/community" element={<Community />} />

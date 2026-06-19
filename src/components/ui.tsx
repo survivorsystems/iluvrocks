@@ -62,6 +62,11 @@ export function AppShell() {
 export function Sidebar() {
   const navigate = useNavigate()
   const auth = useAuthProfileState()
+  const isOwner =
+    auth.viewer?.user?.email?.toLowerCase() === 'chickensweets87@gmail.com'
+  const navItems = isOwner
+    ? [...workspaceNavItems, { to: '/admin', label: 'Owner', icon: Settings }]
+    : workspaceNavItems
 
   const handleSignOut = async () => {
     await auth.signOut()
@@ -75,7 +80,7 @@ export function Sidebar() {
         <span>iluvrocks</span>
       </Link>
       <nav className="app-sidebar-nav">
-        {workspaceNavItems.map(({ to, label, icon: Icon }) => (
+        {navItems.map(({ to, label, icon: Icon }) => (
           <NavLink
             key={label}
             to={to}

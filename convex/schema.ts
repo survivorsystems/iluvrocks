@@ -416,4 +416,99 @@ export default defineSchema({
     summary: v.optional(v.string()),
     updatedAt: v.number(),
   }).index('by_location', ['locationId']),
+
+  siteAppearance: defineTable({
+    key: v.string(),
+    logoUrl: v.optional(v.string()),
+    primaryColor: v.optional(v.string()),
+    accentColor: v.optional(v.string()),
+    homepageHeadline: v.optional(v.string()),
+    homepageIntro: v.optional(v.string()),
+    homepageCtaLabel: v.optional(v.string()),
+    navigationJson: v.optional(v.string()),
+    backgroundJson: v.optional(v.string()),
+    featuredSectionsJson: v.optional(v.string()),
+    updatedAt: v.number(),
+    updatedBy: v.id('users'),
+  }).index('by_key', ['key']),
+
+  contentPages: defineTable({
+    slug: v.string(),
+    title: v.string(),
+    pageType: v.string(),
+    status: v.string(),
+    body: v.string(),
+    excerpt: v.optional(v.string()),
+    seoTitle: v.optional(v.string()),
+    seoDescription: v.optional(v.string()),
+    featuredImageUrl: v.optional(v.string()),
+    publishedAt: v.optional(v.number()),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+    authorId: v.id('users'),
+  })
+    .index('by_slug', ['slug'])
+    .index('by_status', ['status'])
+    .index('by_type', ['pageType']),
+
+  resourceLibraryItems: defineTable({
+    title: v.string(),
+    resourceType: v.string(),
+    status: v.string(),
+    description: v.optional(v.string()),
+    fileUrl: v.optional(v.string()),
+    storageId: v.optional(v.id('_storage')),
+    category: v.optional(v.string()),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+    createdBy: v.id('users'),
+  })
+    .index('by_status', ['status'])
+    .index('by_category', ['category']),
+
+  businesses: defineTable({
+    ownerId: v.id('users'),
+    name: v.string(),
+    slug: v.string(),
+    description: v.optional(v.string()),
+    category: v.string(),
+    website: v.optional(v.string()),
+    email: v.optional(v.string()),
+    phone: v.optional(v.string()),
+    location: v.optional(v.string()),
+    logoUrl: v.optional(v.string()),
+    coverImageUrl: v.optional(v.string()),
+    plan: v.string(),
+    subscriptionStatus: v.string(),
+    stripeCustomerId: v.optional(v.string()),
+    stripeSubscriptionId: v.optional(v.string()),
+    isApproved: v.boolean(),
+    isFeatured: v.boolean(),
+    isFoundingBusiness: v.boolean(),
+    priorityPlacement: v.optional(v.number()),
+    leadEmail: v.optional(v.string()),
+    analyticsJson: v.optional(v.string()),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index('by_owner', ['ownerId'])
+    .index('by_slug', ['slug'])
+    .index('by_approved', ['isApproved'])
+    .index('by_plan', ['plan']),
+
+  featuredContent: defineTable({
+    title: v.string(),
+    placement: v.string(),
+    contentType: v.string(),
+    targetId: v.optional(v.string()),
+    imageUrl: v.optional(v.string()),
+    summary: v.optional(v.string()),
+    priority: v.number(),
+    isActive: v.boolean(),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+    updatedBy: v.id('users'),
+  })
+    .index('by_placement', ['placement'])
+    .index('by_active', ['isActive']),
 })
