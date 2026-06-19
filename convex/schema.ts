@@ -1,7 +1,6 @@
-  import 
-{ defineSchema, defineTable } from "convex/server";
-import { v } from "convex/values";
-import{ authTables } from "@convex-dev/auth/server";
+import { defineSchema, defineTable } from 'convex/server'
+import { v } from 'convex/values'
+import { authTables } from '@convex-dev/auth/server'
 
 export default defineSchema({
   ...authTables,
@@ -29,8 +28,10 @@ export default defineSchema({
     totalFinds: v.optional(v.number()),
     totalLocations: v.optional(v.number()),
     totalPosts: v.optional(v.number()),
-  }).index("email", ["email"])
-    .index("username", ["username"]),
+    collectionVisibility: v.optional(v.string()),
+  })
+    .index('email', ['email'])
+    .index('username', ['username']),
 
   locations: defineTable({
     name: v.string(),
@@ -65,8 +66,9 @@ export default defineSchema({
     numTripLogs: v.optional(v.number()),
     avgDifficulty: v.optional(v.number()),
     avgAccess: v.optional(v.number()),
-  }).index("by_state", ["state"])
-    .index("by_name", ["name"]),
+  })
+    .index('by_state', ['state'])
+    .index('by_name', ['name']),
 
   minerals: defineTable({
     name: v.string(),
@@ -79,27 +81,27 @@ export default defineSchema({
     geologicalInfo: v.string(),
     cleaningRecommendations: v.string(),
     displayRecommendations: v.string(),
-  }).index("by_name", ["name"]),
+  }).index('by_name', ['name']),
 
   locationMinerals: defineTable({
-    locationId: v.id("locations"),
-    mineralId: v.id("minerals"),
+    locationId: v.id('locations'),
+    mineralId: v.id('minerals'),
     likelihood: v.string(), // "Common", "Occasional", "Rare"
-  }).index("by_location", ["locationId"]),
+  }).index('by_location', ['locationId']),
 
   // Unified Social Feed Post
   posts: defineTable({
-    userId: v.id("users"),
+    userId: v.id('users'),
     type: v.string(), // "find", "trip_report", "discussion", "educational"
     title: v.optional(v.string()),
     content: v.string(),
-    locationId: v.optional(v.id("locations")),
+    locationId: v.optional(v.id('locations')),
     region: v.optional(v.string()),
     photos: v.optional(v.array(v.string())),
-    storageIds: v.optional(v.array(v.id("_storage"))),
+    storageIds: v.optional(v.array(v.id('_storage'))),
     // Type specific fields
     mineralName: v.optional(v.string()),
-    mineralId: v.optional(v.id("minerals")),
+    mineralId: v.optional(v.id('minerals')),
     weight: v.optional(v.string()),
     dimensions: v.optional(v.string()),
     dateOccurred: v.optional(v.number()),
@@ -110,14 +112,15 @@ export default defineSchema({
     likeCount: v.optional(v.number()),
     commentCount: v.optional(v.number()),
     shareCount: v.optional(v.number()),
-  }).index("by_user", ["userId"])
-    .index("by_type", ["type"])
-    .index("by_location", ["locationId"])
-    .index("by_region", ["region"]),
+  })
+    .index('by_user', ['userId'])
+    .index('by_type', ['type'])
+    .index('by_location', ['locationId'])
+    .index('by_region', ['region']),
 
   collectionItems: defineTable({
-    userId: v.id("users"),
-    storageId: v.optional(v.id("_storage")),
+    userId: v.id('users'),
+    storageId: v.optional(v.id('_storage')),
     photoUrl: v.string(),
     specimenName: v.string(),
     materialType: v.optional(v.string()),
@@ -126,90 +129,113 @@ export default defineSchema({
     notes: v.optional(v.string()),
     status: v.string(),
     acquisitionType: v.string(),
-    currentOwnerId: v.optional(v.id("users")),
+    currentOwnerId: v.optional(v.id('users')),
     createdAt: v.number(),
     updatedAt: v.number(),
-  }).index("by_user", ["userId"]),
+  }).index('by_user', ['userId']),
+
+  collectionCatalogs: defineTable({
+    userId: v.id('users'),
+    name: v.string(),
+    description: v.optional(v.string()),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  }).index('by_user', ['userId']),
 
   specimenReactions: defineTable({
-    collectionItemId: v.id("collectionItems"),
-    userId: v.id("users"),
+    collectionItemId: v.id('collectionItems'),
+    userId: v.id('users'),
     reactionType: v.string(),
     createdAt: v.number(),
-  }).index("by_item", ["collectionItemId"])
-    .index("by_user_item_type", ["userId", "collectionItemId", "reactionType"])
-    .index("by_item_type", ["collectionItemId", "reactionType"]),
+  })
+    .index('by_item', ['collectionItemId'])
+    .index('by_user_item_type', ['userId', 'collectionItemId', 'reactionType'])
+    .index('by_item_type', ['collectionItemId', 'reactionType']),
 
   likes: defineTable({
-    userId: v.id("users"),
-    postId: v.id("posts"),
-  }).index("by_post", ["postId"])
-    .index("by_user_post", ["userId", "postId"]),
+    userId: v.id('users'),
+    postId: v.id('posts'),
+  })
+    .index('by_post', ['postId'])
+    .index('by_user_post', ['userId', 'postId']),
 
   comments: defineTable({
-    userId: v.id("users"),
-    postId: v.id("posts"),
+    userId: v.id('users'),
+    postId: v.id('posts'),
     text: v.string(),
-    parentId: v.optional(v.id("comments")),
-  }).index("by_post", ["postId"]),
+    parentId: v.optional(v.id('comments')),
+  }).index('by_post', ['postId']),
 
   follows: defineTable({
-    followerId: v.id("users"),
-    followingId: v.id("users"),
-  }).index("by_follower", ["followerId", "followingId"])
-    .index("by_following", ["followingId"]),
+    followerId: v.id('users'),
+    followingId: v.id('users'),
+  })
+    .index('by_follower', ['followerId', 'followingId'])
+    .index('by_following', ['followingId']),
+
+  blocks: defineTable({
+    blockerId: v.id('users'),
+    blockedId: v.id('users'),
+    createdAt: v.number(),
+  })
+    .index('by_blocker', ['blockerId', 'blockedId'])
+    .index('by_blocked', ['blockedId']),
 
   groups: defineTable({
     name: v.string(),
     description: v.string(),
     image: v.optional(v.string()),
     region: v.optional(v.string()),
-    mineralId: v.optional(v.id("minerals")),
+    mineralId: v.optional(v.id('minerals')),
     memberCount: v.optional(v.number()),
     slug: v.string(),
-  }).index("by_slug", ["slug"]),
+  }).index('by_slug', ['slug']),
 
   groupMemberships: defineTable({
-    userId: v.id("users"),
-    groupId: v.id("groups"),
+    userId: v.id('users'),
+    groupId: v.id('groups'),
     role: v.string(), // "member", "admin"
-  }).index("by_group", ["groupId"])
-    .index("by_user", ["userId"]),
+  })
+    .index('by_group', ['groupId'])
+    .index('by_user', ['userId']),
 
   notifications: defineTable({
-    userId: v.id("users"),
-    fromUserId: v.optional(v.id("users")),
+    userId: v.id('users'),
+    fromUserId: v.optional(v.id('users')),
     type: v.string(), // "like", "comment", "follow", "message", "group_activity"
-    postId: v.optional(v.id("posts")),
-    groupId: v.optional(v.id("groups")),
+    postId: v.optional(v.id('posts')),
+    groupId: v.optional(v.id('groups')),
     text: v.string(),
     isRead: v.boolean(),
-  }).index("by_user", ["userId"]),
+  }).index('by_user', ['userId']),
 
   // Legacy/Backwards compatibility or refined tables
   findReports: defineTable({
-    locationId: v.id("locations"),
-    userId: v.id("users"),
+    locationId: v.id('locations'),
+    userId: v.id('users'),
     mineralName: v.string(),
-    mineralId: v.optional(v.id("minerals")),
-    photos: v.array(v.id("_storage")),
+    mineralId: v.optional(v.id('minerals')),
+    photos: v.array(v.id('_storage')),
     dateFound: v.number(),
     description: v.string(),
     size: v.optional(v.string()),
     weight: v.optional(v.string()),
     toolsUsed: v.optional(v.array(v.string())),
     isPrivate: v.boolean(),
-    approximateCoordinates: v.optional(v.object({
-      lat: v.number(),
-      lng: v.number(),
-    })),
+    approximateCoordinates: v.optional(
+      v.object({
+        lat: v.number(),
+        lng: v.number(),
+      }),
+    ),
     status: v.string(), // "pending", "approved", "hidden"
-  }).index("by_location", ["locationId"])
-    .index("by_user", ["userId"]),
+  })
+    .index('by_location', ['locationId'])
+    .index('by_user', ['userId']),
 
   tripLogs: defineTable({
-    locationId: v.id("locations"),
-    userId: v.id("users"),
+    locationId: v.id('locations'),
+    userId: v.id('users'),
     dateVisited: v.number(),
     timeSpent: v.optional(v.string()),
     roadConditions: v.string(),
@@ -220,101 +246,107 @@ export default defineSchema({
     parkingAvailability: v.string(),
     notes: v.string(),
     recommend: v.boolean(),
-    photos: v.optional(v.array(v.id("_storage"))),
+    photos: v.optional(v.array(v.id('_storage'))),
     status: v.string(), // "pending", "approved", "hidden"
-  }).index("by_location", ["locationId"])
-    .index("by_user", ["userId"]),
+  })
+    .index('by_location', ['locationId'])
+    .index('by_user', ['userId']),
 
   chatRooms: defineTable({
     name: v.string(),
     description: v.string(),
     slug: v.string(),
     icon: v.string(),
-  }).index("by_slug", ["slug"]),
+  }).index('by_slug', ['slug']),
 
   chatMessages: defineTable({
-    roomId: v.id("chatRooms"),
-    userId: v.id("users"),
+    roomId: v.id('chatRooms'),
+    userId: v.id('users'),
     text: v.string(),
     imageUrl: v.optional(v.string()),
-  }).index("by_room", ["roomId"]),
+  }).index('by_room', ['roomId']),
 
   favorites: defineTable({
-    userId: v.id("users"),
-    locationId: v.id("locations"),
-  }).index("by_user", ["userId"])
-    .index("by_location", ["locationId"]),
+    userId: v.id('users'),
+    locationId: v.id('locations'),
+  })
+    .index('by_user', ['userId'])
+    .index('by_location', ['locationId']),
 
   safetyCheckins: defineTable({
-    userId: v.id("users"),
-    locationId: v.id("locations"),
+    userId: v.id('users'),
+    locationId: v.id('locations'),
     checkInTime: v.number(),
     expectedReturnTime: v.number(),
     emergencyContact: v.string(),
     status: v.string(), // "active", "returned", "overdue"
     notes: v.optional(v.string()),
-  }).index("by_user", ["userId"])
-    .index("by_status", ["status"]),
+  })
+    .index('by_user', ['userId'])
+    .index('by_status', ['status']),
 
   identifications: defineTable({
-    userId: v.id("users"),
-    storageId: v.id("_storage"),
+    userId: v.id('users'),
+    storageId: v.id('_storage'),
     result: v.string(),
     mineralName: v.optional(v.string()),
     confidence: v.optional(v.number()),
-  }).index("by_user", ["userId"]),
+  }).index('by_user', ['userId']),
 
   classifieds: defineTable({
-    userId: v.id("users"),
+    userId: v.id('users'),
     title: v.string(),
     description: v.string(),
     price: v.number(),
-    category: v.string(), 
+    category: v.string(),
     subCategory: v.string(),
     state: v.string(),
     images: v.array(v.string()),
-    status: v.string(), 
-  }).index("by_category", ["category"])
-    .index("by_state", ["state"])
-    .index("by_user", ["userId"]),
+    status: v.string(),
+  })
+    .index('by_category', ['category'])
+    .index('by_state', ['state'])
+    .index('by_user', ['userId']),
 
   jobs: defineTable({
-    userId: v.id("users"),
+    userId: v.id('users'),
     title: v.string(),
     company: v.string(),
     description: v.string(),
     location: v.string(),
     salaryRange: v.optional(v.string()),
-    type: v.string(), 
+    type: v.string(),
     status: v.string(),
-  }).index("by_status", ["status"]),
+  }).index('by_status', ['status']),
 
- locationPhotos: defineTable({
-    locationId: v.id("locations"),
-    userId: v.id("users"),
-    storageId: v.id("_storage"),
+  locationPhotos: defineTable({
+    locationId: v.id('locations'),
+    userId: v.id('users'),
+    storageId: v.id('_storage'),
     url: v.optional(v.string()),
     caption: v.optional(v.string()),
     category: v.optional(v.string()),
     status: v.optional(v.string()),
-  }).index("by_location", ["locationId"])
-    .index("by_user", ["userId"]),
+  })
+    .index('by_location', ['locationId'])
+    .index('by_user', ['userId']),
 
   locationComments: defineTable({
-    locationId: v.id("locations"),
-    userId: v.id("users"),
+    locationId: v.id('locations'),
+    userId: v.id('users'),
     text: v.string(),
     status: v.optional(v.string()),
-    parentId: v.optional(v.id("locationComments")),
-  }).index("by_location", ["locationId"])
-    .index("by_user", ["userId"]),
+    parentId: v.optional(v.id('locationComments')),
+  })
+    .index('by_location', ['locationId'])
+    .index('by_user', ['userId']),
 
   weatherCache: defineTable({
-    locationId: v.id("locations"),
+    locationId: v.id('locations'),
     temp: v.optional(v.number()),
     wind: v.optional(v.string()),
     precipitation: v.optional(v.string()),
     summary: v.optional(v.string()),
     updatedAt: v.number(),
-  }).index("by_location", ["locationId"]),
-});
+  }).index('by_location', ['locationId']),
+})

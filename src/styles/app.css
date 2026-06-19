@@ -15,8 +15,8 @@
   --color-selected: #111111;
 
   --font-family-base:
-    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-    sans-serif;
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    'Segoe UI', sans-serif;
   --font-size-xs: 0.75rem;
   --font-size-sm: 0.875rem;
   --font-size-md: 1rem;
@@ -781,6 +781,107 @@ label {
   width: min(260px, 100%);
 }
 
+.collection-settings-card {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-4);
+  align-items: center;
+}
+
+.collection-settings-card h2,
+.catalog-form h2,
+.catalog-card h2 {
+  margin: 0;
+  color: var(--color-primary);
+  font-size: var(--font-size-xl);
+}
+
+.collection-settings-card p,
+.catalog-form p,
+.catalog-card p {
+  margin: var(--space-2) 0 0;
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-base);
+}
+
+.collection-settings-card span {
+  display: inline-flex;
+  margin-top: var(--space-3);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.privacy-toggle {
+  display: inline-flex;
+  gap: var(--space-1);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-round);
+  padding: var(--space-1);
+  background: var(--color-surface-alt);
+}
+
+.privacy-toggle button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 2.45rem;
+  border-radius: var(--radius-round);
+  padding: 0.5rem 0.9rem;
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-bold);
+}
+
+.privacy-toggle button.is-active {
+  background: var(--color-primary);
+  color: var(--color-surface);
+}
+
+.privacy-toggle svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.catalog-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(12rem, 1fr) minmax(14rem, 1fr);
+  gap: var(--space-4);
+  align-items: end;
+}
+
+.catalog-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
+.catalog-card {
+  min-height: 10rem;
+}
+
+.catalog-card span {
+  display: inline-flex;
+  width: fit-content;
+  margin-top: var(--space-4);
+  border-radius: var(--radius-round);
+  padding: 0.3rem 0.65rem;
+  background: var(--color-surface-alt);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+}
+
+.public-collection-owner {
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+}
+
+.public-collection-owner h2 {
+  margin: 0;
+  color: var(--color-primary);
+}
+
 .collection-form {
   display: grid;
   gap: var(--space-4);
@@ -1114,10 +1215,34 @@ label {
   width: 9.25rem;
   height: 1.25rem;
   background:
-    linear-gradient(135deg, transparent 44%, var(--color-primary) 45% 49%, transparent 50%) 0.45rem 0.1rem / 3rem 1rem no-repeat,
-    linear-gradient(45deg, transparent 44%, var(--color-primary) 45% 49%, transparent 50%) 2.05rem 0.1rem / 3rem 1rem no-repeat,
-    linear-gradient(135deg, transparent 44%, var(--color-primary) 45% 49%, transparent 50%) 3.7rem 0.25rem / 2.4rem 0.85rem no-repeat,
-    linear-gradient(45deg, transparent 44%, var(--color-primary) 45% 49%, transparent 50%) 5rem 0.25rem / 2.4rem 0.85rem no-repeat;
+    linear-gradient(
+        135deg,
+        transparent 44%,
+        var(--color-primary) 45% 49%,
+        transparent 50%
+      )
+      0.45rem 0.1rem / 3rem 1rem no-repeat,
+    linear-gradient(
+        45deg,
+        transparent 44%,
+        var(--color-primary) 45% 49%,
+        transparent 50%
+      )
+      2.05rem 0.1rem / 3rem 1rem no-repeat,
+    linear-gradient(
+        135deg,
+        transparent 44%,
+        var(--color-primary) 45% 49%,
+        transparent 50%
+      )
+      3.7rem 0.25rem / 2.4rem 0.85rem no-repeat,
+    linear-gradient(
+        45deg,
+        transparent 44%,
+        var(--color-primary) 45% 49%,
+        transparent 50%
+      )
+      5rem 0.25rem / 2.4rem 0.85rem no-repeat;
 }
 
 .app-sidebar-nav {
@@ -1258,7 +1383,8 @@ label {
   width: auto;
   max-width: none;
   margin: 0;
-  padding: var(--space-4) clamp(var(--space-4), 3vw, var(--space-8)) var(--space-10);
+  padding: var(--space-4) clamp(var(--space-4), 3vw, var(--space-8))
+    var(--space-10);
 }
 
 .workspace-grid {
@@ -1281,7 +1407,8 @@ label {
   border-bottom: 1px solid var(--color-divider);
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.08)),
-    url("https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80") center / cover;
+    url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80')
+      center / cover;
 }
 
 .profile-body {
@@ -1301,7 +1428,8 @@ label {
   border-radius: 50%;
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.18)),
-    url("https://images.unsplash.com/photo-1501555088652-021faa106b9b?auto=format&fit=crop&w=600&q=80") center / cover;
+    url('https://images.unsplash.com/photo-1501555088652-021faa106b9b?auto=format&fit=crop&w=600&q=80')
+      center / cover;
   color: var(--color-surface);
   font-size: 1.85rem;
   font-weight: var(--font-weight-black);
@@ -1314,6 +1442,73 @@ label {
   right: clamp(var(--space-5), 3vw, var(--space-8));
   display: flex;
   gap: var(--space-3);
+}
+
+.profile-menu-wrap {
+  position: relative;
+}
+
+.profile-menu {
+  position: absolute;
+  top: calc(100% + var(--space-2));
+  right: 0;
+  z-index: 20;
+  display: grid;
+  min-width: 13rem;
+  gap: var(--space-1);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-large);
+  padding: var(--space-2);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+}
+
+.profile-menu button,
+.profile-public-actions button,
+.profile-public-actions a {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 2.6rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-medium);
+  padding: 0.65rem 0.8rem;
+  background: transparent;
+  color: var(--color-primary);
+  font-weight: var(--font-weight-bold);
+  text-align: left;
+}
+
+.profile-menu button:hover,
+.profile-public-actions button:hover,
+.profile-public-actions a:hover {
+  border-color: var(--color-border);
+  background: var(--color-hover);
+}
+
+.profile-menu button:disabled,
+.profile-public-actions button:disabled {
+  cursor: not-allowed;
+  color: var(--color-disabled);
+}
+
+.profile-menu svg,
+.profile-public-actions svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.profile-menu-message {
+  margin: var(--space-3) 0 0;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.profile-public-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
 }
 
 .edit-profile-button {
@@ -1372,7 +1567,8 @@ label {
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: var(--space-3);
-  padding: var(--space-3) clamp(var(--space-5), 3vw, var(--space-10)) var(--space-5);
+  padding: var(--space-3) clamp(var(--space-5), 3vw, var(--space-10))
+    var(--space-5);
 }
 
 .profile-stats div {
@@ -1428,13 +1624,14 @@ label {
   height: 3px;
   border-radius: var(--radius-round) var(--radius-round) 0 0;
   background: var(--color-primary);
-  content: "";
+  content: '';
 }
 
 .activity-card {
   display: grid;
   gap: var(--space-4);
-  padding: var(--space-4) clamp(var(--space-5), 3vw, var(--space-6)) var(--space-6);
+  padding: var(--space-4) clamp(var(--space-5), 3vw, var(--space-6))
+    var(--space-6);
 }
 
 .activity-header {
@@ -1760,8 +1957,14 @@ label {
   .collection-photo-grid,
   .workspace-right-rail,
   .specimen-detail-grid,
-  .reaction-grid {
+  .reaction-grid,
+  .catalog-form,
+  .catalog-grid {
     grid-template-columns: 1fr;
+  }
+
+  .collection-settings-card {
+    display: grid;
   }
 
   .mini-badge-grid {

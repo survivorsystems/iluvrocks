@@ -4,16 +4,22 @@ import {
   Compass,
   Diamond,
   Edit3,
+  Eye,
+  EyeOff,
   Mail,
   MapPin,
   MoreHorizontal,
   Mountain,
+  ShieldOff,
   Shield,
+  UserPlus,
   Trophy,
 } from 'lucide-react'
-import { Link } from 'react-router-dom'
-import { useQuery } from 'convex/react'
+import { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { useMutation, useQuery } from 'convex/react'
 import { api } from '../../convex/_generated/api'
+import type { Id } from '../../convex/_generated/dataModel'
 import { useAuthProfileState } from '../lib/authState'
 import { Badge, Card, EmptyState, getInitials } from './ui'
 
@@ -37,31 +43,62 @@ const badges = [
 ]
 
 const recentActivity = [
-  { label: 'Added 3 new finds to Quartz Collection', time: '2h ago', icon: Mountain },
-  { label: 'Posted in Central Washington Rockhounds', time: '5h ago', icon: Mail },
+  {
+    label: 'Added 3 new finds to Quartz Collection',
+    time: '2h ago',
+    icon: Mountain,
+  },
+  {
+    label: 'Posted in Central Washington Rockhounds',
+    time: '5h ago',
+    icon: Mail,
+  },
   { label: 'Earned the Trailblazer badge', time: '1d ago', icon: Diamond },
 ]
 
-export default function RockhoundDashboard({ mode = 'basecamp' }: RockhoundDashboardProps) {
+export default function RockhoundDashboard({
+  mode = 'basecamp',
+}: RockhoundDashboardProps) {
   const auth = useAuthProfileState()
   const collection = useQuery(api.collections.listMine, {})
+  const followUser = useMutation(api.social.followUser)
+  const blockUser = useMutation(api.social.blockUser)
   const viewer = auth.viewer?.user
-  const displayName = viewer?.name?.trim() || auth.user?.displayName || 'RockHounder'
-  const username = viewer?.username?.trim() || auth.user?.username || 'rockhounder'
+  const displayName =
+    viewer?.name?.trim() || auth.user?.displayName || 'RockHounder'
+  const username =
+    viewer?.username?.trim() || auth.user?.username || 'rockhounder'
   const email = viewer?.email?.trim() || auth.user?.email
   const location = viewer?.location?.trim() || 'Ellensburg, Washington'
-  const bio = viewer?.bio?.trim() || 'Always outside. Always hunting for the next cool find.'
+  const bio =
+    viewer?.bio?.trim() ||
+    'Always outside. Always hunting for the next cool find.'
   const avatarLabel = getInitials(displayName || username || email)
+  const viewerId = viewer?._id === 'dev-user' ? undefined : viewer?._id
 
   return (
     <div className="workspace-grid workspace-grid-with-rail">
-      <Card className="profile-card" aria-label={mode === 'basecamp' ? 'Basecamp profile' : 'Rockhound profile'}>
+      <Card
+        className="profile-card"
+        aria-label={
+          mode === 'basecamp' ? 'Basecamp profile' : 'Rockhound profile'
+        }
+      >
         <ProfileHeader
           avatarLabel={avatarLabel}
           displayName={displayName}
           username={username}
           location={location}
           bio={bio}
+          targetUserId={viewerId}
+          isOwnProfile
+          collectionVisibility={collection?.visibility ?? 'public'}
+          onFollow={
+            viewerId ? () => followUser({ followingId: viewerId }) : undefined
+          }
+          onBlock={
+            viewerId ? () => blockUser({ blockedId: viewerId }) : undefined
+          }
         />
         <StatsRow />
         <ProfileTabs />
@@ -79,16 +116,56 @@ function ProfileHeader({
   username,
   location,
   bio,
+  targetUserId,
+  isOwnProfile,
+  isFollowing = false,
+  isBlocked = false,
+  collectionVisibility = 'public',
+  onFollow,
+  onBlock,
 }: {
   avatarLabel: string
   displayName: string
   username: string
   location: string
   bio: string
+  targetUserId?: Id<'users'>
+  isOwnProfile?: boolean
+  isFollowing?: boolean
+  isBlocked?: boolean
+  collectionVisibility?: string
+  onFollow?: () => Promise<unknown>
+  onBlock?: () => Promise<unknown>
 }) {
+  const navigate = useNavigate()
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [menuMessage, setMenuMessage] = useState<string | null>(null)
+
+  const runMenuAction = async (
+    action: () => Promise<unknown>,
+    message: string,
+  ) => {
+    setMenuMessage(null)
+    try {
+      await action()
+      setMenuMessage(message)
+      setIsMenuOpen(false)
+    } catch (error) {
+      setMenuMessage(
+        error instanceof Error
+          ? error.message
+          : 'That action could not be completed.',
+      )
+    }
+  }
+
   return (
     <header className="profile-hero">
-      <div className="profile-cover" role="img" aria-label="Alpine field area with mountains and pine trees" />
+      <div
+        className="profile-cover"
+        role="img"
+        aria-label="Alpine field area with mountains and pine trees"
+      />
       <div className="profile-body">
         <div className="profile-avatar" aria-hidden="true">
           {avatarLabel}
@@ -98,10 +175,67 @@ function ProfileHeader({
             <Edit3 aria-hidden="true" />
             <span>Edit Profile</span>
           </Link>
-          <button type="button" className="overflow-button" aria-label="More profile options">
-            <MoreHorizontal aria-hidden="true" />
-          </button>
+          <div className="profile-menu-wrap">
+            <button
+              type="button"
+              className="overflow-button"
+              aria-label="More profile options"
+              aria-expanded={isMenuOpen}
+              onClick={() => setIsMenuOpen((open) => !open)}
+            >
+              <MoreHorizontal aria-hidden="true" />
+            </button>
+            {isMenuOpen ? (
+              <div className="profile-menu" role="menu">
+                <button
+                  type="button"
+                  role="menuitem"
+                  disabled={isOwnProfile || !targetUserId || !onFollow}
+                  onClick={() =>
+                    onFollow &&
+                    void runMenuAction(
+                      onFollow,
+                      isFollowing ? 'User unfollowed.' : 'User followed.',
+                    )
+                  }
+                >
+                  <UserPlus aria-hidden="true" />
+                  <span>{isFollowing ? 'Unfollow user' : 'Follow user'}</span>
+                </button>
+                <button
+                  type="button"
+                  role="menuitem"
+                  disabled={isOwnProfile || !targetUserId || !onBlock}
+                  onClick={() =>
+                    onBlock &&
+                    void runMenuAction(
+                      onBlock,
+                      isBlocked ? 'User unblocked.' : 'User blocked.',
+                    )
+                  }
+                >
+                  <ShieldOff aria-hidden="true" />
+                  <span>{isBlocked ? 'Unblock user' : 'Block user'}</span>
+                </button>
+                <button
+                  type="button"
+                  role="menuitem"
+                  onClick={() => navigate(`/profile/${username}/collection`)}
+                >
+                  {collectionVisibility === 'private' ? (
+                    <EyeOff aria-hidden="true" />
+                  ) : (
+                    <Eye aria-hidden="true" />
+                  )}
+                  <span>View collection</span>
+                </button>
+              </div>
+            ) : null}
+          </div>
         </div>
+        {menuMessage ? (
+          <p className="profile-menu-message">{menuMessage}</p>
+        ) : null}
         <div className="profile-title-row">
           <h1>{displayName}</h1>
           <Badge tone="dark">Founding Member #18</Badge>
@@ -138,7 +272,11 @@ function ProfileTabs() {
   return (
     <nav className="profile-tabs" aria-label="Profile sections">
       {['Activity', 'Posts', 'Collections', 'Finds'].map((tab) => (
-        <button key={tab} type="button" className={tab === 'Activity' ? 'is-active' : undefined}>
+        <button
+          key={tab}
+          type="button"
+          className={tab === 'Activity' ? 'is-active' : undefined}
+        >
           {tab}
         </button>
       ))}
@@ -146,7 +284,11 @@ function ProfileTabs() {
   )
 }
 
-function CollectionShowcase({ collection }: { collection: ReturnType<typeof useQuery<typeof api.collections.listMine>> }) {
+function CollectionShowcase({
+  collection,
+}: {
+  collection: ReturnType<typeof useQuery<typeof api.collections.listMine>>
+}) {
   const items = collection?.items.slice(0, 6) ?? []
 
   return (
@@ -154,7 +296,11 @@ function CollectionShowcase({ collection }: { collection: ReturnType<typeof useQ
       <div className="showcase-title-row">
         <div>
           <p className="eyebrow">Collection showcase</p>
-          <h2>{collection ? `${collection.count} specimens` : 'Loading collection'}</h2>
+          <h2>
+            {collection
+              ? `${collection.count} specimens`
+              : 'Loading collection'}
+          </h2>
         </div>
         <Link to="/collections" className="ui-button ui-button-secondary">
           Upload specimen
@@ -203,7 +349,9 @@ function ActivityFeed({
         <div>
           <p>
             <strong>{displayName}</strong>{' '}
-            {recentItems.length ? `added ${recentItems.length} specimen${recentItems.length === 1 ? '' : 's'} to the collection` : 'is building a collection showcase'}
+            {recentItems.length
+              ? `added ${recentItems.length} specimen${recentItems.length === 1 ? '' : 's'} to the collection`
+              : 'is building a collection showcase'}
           </p>
           <span>2 hours ago</span>
         </div>

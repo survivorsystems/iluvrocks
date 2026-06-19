@@ -12,6 +12,7 @@ import CollectionTracker from './routes/CollectionTracker'
 import Community from './routes/Community'
 import LogFind from './routes/LogFind'
 import PublicPage from './routes/PublicPage'
+import PublicCollection from './routes/PublicCollection'
 import SpecimenDetail from './routes/SpecimenDetail'
 
 export default function App() {
@@ -20,12 +21,21 @@ export default function App() {
       <Route element={<Layout />}>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/create-account" element={<Login initialMode="createAccount" />} />
-        <Route path="/create-basecamp" element={<Login initialMode="createAccount" />} />
+        <Route
+          path="/create-account"
+          element={<Login initialMode="createAccount" />}
+        />
+        <Route
+          path="/create-basecamp"
+          element={<Login initialMode="createAccount" />}
+        />
         <Route path="/feed" element={<Feed />} />
         <Route path="/discoveries" element={<Feed />} />
         <Route path="/members" element={<PublicPage page="members" />} />
-        <Route path="/founding-members" element={<PublicPage page="founding-members" />} />
+        <Route
+          path="/founding-members"
+          element={<PublicPage page="founding-members" />}
+        />
         <Route path="/businesses" element={<PublicPage page="businesses" />} />
         <Route path="/about" element={<PublicPage page="about" />} />
         <Route path="/membership" element={<PublicPage page="membership" />} />
@@ -63,6 +73,10 @@ export default function App() {
           }
         />
         <Route path="/profile/:handle" element={<Profile />} />
+        <Route
+          path="/profile/:handle/collection"
+          element={<PublicCollection />}
+        />
         <Route
           path="/basecamp"
           element={
