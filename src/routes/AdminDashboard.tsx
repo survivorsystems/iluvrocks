@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import type { FormEvent } from 'react'
+import type { CSSProperties, FormEvent } from 'react'
 import {
   BriefcaseBusiness,
   CreditCard,
@@ -21,6 +21,7 @@ import { Button, Card, SectionHeader, StatCard } from '../components/ui'
 type AdminTab =
   | 'overview'
   | 'appearance'
+  | 'theme'
   | 'destinations'
   | 'materials'
   | 'itineraries'
@@ -38,6 +39,7 @@ const tabs: Array<{
 }> = [
   { id: 'overview', label: 'Overview', icon: LayoutDashboard },
   { id: 'appearance', label: 'Appearance', icon: Paintbrush },
+  { id: 'theme', label: 'Theme / Style Manager', icon: Paintbrush },
   { id: 'destinations', label: 'Destinations', icon: Map },
   { id: 'materials', label: 'Materials', icon: Image },
   { id: 'itineraries', label: 'Itineraries', icon: Route },
@@ -77,6 +79,7 @@ export default function AdminDashboard() {
 
       {activeTab === 'overview' ? <OverviewPanel overview={overview} /> : null}
       {activeTab === 'appearance' ? <AppearancePanel /> : null}
+      {activeTab === 'theme' ? <ThemeManagerPanel /> : null}
       {activeTab === 'destinations' ? <DestinationsPanel /> : null}
       {activeTab === 'materials' ? <MaterialsPanel /> : null}
       {activeTab === 'itineraries' ? <ItinerariesPanel /> : null}
@@ -252,6 +255,409 @@ function AppearancePanel() {
         />
         <AdminSaveBar status={status} label="Save appearance" />
       </form>
+    </Card>
+  )
+}
+
+const defaultThemeForm = {
+  mainBackgroundColor: '#f7f7f4',
+  secondaryBackgroundColor: '#f1f1ee',
+  textColor: '#0b0b0a',
+  mutedTextColor: '#686864',
+  headerTextColor: '#050505',
+  subheaderTextColor: '#686864',
+  linkColor: '#050505',
+  buttonBackgroundColor: '#050505',
+  buttonTextColor: '#ffffff',
+  buttonBorderColor: '#050505',
+  buttonHoverColor: '#f2c94c',
+  buttonHoverTextColor: '#050505',
+  cardBackgroundColor: '#ffffff',
+  cardTextColor: '#0b0b0a',
+  cardBorderColor: '#deded9',
+  cardOpacity: '1',
+  navBackgroundColor: '#ffffff',
+  navTextColor: '#050505',
+  footerBackgroundColor: '#050505',
+  footerTextColor: '#ffffff',
+  badgeBackgroundColor: '#f2c94c',
+  badgeTextColor: '#050505',
+  accentColor: '#f2c94c',
+  headerFont: 'Inter, ui-sans-serif, system-ui, sans-serif',
+  subheaderFont: 'Inter, ui-sans-serif, system-ui, sans-serif',
+  bodyFont: 'Inter, ui-sans-serif, system-ui, sans-serif',
+  buttonFont: 'Inter, ui-sans-serif, system-ui, sans-serif',
+  headerTextSize: 'clamp(2rem, 5vw, 4.5rem)',
+  subheaderTextSize: '1rem',
+  bodyTextSize: '1rem',
+  buttonTextSize: '0.95rem',
+  lineHeight: '1.5',
+  letterSpacing: '0',
+  defaultButtonText: 'Create your Basecamp',
+  buttonSize: '2.9rem',
+  buttonBorderRadius: '999px',
+  buttonBorderWidth: '1px',
+  cardBorderRadius: '18px',
+  inputBorderRadius: '8px',
+  cardPadding: '1.25rem',
+  sectionSpacing: '4rem',
+  pageMaxWidth: '1180px',
+  defaultOverlayOpacity: '0.6',
+  logoUrl: '',
+  faviconUrl: '',
+  homepageBackgroundUrl: '',
+  defaultPageBackgroundUrl: '',
+}
+
+type ThemeForm = typeof defaultThemeForm
+type ThemeField = {
+  key: keyof ThemeForm
+  label: string
+  type?: string
+}
+
+const colorThemeFields: ThemeField[] = [
+  { key: 'mainBackgroundColor', label: 'Main background color', type: 'color' },
+  {
+    key: 'secondaryBackgroundColor',
+    label: 'Secondary background color',
+    type: 'color',
+  },
+  { key: 'textColor', label: 'Text color', type: 'color' },
+  { key: 'mutedTextColor', label: 'Muted text color', type: 'color' },
+  { key: 'headerTextColor', label: 'Header text color', type: 'color' },
+  { key: 'subheaderTextColor', label: 'Subheader text color', type: 'color' },
+  { key: 'linkColor', label: 'Link color', type: 'color' },
+  { key: 'accentColor', label: 'Accent color', type: 'color' },
+  {
+    key: 'buttonBackgroundColor',
+    label: 'Button background color',
+    type: 'color',
+  },
+  { key: 'buttonTextColor', label: 'Button text color', type: 'color' },
+  { key: 'buttonBorderColor', label: 'Button border color', type: 'color' },
+  { key: 'buttonHoverColor', label: 'Button hover color', type: 'color' },
+  {
+    key: 'buttonHoverTextColor',
+    label: 'Button hover text color',
+    type: 'color',
+  },
+  {
+    key: 'cardBackgroundColor',
+    label: 'Text box/card background color',
+    type: 'color',
+  },
+  { key: 'cardTextColor', label: 'Text box/card text color', type: 'color' },
+  {
+    key: 'cardBorderColor',
+    label: 'Text box/card border color',
+    type: 'color',
+  },
+  {
+    key: 'navBackgroundColor',
+    label: 'Navigation background color',
+    type: 'color',
+  },
+  { key: 'navTextColor', label: 'Navigation text color', type: 'color' },
+  {
+    key: 'footerBackgroundColor',
+    label: 'Footer background color',
+    type: 'color',
+  },
+  { key: 'footerTextColor', label: 'Footer text color', type: 'color' },
+  {
+    key: 'badgeBackgroundColor',
+    label: 'Badge background color',
+    type: 'color',
+  },
+  { key: 'badgeTextColor', label: 'Badge text color', type: 'color' },
+]
+
+const typographyThemeFields: ThemeField[] = [
+  { key: 'headerFont', label: 'Header font' },
+  { key: 'subheaderFont', label: 'Subheader font' },
+  { key: 'bodyFont', label: 'Body font' },
+  { key: 'buttonFont', label: 'Button font' },
+  { key: 'headerTextSize', label: 'Header text size' },
+  { key: 'subheaderTextSize', label: 'Subheader text size' },
+  { key: 'bodyTextSize', label: 'Body text size' },
+  { key: 'buttonTextSize', label: 'Button text size' },
+  { key: 'lineHeight', label: 'Line height' },
+  { key: 'letterSpacing', label: 'Letter spacing' },
+]
+
+const buttonThemeFields: ThemeField[] = [
+  { key: 'defaultButtonText', label: 'Default button text where applicable' },
+  { key: 'buttonSize', label: 'Button size' },
+  { key: 'buttonBorderRadius', label: 'Button border radius' },
+  { key: 'buttonBorderWidth', label: 'Button border width' },
+]
+
+const layoutThemeFields: ThemeField[] = [
+  { key: 'cardBorderRadius', label: 'Card border radius' },
+  { key: 'inputBorderRadius', label: 'Input border radius' },
+  { key: 'cardPadding', label: 'Card padding' },
+  { key: 'sectionSpacing', label: 'Section spacing' },
+  { key: 'pageMaxWidth', label: 'Page max width' },
+  {
+    key: 'cardOpacity',
+    label: 'Text box/card transparency/opacity',
+    type: 'number',
+  },
+  {
+    key: 'defaultOverlayOpacity',
+    label: 'Default card/background overlay opacity',
+    type: 'number',
+  },
+]
+
+function ThemeManagerPanel() {
+  const appearance = useQuery((api as any).admin.getSiteAppearance, {})
+  const saveAppearance = useMutation((api as any).admin.saveSiteAppearance)
+  const generateUploadUrl = useMutation(api.uploads.generateUploadUrl)
+  const getStorageUrl = useMutation(api.uploads.getStorageUrl)
+  const [status, setStatus] = useState('')
+  const [cardShadowEnabled, setCardShadowEnabled] = useState(true)
+  const [logo, setLogo] = useState<File | null>(null)
+  const [favicon, setFavicon] = useState<File | null>(null)
+  const [homepageBackground, setHomepageBackground] = useState<File | null>(
+    null,
+  )
+  const [defaultPageBackground, setDefaultPageBackground] =
+    useState<File | null>(null)
+  const [form, setForm] = useState<ThemeForm>(defaultThemeForm)
+
+  useEffect(() => {
+    if (!appearance) return
+    setForm({
+      ...defaultThemeForm,
+      ...Object.fromEntries(
+        Object.keys(defaultThemeForm).map((key) => [
+          key,
+          appearance[key] ?? defaultThemeForm[key as keyof ThemeForm],
+        ]),
+      ),
+    } as ThemeForm)
+    setCardShadowEnabled(appearance.cardShadowEnabled ?? true)
+  }, [appearance])
+
+  const updateField = (key: keyof ThemeForm, value: string) => {
+    setForm((current) => ({ ...current, [key]: value }))
+  }
+
+  const submit = async (event: FormEvent) => {
+    event.preventDefault()
+    setStatus('Saving theme...')
+    try {
+      const [
+        logoUrl,
+        faviconUrl,
+        homepageBackgroundUrl,
+        defaultPageBackgroundUrl,
+      ] = await Promise.all([
+        logo
+          ? uploadFile(logo, generateUploadUrl, getStorageUrl)
+          : form.logoUrl,
+        favicon
+          ? uploadFile(favicon, generateUploadUrl, getStorageUrl)
+          : form.faviconUrl,
+        homepageBackground
+          ? uploadFile(homepageBackground, generateUploadUrl, getStorageUrl)
+          : form.homepageBackgroundUrl,
+        defaultPageBackground
+          ? uploadFile(defaultPageBackground, generateUploadUrl, getStorageUrl)
+          : form.defaultPageBackgroundUrl,
+      ])
+
+      await saveAppearance({
+        ...form,
+        logoUrl: emptyToUndefined(logoUrl),
+        faviconUrl: emptyToUndefined(faviconUrl),
+        homepageBackgroundUrl: emptyToUndefined(homepageBackgroundUrl),
+        defaultPageBackgroundUrl: emptyToUndefined(defaultPageBackgroundUrl),
+        cardShadowEnabled,
+      })
+      setStatus('Theme saved.')
+    } catch (error) {
+      setStatus(
+        error instanceof Error ? error.message : 'Could not save theme.',
+      )
+    }
+  }
+
+  return (
+    <div className="admin-split theme-manager-layout">
+      <Card className="admin-panel">
+        <AdminPanelHeader
+          title="Theme / Style Manager"
+          description="Control global colors, typography, buttons, cards, layout, and brand assets without editing code."
+        />
+        <form className="admin-form" onSubmit={submit}>
+          <ThemeFieldset
+            title="Colors"
+            fields={colorThemeFields}
+            form={form}
+            onChange={updateField}
+          />
+          <ThemeFieldset
+            title="Typography"
+            fields={typographyThemeFields}
+            form={form}
+            onChange={updateField}
+          />
+          <ThemeFieldset
+            title="Buttons"
+            fields={buttonThemeFields}
+            form={form}
+            onChange={updateField}
+          />
+          <ThemeFieldset
+            title="Layout / Shapes"
+            fields={layoutThemeFields}
+            form={form}
+            onChange={updateField}
+          />
+          <label className="settings-toggle">
+            <span>
+              <strong>Card shadow</strong>
+              <em>Turn card elevation on or off.</em>
+            </span>
+            <input
+              type="checkbox"
+              checked={cardShadowEnabled}
+              onChange={(event) => setCardShadowEnabled(event.target.checked)}
+            />
+          </label>
+          <div className="theme-asset-grid">
+            <label>
+              Logo upload/change
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(event) => setLogo(event.target.files?.[0] ?? null)}
+              />
+            </label>
+            <label>
+              Favicon upload/change
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(event) =>
+                  setFavicon(event.target.files?.[0] ?? null)
+                }
+              />
+            </label>
+            <label>
+              Homepage background image
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(event) =>
+                  setHomepageBackground(event.target.files?.[0] ?? null)
+                }
+              />
+            </label>
+            <label>
+              Default page background image
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(event) =>
+                  setDefaultPageBackground(event.target.files?.[0] ?? null)
+                }
+              />
+            </label>
+          </div>
+          <AdminSaveBar status={status} label="Save theme" />
+        </form>
+      </Card>
+      <ThemePreview form={form} cardShadowEnabled={cardShadowEnabled} />
+    </div>
+  )
+}
+
+function ThemeFieldset({
+  title,
+  fields,
+  form,
+  onChange,
+}: {
+  title: string
+  fields: ThemeField[]
+  form: ThemeForm
+  onChange: (key: keyof ThemeForm, value: string) => void
+}) {
+  return (
+    <fieldset className="theme-fieldset">
+      <legend>{title}</legend>
+      <div className="form-grid">
+        {fields.map((field) => (
+          <AdminInput
+            key={field.key}
+            label={field.label}
+            type={field.type ?? 'text'}
+            value={form[field.key]}
+            onChange={(value) => onChange(field.key, value)}
+          />
+        ))}
+      </div>
+    </fieldset>
+  )
+}
+
+function ThemePreview({
+  form,
+  cardShadowEnabled,
+}: {
+  form: ThemeForm
+  cardShadowEnabled: boolean
+}) {
+  const previewStyle = {
+    '--preview-bg': form.mainBackgroundColor,
+    '--preview-card-bg': form.cardBackgroundColor,
+    '--preview-card-text': form.cardTextColor,
+    '--preview-card-border': form.cardBorderColor,
+    '--preview-heading': form.headerTextColor,
+    '--preview-muted': form.mutedTextColor,
+    '--preview-button-bg': form.buttonBackgroundColor,
+    '--preview-button-text': form.buttonTextColor,
+    '--preview-button-border': form.buttonBorderColor,
+    '--preview-badge-bg': form.badgeBackgroundColor,
+    '--preview-badge-text': form.badgeTextColor,
+    '--preview-radius': form.cardBorderRadius,
+    '--preview-padding': form.cardPadding,
+    '--preview-body-font': form.bodyFont,
+    '--preview-header-font': form.headerFont,
+  } as CSSProperties
+
+  return (
+    <Card className="theme-preview-card" style={previewStyle}>
+      <AdminPanelHeader
+        title="Live style preview"
+        description="Use this sample to check text, buttons, cards, links, and badges before saving."
+      />
+      <div className="theme-preview-surface">
+        <span className="theme-preview-badge">Original Hound</span>
+        <h2>Curate Your Next Adventure</h2>
+        <p>
+          Sample body text for destination guides, profile cards, business
+          listings, and public pages.
+        </p>
+        <a href="#theme-preview">Sample link</a>
+        <button type="button">
+          {form.defaultButtonText || 'Sample button'}
+        </button>
+        <div
+          className={
+            cardShadowEnabled
+              ? 'theme-preview-mini-card has-shadow'
+              : 'theme-preview-mini-card'
+          }
+        >
+          <strong>Sample card</strong>
+          <span>Readable text inside a themed content panel.</span>
+        </div>
+      </div>
     </Card>
   )
 }

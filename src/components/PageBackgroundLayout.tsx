@@ -28,10 +28,12 @@ export default function PageBackgroundLayout({
   useEffect(() => {
     const root = document.documentElement
     root.classList.add('has-page-background')
-    root.style.setProperty(
-      '--active-page-background-image',
-      `url(${backgroundImages[background]})`,
-    )
+    const fallbackBackground = `url(${backgroundImages[background]})`
+    const customBackground =
+      background === 'skagit'
+        ? `var(--theme-homepage-background-image, ${fallbackBackground})`
+        : `var(--theme-default-page-background-image, ${fallbackBackground})`
+    root.style.setProperty('--active-page-background-image', customBackground)
 
     return () => {
       root.classList.remove('has-page-background')
