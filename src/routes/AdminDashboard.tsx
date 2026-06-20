@@ -1784,6 +1784,7 @@ function MaterialsPanel() {
 function ItinerariesPanel() {
   const data = useQuery((api as any).tripPlanning.ownerListAll, {})
   const saveItinerary = useMutation((api as any).tripPlanning.saveItinerary)
+  const saveDestination = useMutation((api as any).tripPlanning.saveDestination)
   const [status, setStatus] = useState('')
   const [form, setForm] = useState({
     destinationId: '',
@@ -1797,9 +1798,63 @@ function ItinerariesPanel() {
     packingList: '',
     safetyNotes: '',
   })
+  const [destinationForm, setDestinationForm] = useState({
+    name: '',
+    slug: '',
+    region: 'Washington',
+    county: '',
+    status: 'draft',
+    summary: '',
+  })
+
+  const destinations = data?.destinations ?? []
+  const getDestinationName = (destinationId: string) =>
+    destinations.find((destination: any) => destination._id === destinationId)
+      ?.name ?? 'Unlinked destination'
+
+  const createDestinationForItinerary = async () => {
+    if (!destinationForm.name.trim() || !destinationForm.region.trim()) {
+      setStatus('Add a destination name and region first.')
+      return
+    }
+
+    setStatus('Creating destination...')
+    try {
+      const destinationId = await saveDestination({
+        name: destinationForm.name,
+        slug: emptyToUndefined(destinationForm.slug),
+        region: destinationForm.region,
+        county: emptyToUndefined(destinationForm.county),
+        status: destinationForm.status,
+        summary:
+          destinationForm.summary ||
+          `Trip planning destination for ${destinationForm.name}.`,
+      })
+      setForm((current) => ({ ...current, destinationId }))
+      setDestinationForm({
+        name: '',
+        slug: '',
+        region: 'Washington',
+        county: '',
+        status: 'draft',
+        summary: '',
+      })
+      setStatus('Destination created and selected for this itinerary.')
+    } catch (error) {
+      setStatus(
+        error instanceof Error
+          ? error.message
+          : 'Could not create destination.',
+      )
+    }
+  }
 
   const submit = async (event: FormEvent) => {
     event.preventDefault()
+    if (!form.destinationId) {
+      setStatus('Choose or create a destination before saving the itinerary.')
+      return
+    }
     setStatus('Saving itinerary...')
     try {
       await saveItinerary({
@@ -1824,7 +1879,7 @@ function ItinerariesPanel() {
       <Card className="admin-panel">
         <AdminPanelHeader
           title="Itinerary manager"
-          description="Create curated trip plans connected to destinations."
+          description="Create curated trip plans as structured site data. Each itinerary connects to a destination so visitors can choose trip options by place."
         />
         <form className="admin-form" onSubmit={submit}>
           <label>
@@ -1837,13 +1892,82 @@ function ItinerariesPanel() {
               required
             >
               <option value="">Choose destination</option>
-              {(data?.destinations ?? []).map((destination: any) => (
+              {destinations.map((destination: any) => (
                 <option key={destination._id} value={destination._id}>
                   {destination.name}
                 </option>
               ))}
             </select>
           </label>
+          <section className="admin-inline-card">
+            <div>
+              <h3>Create a destination while building this itinerary</h3>
+              <p className="form-note">
+                Use this when the destination is not in the dropdown yet. It
+                creates a real destination record and selects it for this trip
+                plan.
+              </p>
+            </div>
+            <div className="form-grid">
+              <AdminInput
+                label="Destination name"
+                value={destinationForm.name}
+                onChange={(value) =>
+                  setDestinationForm({ ...destinationForm, name: value })
+                }
+              />
+              <AdminInput
+                label="Slug"
+                value={destinationForm.slug}
+                onChange={(value) =>
+                  setDestinationForm({ ...destinationForm, slug: value })
+                }
+              />
+              <AdminInput
+                label="Region"
+                value={destinationForm.region}
+                onChange={(value) =>
+                  setDestinationForm({ ...destinationForm, region: value })
+                }
+              />
+              <AdminInput
+                label="County"
+                value={destinationForm.county}
+                onChange={(value) =>
+                  setDestinationForm({ ...destinationForm, county: value })
+                }
+              />
+              <label>
+                Status
+                <select
+                  value={destinationForm.status}
+                  onChange={(event) =>
+                    setDestinationForm({
+                      ...destinationForm,
+                      status: event.target.value,
+                    })
+                  }
+                >
+                  <option value="draft">Draft</option>
+                  <option value="published">Published</option>
+                </select>
+              </label>
+            </div>
+            <AdminTextarea
+              label="Destination summary"
+              value={destinationForm.summary}
+              onChange={(value) =>
+                setDestinationForm({ ...destinationForm, summary: value })
+              }
+            />
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={() => void createDestinationForItinerary()}
+            >
+              Create destination and use it
+            </Button>
+          </section>
           <div className="form-grid">
             <AdminInput
               label="Title"
@@ -1893,7 +2017,7 @@ function ItinerariesPanel() {
         title="Itineraries"
         items={(data?.itineraries ?? []).map((item: any) => ({
           title: item.title,
-          meta: item.status,
+          meta: `${getDestinationName(item.destinationId)} | ${item.status}`,
         }))}
       />
     </div>

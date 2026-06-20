@@ -3612,6 +3612,24 @@ label {
   color: rgba(255, 255, 255, 0.72);
 }
 
+.admin-inline-card {
+  display: grid;
+  gap: var(--space-4);
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  border-radius: var(--radius-large);
+  padding: var(--space-4);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.admin-inline-card h3,
+.admin-inline-card p {
+  margin: 0;
+}
+
+.admin-inline-card h3 {
+  color: var(--color-surface);
+}
+
 .admin-business-row {
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
