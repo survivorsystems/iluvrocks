@@ -43,10 +43,14 @@ export default function Layout() {
     () => parseNavigation(appearance?.navigationJson),
     [appearance?.navigationJson],
   )
+  const activePageStyle = useMemo(
+    () => getActivePageStyle(appearance?.pageStylesJson, location.pathname),
+    [appearance?.pageStylesJson, location.pathname],
+  )
 
   useEffect(() => {
-    applyThemeSettings(appearance)
-  }, [appearance])
+    applyThemeSettings(appearance, activePageStyle)
+  }, [appearance, activePageStyle])
 
   if (isWorkspaceRoute && auth.isAuthenticated) {
     return <AppShell />
@@ -87,77 +91,79 @@ export default function Layout() {
   )
 }
 
-function applyThemeSettings(appearance: any) {
+function applyThemeSettings(
+  appearance: any,
+  pageStyle?: Record<string, string>,
+) {
+  const theme = { ...(appearance ?? {}), ...(pageStyle ?? {}) }
   const root = document.documentElement
   const mappings: Array<[string, string | undefined]> = [
-    ['--color-background', appearance?.mainBackgroundColor],
-    ['--color-surface', appearance?.cardBackgroundColor],
-    ['--color-surface-alt', appearance?.secondaryBackgroundColor],
-    ['--color-text-primary', appearance?.textColor],
-    ['--color-text-secondary', appearance?.mutedTextColor],
-    [
-      '--color-primary',
-      appearance?.buttonBackgroundColor || appearance?.primaryColor,
-    ],
-    ['--color-primary-hover', appearance?.buttonHoverColor],
-    ['--color-accent-yellow', appearance?.accentColor],
-    ['--theme-heading-color', appearance?.headerTextColor],
-    ['--theme-subheading-color', appearance?.subheaderTextColor],
-    ['--theme-link-color', appearance?.linkColor],
-    ['--theme-button-bg', appearance?.buttonBackgroundColor],
-    ['--theme-button-text', appearance?.buttonTextColor],
-    ['--theme-button-border', appearance?.buttonBorderColor],
-    ['--theme-button-hover-bg', appearance?.buttonHoverColor],
-    ['--theme-button-hover-text', appearance?.buttonHoverTextColor],
-    ['--theme-button-radius', appearance?.buttonBorderRadius],
-    ['--theme-button-border-width', appearance?.buttonBorderWidth],
-    ['--theme-button-height', appearance?.buttonSize],
-    ['--theme-card-bg', appearance?.cardBackgroundColor],
-    ['--theme-card-text', appearance?.cardTextColor],
-    ['--theme-card-border', appearance?.cardBorderColor],
-    ['--theme-card-opacity', appearance?.cardOpacity],
-    ['--theme-card-radius', appearance?.cardBorderRadius],
-    ['--theme-card-padding', appearance?.cardPadding],
-    ['--theme-input-radius', appearance?.inputBorderRadius],
-    ['--theme-nav-bg', appearance?.navBackgroundColor],
-    ['--theme-nav-text', appearance?.navTextColor],
-    ['--theme-sidebar-bg', appearance?.sidebarBackgroundColor],
-    ['--theme-sidebar-text', appearance?.sidebarTextColor],
-    ['--theme-sidebar-active-bg', appearance?.sidebarActiveBackgroundColor],
-    ['--theme-sidebar-active-text', appearance?.sidebarActiveTextColor],
-    ['--theme-sidebar-hover-bg', appearance?.sidebarHoverBackgroundColor],
-    ['--theme-sidebar-hover-text', appearance?.sidebarHoverTextColor],
-    ['--theme-footer-bg', appearance?.footerBackgroundColor],
-    ['--theme-footer-text', appearance?.footerTextColor],
-    ['--theme-badge-bg', appearance?.badgeBackgroundColor],
-    ['--theme-badge-text', appearance?.badgeTextColor],
-    ['--theme-header-font', appearance?.headerFont],
-    ['--theme-subheader-font', appearance?.subheaderFont],
-    ['--theme-body-font', appearance?.bodyFont],
-    ['--theme-button-font', appearance?.buttonFont],
-    ['--theme-header-size', appearance?.headerTextSize],
-    ['--theme-subheader-size', appearance?.subheaderTextSize],
-    ['--theme-body-size', appearance?.bodyTextSize],
-    ['--theme-button-size', appearance?.buttonTextSize],
-    ['--theme-line-height', appearance?.lineHeight],
-    ['--theme-letter-spacing', appearance?.letterSpacing],
-    ['--theme-section-spacing', appearance?.sectionSpacing],
-    ['--theme-page-max-width', appearance?.pageMaxWidth],
-    ['--theme-overlay-opacity', appearance?.defaultOverlayOpacity],
+    ['--color-background', theme?.mainBackgroundColor],
+    ['--color-surface', theme?.cardBackgroundColor],
+    ['--color-surface-alt', theme?.secondaryBackgroundColor],
+    ['--color-text-primary', theme?.textColor],
+    ['--color-text-secondary', theme?.mutedTextColor],
+    ['--color-primary', theme?.buttonBackgroundColor || theme?.primaryColor],
+    ['--color-primary-hover', theme?.buttonHoverColor],
+    ['--color-accent-yellow', theme?.accentColor],
+    ['--theme-heading-color', theme?.headerTextColor],
+    ['--theme-subheading-color', theme?.subheaderTextColor],
+    ['--theme-link-color', theme?.linkColor],
+    ['--theme-button-bg', theme?.buttonBackgroundColor],
+    ['--theme-button-text', theme?.buttonTextColor],
+    ['--theme-button-border', theme?.buttonBorderColor],
+    ['--theme-button-hover-bg', theme?.buttonHoverColor],
+    ['--theme-button-hover-text', theme?.buttonHoverTextColor],
+    ['--theme-button-radius', theme?.buttonBorderRadius],
+    ['--theme-button-border-width', theme?.buttonBorderWidth],
+    ['--theme-button-height', theme?.buttonSize],
+    ['--theme-card-bg', theme?.cardBackgroundColor],
+    ['--theme-card-text', theme?.cardTextColor],
+    ['--theme-card-header-text', theme?.cardHeaderTextColor],
+    ['--theme-card-border', theme?.cardBorderColor],
+    ['--theme-card-opacity', theme?.cardOpacity],
+    ['--theme-card-radius', theme?.cardBorderRadius],
+    ['--theme-card-padding', theme?.cardPadding],
+    ['--theme-input-radius', theme?.inputBorderRadius],
+    ['--theme-nav-bg', theme?.navBackgroundColor],
+    ['--theme-nav-text', theme?.navTextColor],
+    ['--theme-sidebar-bg', theme?.sidebarBackgroundColor],
+    ['--theme-sidebar-text', theme?.sidebarTextColor],
+    ['--theme-sidebar-active-bg', theme?.sidebarActiveBackgroundColor],
+    ['--theme-sidebar-active-text', theme?.sidebarActiveTextColor],
+    ['--theme-sidebar-hover-bg', theme?.sidebarHoverBackgroundColor],
+    ['--theme-sidebar-hover-text', theme?.sidebarHoverTextColor],
+    ['--theme-footer-bg', theme?.footerBackgroundColor],
+    ['--theme-footer-text', theme?.footerTextColor],
+    ['--theme-badge-bg', theme?.badgeBackgroundColor],
+    ['--theme-badge-text', theme?.badgeTextColor],
+    ['--theme-header-font', theme?.headerFont],
+    ['--theme-subheader-font', theme?.subheaderFont],
+    ['--theme-body-font', theme?.bodyFont],
+    ['--theme-button-font', theme?.buttonFont],
+    ['--theme-header-size', theme?.headerTextSize],
+    ['--theme-subheader-size', theme?.subheaderTextSize],
+    ['--theme-body-size', theme?.bodyTextSize],
+    ['--theme-button-size', theme?.buttonTextSize],
+    ['--theme-line-height', theme?.lineHeight],
+    ['--theme-letter-spacing', theme?.letterSpacing],
+    ['--theme-section-spacing', theme?.sectionSpacing],
+    ['--theme-page-max-width', theme?.pageMaxWidth],
+    ['--theme-overlay-opacity', theme?.defaultOverlayOpacity],
     [
       '--theme-card-shadow',
-      appearance?.cardShadowEnabled === false ? 'none' : undefined,
+      theme?.cardShadowEnabled === false ? 'none' : undefined,
     ],
     [
       '--theme-homepage-background-image',
-      appearance?.homepageBackgroundUrl
-        ? `url(${appearance.homepageBackgroundUrl})`
+      theme?.homepageBackgroundUrl
+        ? `url(${theme.homepageBackgroundUrl})`
         : undefined,
     ],
     [
       '--theme-default-page-background-image',
-      appearance?.defaultPageBackgroundUrl
-        ? `url(${appearance.defaultPageBackgroundUrl})`
+      theme?.defaultPageBackgroundUrl
+        ? `url(${theme.defaultPageBackgroundUrl})`
         : undefined,
     ],
   ]
@@ -170,8 +176,8 @@ function applyThemeSettings(appearance: any) {
     }
   }
 
-  if (appearance?.buttonBackgroundColor || appearance?.primaryColor) {
-    const primary = appearance.buttonBackgroundColor || appearance.primaryColor
+  if (theme?.buttonBackgroundColor || theme?.primaryColor) {
+    const primary = theme.buttonBackgroundColor || theme.primaryColor
     root.style.setProperty('--color-active', primary)
     root.style.setProperty('--color-selected', primary)
   }
@@ -180,6 +186,25 @@ function applyThemeSettings(appearance: any) {
     const favicon = document.querySelector<HTMLLinkElement>('link[rel="icon"]')
     favicon?.setAttribute('href', appearance.faviconUrl)
   }
+}
+
+function getActivePageStyle(value: string | undefined, pathname: string) {
+  if (!value?.trim()) return undefined
+  try {
+    const styles = JSON.parse(value) as Array<Record<string, string>>
+    const key = getPageKey(pathname)
+    return styles.find((style) => style.page === key)
+  } catch {
+    return undefined
+  }
+}
+
+function getPageKey(pathname: string) {
+  if (pathname === '/') return 'home'
+  const clean = pathname.split('/').filter(Boolean)[0] || 'home'
+  if (clean === 'businesses') return 'businesses'
+  if (clean === 'trip-planner') return 'trip-planner'
+  return clean
 }
 
 function parseNavigation(value?: string) {

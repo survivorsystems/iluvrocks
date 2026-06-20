@@ -65,6 +65,7 @@
   --theme-button-padding-inline: 1rem;
   --theme-card-bg: var(--color-surface);
   --theme-card-text: var(--color-text-primary);
+  --theme-card-header-text: var(--color-primary);
   --theme-card-border: var(--color-border);
   --theme-card-opacity: 1;
   --theme-card-radius: var(--radius-large);
@@ -360,7 +361,18 @@ main {
 .page-background-content .ui-card span,
 .page-background-content .ui-card strong,
 .page-background-content .ui-card em {
-  color: var(--color-surface);
+  color: var(--theme-card-text);
+}
+
+.ui-card h1,
+.ui-card h2,
+.ui-card h3,
+.feature-panel h2,
+.post-card h2,
+.composer h2,
+.auth-form h1,
+.profile-header h1 {
+  color: var(--theme-card-header-text);
 }
 
 .page-background-content input,
@@ -3281,6 +3293,24 @@ label {
 
 .theme-preview-mini-card.has-shadow {
   box-shadow: var(--shadow-card);
+}
+
+.page-style-manager {
+  grid-template-columns: minmax(0, 1.25fr) minmax(300px, 0.75fr);
+}
+
+.page-section-editor-list {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.page-section-editor {
+  display: grid;
+  gap: var(--space-3);
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  border-radius: var(--radius-large);
+  padding: var(--space-4);
+  background: rgba(0, 0, 0, 0.42);
 }
 
 .theme-preview-sidebar {

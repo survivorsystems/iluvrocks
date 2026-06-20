@@ -9,6 +9,8 @@ import {
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { useQuery } from 'convex/react'
+import { api } from '../../convex/_generated/api'
 import FeaturePanel from '../components/FeaturePanel'
 import { SectionHeader } from '../components/ui'
 
@@ -211,13 +213,17 @@ type PublicPageKey = keyof typeof pages
 
 export default function PublicPage({ page }: { page: PublicPageKey }) {
   const content = pages[page]
+  const appearance = useQuery((api as any).adminPublic.getSiteAppearance, {})
+  const override = getPublicSection(appearance, page, 'header')
+
+  if (override?.enabled === false) return null
 
   return (
     <section className="workspace-page">
       <SectionHeader
-        eyebrow={content.eyebrow}
-        title={content.title}
-        description={content.description}
+        eyebrow={override?.eyebrow || content.eyebrow}
+        title={override?.title || content.title}
+        description={override?.description || content.description}
         action={
           <div className="hero-actions">
             <Link to="/login" className="primary-action">
@@ -242,4 +248,23 @@ export default function PublicPage({ page }: { page: PublicPageKey }) {
       </div>
     </section>
   )
+}
+
+function getPublicSection(appearance: any, page: string, sectionKey: string) {
+  if (!appearance?.publicSectionsJson) return undefined
+  try {
+    const sections = JSON.parse(appearance.publicSectionsJson) as Array<{
+      page: string
+      sectionKey: string
+      eyebrow?: string
+      title?: string
+      description?: string
+      enabled?: boolean
+    }>
+    return sections.find(
+      (section) => section.page === page && section.sectionKey === sectionKey,
+    )
+  } catch {
+    return undefined
+  }
 }

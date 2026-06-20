@@ -75,6 +75,7 @@ function TripSearchHero({
 }) {
   const navigate = useNavigate()
   const [query, setQuery] = useState('')
+  const heroSection = getPublicSection(appearance, 'home', 'hero')
 
   const submit = (event: FormEvent) => {
     event.preventDefault()
@@ -86,10 +87,16 @@ function TripSearchHero({
   return (
     <section className="hero trip-hero trip-hero-centered">
       <div className="hero-copy">
-        <p className="eyebrow">Curate Your Next Adventure</p>
-        <h1>{appearance?.homepageHeadline || "Let's Rock"}</h1>
+        <p className="eyebrow">
+          {heroSection?.eyebrow || 'Curate Your Next Adventure'}
+        </p>
+        <h1>
+          {heroSection?.title || appearance?.homepageHeadline || "Let's Rock"}
+        </h1>
         <p className="tagline">
-          {appearance?.homepageIntro || 'Learn How To Rockhound'}
+          {heroSection?.description ||
+            appearance?.homepageIntro ||
+            'Learn How To Rockhound'}
         </p>
         <form className="home-search-form" onSubmit={submit}>
           <Search aria-hidden="true" />
@@ -121,15 +128,22 @@ function TripSearchHero({
 
 function VisitorSections() {
   const results = useQuery((api as any).tripPlanning.publicSearch, {})
+  const appearance = useQuery((api as any).adminPublic.getSiteAppearance, {})
+  const section = getPublicSection(appearance, 'home', 'visitorIntro')
   const destinationCount = results?.destinations?.length ?? 0
   const materialCount = results?.materials?.length ?? 0
+
+  if (section?.enabled === false) return null
 
   return (
     <section className="public-section">
       <SectionHeader
-        eyebrow="Plan before you sign up"
-        title="Public browsing comes first"
-        description="Visitors can browse destinations, materials, guides, itineraries, and business listings without creating an account."
+        eyebrow={section?.eyebrow || 'Plan before you sign up'}
+        title={section?.title || 'Public browsing comes first'}
+        description={
+          section?.description ||
+          'Visitors can browse destinations, materials, guides, itineraries, and business listings without creating an account.'
+        }
       />
       <div className="feature-grid">
         <FeaturePanel
@@ -153,12 +167,22 @@ function VisitorSections() {
 }
 
 function OriginalHoundsSection() {
+  const appearance = useQuery((api as any).adminPublic.getSiteAppearance, {})
+  const section = getPublicSection(appearance, 'home', 'originalHounds')
+  if (section?.enabled === false) return null
+
   return (
     <section className="public-section original-hounds-section">
       <SectionHeader
-        eyebrow="Original Hounds"
-        title="The first people helping iluvrocks get off the ground"
-        description="Original Hounds are the first supporters who helped iluvrocks get off the ground."
+        eyebrow={section?.eyebrow || 'Original Hounds'}
+        title={
+          section?.title ||
+          'The first people helping iluvrocks get off the ground'
+        }
+        description={
+          section?.description ||
+          'Original Hounds are the first supporters who helped iluvrocks get off the ground.'
+        }
       />
       <Card className="original-hound-card">
         <span className="original-hound-mark" aria-hidden="true">
@@ -179,12 +203,20 @@ function OriginalHoundsSection() {
 }
 
 function MemberTripHome() {
+  const appearance = useQuery((api as any).adminPublic.getSiteAppearance, {})
+  const section = getPublicSection(appearance, 'home', 'memberIntro')
+
   return (
     <section className="workspace-page member-home">
       <SectionHeader
-        eyebrow="Member home"
-        title="Plan trips first. Use Basecamp when you need it."
-        description="Plan, save, and revisit your rockhounding ideas from one place."
+        eyebrow={section?.eyebrow || 'Member home'}
+        title={
+          section?.title || 'Plan trips first. Use Basecamp when you need it.'
+        }
+        description={
+          section?.description ||
+          'Plan, save, and revisit your rockhounding ideas from one place.'
+        }
       />
       <div className="member-home-grid">
         {memberLinks.map(({ to, icon: Icon, title, description }) => (
@@ -202,4 +234,23 @@ function MemberTripHome() {
       </div>
     </section>
   )
+}
+
+function getPublicSection(appearance: any, page: string, sectionKey: string) {
+  if (!appearance?.publicSectionsJson) return undefined
+  try {
+    const sections = JSON.parse(appearance.publicSectionsJson) as Array<{
+      page: string
+      sectionKey: string
+      eyebrow?: string
+      title?: string
+      description?: string
+      enabled?: boolean
+    }>
+    return sections.find(
+      (section) => section.page === page && section.sectionKey === sectionKey,
+    )
+  } catch {
+    return undefined
+  }
 }

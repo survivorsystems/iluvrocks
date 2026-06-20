@@ -24,6 +24,7 @@ type AdminTab =
   | 'overview'
   | 'appearance'
   | 'theme'
+  | 'pageStyles'
   | 'destinations'
   | 'materials'
   | 'itineraries'
@@ -42,6 +43,7 @@ const tabs: Array<{
   { id: 'overview', label: 'Overview', icon: LayoutDashboard },
   { id: 'appearance', label: 'Appearance', icon: Paintbrush },
   { id: 'theme', label: 'Theme / Style Manager', icon: Paintbrush },
+  { id: 'pageStyles', label: 'Page Text + Colors', icon: FileText },
   { id: 'destinations', label: 'Destinations', icon: Map },
   { id: 'materials', label: 'Materials', icon: Image },
   { id: 'itineraries', label: 'Itineraries', icon: Route },
@@ -88,6 +90,7 @@ export default function AdminDashboard() {
       {activeTab === 'overview' ? <OverviewPanel overview={overview} /> : null}
       {activeTab === 'appearance' ? <AppearancePanel /> : null}
       {activeTab === 'theme' ? <ThemeManagerPanel /> : null}
+      {activeTab === 'pageStyles' ? <PageTextStylePanel /> : null}
       {activeTab === 'destinations' ? <DestinationsPanel /> : null}
       {activeTab === 'materials' ? <MaterialsPanel /> : null}
       {activeTab === 'itineraries' ? <ItinerariesPanel /> : null}
@@ -282,6 +285,7 @@ const defaultThemeForm = {
   buttonHoverTextColor: '#050505',
   cardBackgroundColor: '#ffffff',
   cardTextColor: '#0b0b0a',
+  cardHeaderTextColor: '#050505',
   cardBorderColor: '#deded9',
   cardOpacity: '1',
   navBackgroundColor: '#ffffff',
@@ -362,6 +366,11 @@ const colorThemeFields: ThemeField[] = [
     type: 'color',
   },
   { key: 'cardTextColor', label: 'Text box/card text color', type: 'color' },
+  {
+    key: 'cardHeaderTextColor',
+    label: 'Text box/card header text color',
+    type: 'color',
+  },
   {
     key: 'cardBorderColor',
     label: 'Text box/card border color',
@@ -716,6 +725,318 @@ function ThemePreview({
       </div>
     </Card>
   )
+}
+
+type PublicSectionEditor = {
+  id: string
+  page: string
+  sectionKey: string
+  eyebrow: string
+  title: string
+  description: string
+  enabled: boolean
+}
+
+type PageStyleEditor = {
+  page: string
+  mainBackgroundColor: string
+  cardBackgroundColor: string
+  cardTextColor: string
+  cardHeaderTextColor: string
+  cardBorderColor: string
+  headerTextColor: string
+  subheaderTextColor: string
+  navBackgroundColor: string
+  navTextColor: string
+}
+
+const editablePages = [
+  { key: 'home', label: 'Home' },
+  { key: 'destinations', label: 'Destinations' },
+  { key: 'materials', label: 'Materials' },
+  { key: 'trip-planner', label: 'Trip Planner' },
+  { key: 'businesses', label: 'Business Directory' },
+  { key: 'guides', label: 'Guides' },
+  { key: 'community', label: 'Community' },
+  { key: 'about', label: 'About' },
+  { key: 'membership', label: 'Membership' },
+  { key: 'basecamp', label: 'Basecamp/Profile' },
+  { key: 'collections', label: 'Collections' },
+  { key: 'settings', label: 'Settings' },
+]
+
+const defaultPublicSections: PublicSectionEditor[] = [
+  {
+    id: 'home-hero',
+    page: 'home',
+    sectionKey: 'hero',
+    eyebrow: 'Curate Your Next Adventure',
+    title: "Let's Rock",
+    description: 'Learn How To Rockhound',
+    enabled: true,
+  },
+  {
+    id: 'home-original-hounds',
+    page: 'home',
+    sectionKey: 'originalHounds',
+    eyebrow: 'Original Hounds',
+    title: 'The first people helping iluvrocks get off the ground',
+    description:
+      'Original Hounds are the first supporters who helped iluvrocks get off the ground.',
+    enabled: true,
+  },
+  {
+    id: 'home-public-browsing',
+    page: 'home',
+    sectionKey: 'visitorIntro',
+    eyebrow: 'Plan before you sign up',
+    title: 'Public browsing comes first',
+    description:
+      'Visitors can browse destinations, materials, guides, itineraries, and business listings without creating an account.',
+    enabled: true,
+  },
+]
+
+function PageTextStylePanel() {
+  const appearance = useQuery((api as any).admin.getSiteAppearance, {})
+  const saveAppearance = useMutation((api as any).admin.saveSiteAppearance)
+  const [status, setStatus] = useState('')
+  const [selectedPage, setSelectedPage] = useState('home')
+  const [sections, setSections] = useState<PublicSectionEditor[]>(
+    defaultPublicSections,
+  )
+  const [pageStyles, setPageStyles] = useState<PageStyleEditor[]>([])
+
+  useEffect(() => {
+    if (!appearance) return
+    setSections(
+      parseJsonList<PublicSectionEditor>(
+        appearance.publicSectionsJson,
+        defaultPublicSections,
+      ),
+    )
+    setPageStyles(parseJsonList<PageStyleEditor>(appearance.pageStylesJson, []))
+  }, [appearance])
+
+  const pageSections = sections.filter(
+    (section) => section.page === selectedPage,
+  )
+  const selectedStyle =
+    pageStyles.find((style) => style.page === selectedPage) ??
+    createDefaultPageStyle(selectedPage)
+
+  const updateSection = (id: string, patch: Partial<PublicSectionEditor>) => {
+    setSections((current) =>
+      current.map((section) =>
+        section.id === id ? { ...section, ...patch } : section,
+      ),
+    )
+  }
+
+  const addSection = () => {
+    const id = `${selectedPage}-${Date.now()}`
+    setSections((current) => [
+      ...current,
+      {
+        id,
+        page: selectedPage,
+        sectionKey: `section-${current.length + 1}`,
+        eyebrow: '',
+        title: 'New section',
+        description: '',
+        enabled: true,
+      },
+    ])
+  }
+
+  const removeSection = (id: string) => {
+    setSections((current) => current.filter((section) => section.id !== id))
+  }
+
+  const updatePageStyle = (patch: Partial<PageStyleEditor>) => {
+    const nextStyle = { ...selectedStyle, ...patch }
+    setPageStyles((current) => {
+      const withoutPage = current.filter((style) => style.page !== selectedPage)
+      return [...withoutPage, nextStyle]
+    })
+  }
+
+  const submit = async (event: FormEvent) => {
+    event.preventDefault()
+    setStatus('Saving page text and colors...')
+    try {
+      await saveAppearance({
+        publicSectionsJson: JSON.stringify(sections),
+        pageStylesJson: JSON.stringify(pageStyles),
+      })
+      setStatus('Page text and colors saved.')
+    } catch (error) {
+      setStatus(
+        error instanceof Error
+          ? error.message
+          : 'Could not save page settings.',
+      )
+    }
+  }
+
+  return (
+    <div className="admin-split page-style-manager">
+      <Card className="admin-panel">
+        <AdminPanelHeader
+          title="Page text and color manager"
+          description="Choose a page, edit its public-facing sections, and set page-specific colors for headers, cards, text boxes, and navigation."
+        />
+        <form className="admin-form" onSubmit={submit}>
+          <label>
+            Page
+            <select
+              value={selectedPage}
+              onChange={(event) => setSelectedPage(event.target.value)}
+            >
+              {editablePages.map((page) => (
+                <option key={page.key} value={page.key}>
+                  {page.label}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <fieldset className="theme-fieldset">
+            <legend>Page colors</legend>
+            <div className="form-grid">
+              {pageStyleFields.map((field) => (
+                <AdminInput
+                  key={field.key}
+                  label={field.label}
+                  type="color"
+                  value={selectedStyle[field.key]}
+                  onChange={(value) => updatePageStyle({ [field.key]: value })}
+                />
+              ))}
+            </div>
+          </fieldset>
+
+          <fieldset className="theme-fieldset">
+            <legend>Public text sections</legend>
+            {pageSections.length ? (
+              <div className="page-section-editor-list">
+                {pageSections.map((section) => (
+                  <article key={section.id} className="page-section-editor">
+                    <label className="settings-toggle">
+                      <span>
+                        <strong>{section.title || 'Untitled section'}</strong>
+                        <em>{section.sectionKey}</em>
+                      </span>
+                      <input
+                        type="checkbox"
+                        checked={section.enabled}
+                        onChange={(event) =>
+                          updateSection(section.id, {
+                            enabled: event.target.checked,
+                          })
+                        }
+                      />
+                    </label>
+                    <div className="form-grid">
+                      <AdminInput
+                        label="Section key"
+                        value={section.sectionKey}
+                        onChange={(value) =>
+                          updateSection(section.id, { sectionKey: value })
+                        }
+                      />
+                      <AdminInput
+                        label="Eyebrow"
+                        value={section.eyebrow}
+                        onChange={(value) =>
+                          updateSection(section.id, { eyebrow: value })
+                        }
+                      />
+                    </div>
+                    <AdminInput
+                      label="Header/title"
+                      value={section.title}
+                      onChange={(value) =>
+                        updateSection(section.id, { title: value })
+                      }
+                    />
+                    <AdminTextarea
+                      label="Text/description"
+                      value={section.description}
+                      onChange={(value) =>
+                        updateSection(section.id, { description: value })
+                      }
+                    />
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      onClick={() => removeSection(section.id)}
+                    >
+                      Remove section
+                    </Button>
+                  </article>
+                ))}
+              </div>
+            ) : (
+              <p className="form-note">No sections for this page yet.</p>
+            )}
+            <Button type="button" variant="secondary" onClick={addSection}>
+              Add section
+            </Button>
+          </fieldset>
+          <AdminSaveBar status={status} label="Save page settings" />
+        </form>
+      </Card>
+      <Card className="admin-list-card">
+        <h2>How this works</h2>
+        <p className="form-note">
+          Page colors apply site-wide by route. Public text sections are stored
+          in the site settings now and can be wired into more pages as each page
+          becomes editable.
+        </p>
+        <div className="admin-list">
+          {pageSections.map((section) => (
+            <article key={section.id}>
+              <strong>{section.title}</strong>
+              <span>
+                {section.enabled ? 'Visible' : 'Hidden'} / {section.sectionKey}
+              </span>
+            </article>
+          ))}
+        </div>
+      </Card>
+    </div>
+  )
+}
+
+const pageStyleFields: Array<{
+  key: Exclude<keyof PageStyleEditor, 'page'>
+  label: string
+}> = [
+  { key: 'mainBackgroundColor', label: 'Page background color' },
+  { key: 'headerTextColor', label: 'Page header font color' },
+  { key: 'subheaderTextColor', label: 'Page subheader font color' },
+  { key: 'cardBackgroundColor', label: 'Text box/card background color' },
+  { key: 'cardHeaderTextColor', label: 'Text box/card header color' },
+  { key: 'cardTextColor', label: 'Text box/card body text color' },
+  { key: 'cardBorderColor', label: 'Text box/card border color' },
+  { key: 'navBackgroundColor', label: 'Top nav background color' },
+  { key: 'navTextColor', label: 'Top nav text color' },
+]
+
+function createDefaultPageStyle(page: string): PageStyleEditor {
+  return {
+    page,
+    mainBackgroundColor: '#f7f7f4',
+    cardBackgroundColor: '#ffffff',
+    cardTextColor: '#0b0b0a',
+    cardHeaderTextColor: '#050505',
+    cardBorderColor: '#deded9',
+    headerTextColor: '#050505',
+    subheaderTextColor: '#686864',
+    navBackgroundColor: '#ffffff',
+    navTextColor: '#050505',
+  }
 }
 
 function DestinationsPanel() {
@@ -1880,4 +2201,14 @@ function splitList(value: string) {
     .map((item) => item.trim())
     .filter(Boolean)
   return items.length ? items : undefined
+}
+
+function parseJsonList<T>(value: string | undefined, fallback: T[]): T[] {
+  if (!value?.trim()) return fallback
+  try {
+    const parsed = JSON.parse(value)
+    return Array.isArray(parsed) ? (parsed as T[]) : fallback
+  } catch {
+    return fallback
+  }
 }

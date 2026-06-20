@@ -111,6 +111,7 @@ export const saveSiteAppearance = mutation({
     buttonHoverTextColor: v.optional(v.string()),
     cardBackgroundColor: v.optional(v.string()),
     cardTextColor: v.optional(v.string()),
+    cardHeaderTextColor: v.optional(v.string()),
     cardBorderColor: v.optional(v.string()),
     cardOpacity: v.optional(v.string()),
     navBackgroundColor: v.optional(v.string()),
@@ -152,6 +153,8 @@ export const saveSiteAppearance = mutation({
     navigationJson: v.optional(v.string()),
     backgroundJson: v.optional(v.string()),
     featuredSectionsJson: v.optional(v.string()),
+    publicSectionsJson: v.optional(v.string()),
+    pageStylesJson: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const { userId } = await requireOwner(ctx)
