@@ -31,7 +31,8 @@ type IconType =
   | ComponentType<{ 'aria-hidden'?: boolean; className?: string }>
 
 const workspaceNavItems = [
-  { to: '/basecamp', label: 'Home', icon: Home },
+  { to: '/', label: 'Homepage', icon: Home },
+  { to: '/basecamp', label: 'Basecamp', icon: Compass },
   { to: '/trip-planner', label: 'Trip Planner', icon: Compass },
   { to: '/trips', label: 'Trips', icon: Route },
   { to: '/collections', label: 'Collections', icon: Diamond },
@@ -79,7 +80,7 @@ export function Sidebar() {
 
   return (
     <aside className="app-sidebar" aria-label="Logged-in navigation">
-      <Link to="/basecamp" className="app-logo" aria-label="iluvrocks home">
+      <Link to="/" className="app-logo" aria-label="iluvrocks homepage">
         <img src={iluvrocksLogo} alt="" className="app-logo-image" />
         <span className="sr-only">iluvrocks</span>
       </Link>

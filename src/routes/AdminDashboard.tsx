@@ -41,9 +41,9 @@ const tabs: Array<{
   icon: typeof LayoutDashboard
 }> = [
   { id: 'overview', label: 'Overview', icon: LayoutDashboard },
-  { id: 'appearance', label: 'Appearance', icon: Paintbrush },
+  { id: 'appearance', label: 'Homepage + Site Copy', icon: Paintbrush },
   { id: 'theme', label: 'Theme / Style Manager', icon: Paintbrush },
-  { id: 'pageStyles', label: 'Page Text + Colors', icon: FileText },
+  { id: 'pageStyles', label: 'All Page Editor', icon: FileText },
   { id: 'destinations', label: 'Destinations', icon: Map },
   { id: 'materials', label: 'Materials', icon: Image },
   { id: 'itineraries', label: 'Itineraries', icon: Route },
@@ -321,6 +321,11 @@ const defaultThemeForm = {
   sectionSpacing: '4rem',
   pageMaxWidth: '1180px',
   defaultOverlayOpacity: '0.6',
+  searchBarBackgroundColor: '#050505',
+  searchBarTextColor: '#ffffff',
+  searchBarBorderColor: '#ffffff',
+  searchBarButtonBackgroundColor: '#f2c94c',
+  searchBarButtonTextColor: '#050505',
   logoUrl: '',
   faviconUrl: '',
   homepageBackgroundUrl: '',
@@ -424,6 +429,31 @@ const colorThemeFields: ThemeField[] = [
     type: 'color',
   },
   { key: 'badgeTextColor', label: 'Badge text color', type: 'color' },
+  {
+    key: 'searchBarBackgroundColor',
+    label: 'Search bar background color',
+    type: 'color',
+  },
+  {
+    key: 'searchBarTextColor',
+    label: 'Search bar text color',
+    type: 'color',
+  },
+  {
+    key: 'searchBarBorderColor',
+    label: 'Search bar border color',
+    type: 'color',
+  },
+  {
+    key: 'searchBarButtonBackgroundColor',
+    label: 'Homepage search button background',
+    type: 'color',
+  },
+  {
+    key: 'searchBarButtonTextColor',
+    label: 'Homepage search button text',
+    type: 'color',
+  },
 ]
 
 const typographyThemeFields: ThemeField[] = [
@@ -459,7 +489,7 @@ const layoutThemeFields: ThemeField[] = [
   },
   {
     key: 'defaultOverlayOpacity',
-    label: 'Default card/background overlay opacity',
+    label: 'Background dark overlay opacity',
     type: 'range',
   },
 ]
@@ -745,6 +775,11 @@ function ThemePreview({
     '--preview-sidebar-active-text': form.sidebarActiveTextColor,
     '--preview-sidebar-hover-bg': form.sidebarHoverBackgroundColor,
     '--preview-sidebar-hover-text': form.sidebarHoverTextColor,
+    '--preview-search-bg': form.searchBarBackgroundColor,
+    '--preview-search-text': form.searchBarTextColor,
+    '--preview-search-border': form.searchBarBorderColor,
+    '--preview-search-button-bg': form.searchBarButtonBackgroundColor,
+    '--preview-search-button-text': form.searchBarButtonTextColor,
   } as CSSProperties
 
   return (
@@ -764,6 +799,10 @@ function ThemePreview({
         <button type="button">
           {form.defaultButtonText || 'Sample button'}
         </button>
+        <div className="theme-preview-search" aria-label="Search bar preview">
+          <span>Search destinations, rocks, guides...</span>
+          <strong>Search</strong>
+        </div>
         <div
           className={
             cardShadowEnabled
@@ -839,6 +878,7 @@ type CustomEmbedEditor = {
 type PageStyleEditor = {
   page: string
   mainBackgroundColor: string
+  overlayOpacity: string
   cardBackgroundColor: string
   cardTextColor: string
   cardHeaderTextColor: string
@@ -847,6 +887,11 @@ type PageStyleEditor = {
   subheaderTextColor: string
   navBackgroundColor: string
   navTextColor: string
+  searchBarBackgroundColor: string
+  searchBarTextColor: string
+  searchBarBorderColor: string
+  searchBarButtonBackgroundColor: string
+  searchBarButtonTextColor: string
 }
 
 const editablePages = [
@@ -861,7 +906,12 @@ const editablePages = [
   { key: 'membership', label: 'Membership' },
   { key: 'basecamp', label: 'Basecamp/Profile' },
   { key: 'collections', label: 'Collections' },
+  { key: 'trips', label: 'Trips' },
+  { key: 'messages', label: 'Messages' },
+  { key: 'notifications', label: 'Notifications' },
+  { key: 'login', label: 'Login / Create Account' },
   { key: 'settings', label: 'Settings' },
+  { key: 'admin', label: 'Admin Dashboard' },
 ]
 
 const defaultPublicSections: PublicSectionEditor[] = [
@@ -933,9 +983,10 @@ function PageTextStylePanel() {
   const pageEmbeds = embeds
     .filter((embed) => embed.page === selectedPage)
     .sort((a, b) => a.order - b.order)
-  const selectedStyle =
-    pageStyles.find((style) => style.page === selectedPage) ??
-    createDefaultPageStyle(selectedPage)
+  const selectedStyle = {
+    ...createDefaultPageStyle(selectedPage),
+    ...pageStyles.find((style) => style.page === selectedPage),
+  }
 
   const updateSection = (id: string, patch: Partial<PublicSectionEditor>) => {
     setSections((current) =>
@@ -1094,7 +1145,7 @@ function PageTextStylePanel() {
                   <AdminInput
                     key={field.key}
                     label={field.label}
-                    type="color"
+                    type={field.type || 'color'}
                     value={selectedStyle[field.key]}
                     onChange={(value) =>
                       updatePageStyle({ [field.key]: value })
@@ -1346,8 +1397,14 @@ const pageEditorGroups: Array<{
 const pageStyleFields: Array<{
   key: Exclude<keyof PageStyleEditor, 'page'>
   label: string
+  type?: string
 }> = [
   { key: 'mainBackgroundColor', label: 'Page background color' },
+  {
+    key: 'overlayOpacity',
+    label: 'Page background dark overlay opacity',
+    type: 'range',
+  },
   { key: 'headerTextColor', label: 'Page header font color' },
   { key: 'subheaderTextColor', label: 'Page subheader font color' },
   { key: 'cardBackgroundColor', label: 'Text box/card background color' },
@@ -1356,12 +1413,21 @@ const pageStyleFields: Array<{
   { key: 'cardBorderColor', label: 'Text box/card border color' },
   { key: 'navBackgroundColor', label: 'Top nav background color' },
   { key: 'navTextColor', label: 'Top nav text color' },
+  { key: 'searchBarBackgroundColor', label: 'Search bar background color' },
+  { key: 'searchBarTextColor', label: 'Search bar text color' },
+  { key: 'searchBarBorderColor', label: 'Search bar border color' },
+  {
+    key: 'searchBarButtonBackgroundColor',
+    label: 'Homepage search button background',
+  },
+  { key: 'searchBarButtonTextColor', label: 'Homepage search button text' },
 ]
 
 function createDefaultPageStyle(page: string): PageStyleEditor {
   return {
     page,
     mainBackgroundColor: '#f7f7f4',
+    overlayOpacity: '0.6',
     cardBackgroundColor: '#ffffff',
     cardTextColor: '#0b0b0a',
     cardHeaderTextColor: '#050505',
@@ -1370,6 +1436,11 @@ function createDefaultPageStyle(page: string): PageStyleEditor {
     subheaderTextColor: '#686864',
     navBackgroundColor: '#ffffff',
     navTextColor: '#050505',
+    searchBarBackgroundColor: '#050505',
+    searchBarTextColor: '#ffffff',
+    searchBarBorderColor: '#ffffff',
+    searchBarButtonBackgroundColor: '#f2c94c',
+    searchBarButtonTextColor: '#050505',
   }
 }
 

@@ -151,7 +151,15 @@ function applyThemeSettings(
     ['--theme-letter-spacing', theme?.letterSpacing],
     ['--theme-section-spacing', theme?.sectionSpacing],
     ['--theme-page-max-width', theme?.pageMaxWidth],
-    ['--theme-overlay-opacity', theme?.defaultOverlayOpacity],
+    [
+      '--theme-overlay-opacity',
+      theme?.overlayOpacity ?? theme?.defaultOverlayOpacity,
+    ],
+    ['--theme-search-bg', theme?.searchBarBackgroundColor],
+    ['--theme-search-text', theme?.searchBarTextColor],
+    ['--theme-search-border', theme?.searchBarBorderColor],
+    ['--theme-search-button-bg', theme?.searchBarButtonBackgroundColor],
+    ['--theme-search-button-text', theme?.searchBarButtonTextColor],
     [
       '--theme-card-shadow',
       theme?.cardShadowEnabled === false ? 'none' : undefined,
