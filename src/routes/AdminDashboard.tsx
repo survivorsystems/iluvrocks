@@ -479,6 +479,9 @@ function ThemeManagerPanel() {
   const [defaultPageBackground, setDefaultPageBackground] =
     useState<File | null>(null)
   const [form, setForm] = useState<ThemeForm>(defaultThemeForm)
+  const [activeEditorGroup, setActiveEditorGroup] = useState<
+    'colors' | 'typography' | 'buttons' | 'layout' | 'assets'
+  >('colors')
 
   useEffect(() => {
     if (!appearance) return
@@ -539,101 +542,131 @@ function ThemeManagerPanel() {
   }
 
   return (
-    <div className="admin-split theme-manager-layout">
-      <Card className="admin-panel">
-        <AdminPanelHeader
-          title="Theme / Style Manager"
-          description="Control global colors, typography, buttons, cards, layout, and brand assets without editing code."
-        />
-        <form className="admin-form" onSubmit={submit}>
-          <ThemeFieldset
-            title="Colors"
-            fields={colorThemeFields}
-            form={form}
-            onChange={updateField}
+    <div className="admin-split theme-manager-layout editor-workbench">
+      <Card className="admin-panel editor-panel">
+        <div className="editor-panel-top">
+          <AdminPanelHeader
+            title="Theme / Style Manager"
+            description="Control global colors, typography, buttons, cards, layout, and brand assets without editing code."
           />
-          <ThemeFieldset
-            title="Typography"
-            fields={typographyThemeFields}
-            form={form}
-            onChange={updateField}
-          />
-          <ThemeFieldset
-            title="Buttons"
-            fields={buttonThemeFields}
-            form={form}
-            onChange={updateField}
-          />
-          <ThemeFieldset
-            title="Layout / Shapes"
-            fields={layoutThemeFields}
-            form={form}
-            onChange={updateField}
-          />
-          <label className="settings-toggle">
-            <span>
-              <strong>Card shadow</strong>
-              <em>Turn card elevation on or off.</em>
-            </span>
-            <input
-              type="checkbox"
-              checked={cardShadowEnabled}
-              onChange={(event) => setCardShadowEnabled(event.target.checked)}
+          <span className="editor-save-state">{status || 'Ready to edit'}</span>
+        </div>
+        <div className="editor-subnav" role="tablist" aria-label="Theme groups">
+          {themeEditorGroups.map((group) => (
+            <button
+              key={group.id}
+              type="button"
+              className={activeEditorGroup === group.id ? 'is-active' : ''}
+              onClick={() => setActiveEditorGroup(group.id)}
+            >
+              <strong>{group.label}</strong>
+              <span>{group.description}</span>
+            </button>
+          ))}
+        </div>
+        <form className="admin-form editor-form" onSubmit={submit}>
+          {activeEditorGroup === 'colors' ? (
+            <ThemeFieldset
+              title="Colors"
+              fields={colorThemeFields}
+              form={form}
+              onChange={updateField}
             />
-          </label>
-          <div className="theme-asset-grid">
-            <label>
-              Logo upload/change
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(event) => setLogo(event.target.files?.[0] ?? null)}
+          ) : null}
+          {activeEditorGroup === 'typography' ? (
+            <ThemeFieldset
+              title="Typography"
+              fields={typographyThemeFields}
+              form={form}
+              onChange={updateField}
+            />
+          ) : null}
+          {activeEditorGroup === 'buttons' ? (
+            <ThemeFieldset
+              title="Buttons"
+              fields={buttonThemeFields}
+              form={form}
+              onChange={updateField}
+            />
+          ) : null}
+          {activeEditorGroup === 'layout' ? (
+            <>
+              <ThemeFieldset
+                title="Layout / Shapes"
+                fields={layoutThemeFields}
+                form={form}
+                onChange={updateField}
               />
-              <ImageUploadPreview file={logo} existingUrl={form.logoUrl} />
-            </label>
-            <label>
-              Favicon upload/change
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(event) =>
-                  setFavicon(event.target.files?.[0] ?? null)
-                }
-              />
-              <ImageUploadPreview
-                file={favicon}
-                existingUrl={form.faviconUrl}
-              />
-            </label>
-            <label>
-              Homepage background image
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(event) =>
-                  setHomepageBackground(event.target.files?.[0] ?? null)
-                }
-              />
-              <ImageUploadPreview
-                file={homepageBackground}
-                existingUrl={form.homepageBackgroundUrl}
-              />
-            </label>
-            <label>
-              Default page background image
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(event) =>
-                  setDefaultPageBackground(event.target.files?.[0] ?? null)
-                }
-              />
-              <ImageUploadPreview
-                file={defaultPageBackground}
-                existingUrl={form.defaultPageBackgroundUrl}
-              />
-            </label>
-          </div>
+              <label className="settings-toggle">
+                <span>
+                  <strong>Card shadow</strong>
+                  <em>Turn card elevation on or off.</em>
+                </span>
+                <input
+                  type="checkbox"
+                  checked={cardShadowEnabled}
+                  onChange={(event) =>
+                    setCardShadowEnabled(event.target.checked)
+                  }
+                />
+              </label>
+            </>
+          ) : null}
+          {activeEditorGroup === 'assets' ? (
+            <div className="theme-asset-grid">
+              <label>
+                Logo upload/change
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(event) => setLogo(event.target.files?.[0] ?? null)}
+                />
+                <ImageUploadPreview file={logo} existingUrl={form.logoUrl} />
+              </label>
+              <label>
+                Favicon upload/change
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(event) =>
+                    setFavicon(event.target.files?.[0] ?? null)
+                  }
+                />
+                <ImageUploadPreview
+                  file={favicon}
+                  existingUrl={form.faviconUrl}
+                />
+              </label>
+              <label>
+                Homepage background image
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(event) =>
+                    setHomepageBackground(event.target.files?.[0] ?? null)
+                  }
+                />
+                <ImageUploadPreview
+                  file={homepageBackground}
+                  existingUrl={form.homepageBackgroundUrl}
+                />
+              </label>
+              <label>
+                Default page background image
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(event) =>
+                    setDefaultPageBackground(event.target.files?.[0] ?? null)
+                  }
+                />
+                <ImageUploadPreview
+                  file={defaultPageBackground}
+                  existingUrl={form.defaultPageBackgroundUrl}
+                />
+              </label>
+            </div>
+          ) : null}
           <AdminSaveBar status={status} label="Save theme" />
         </form>
       </Card>
@@ -641,6 +674,18 @@ function ThemeManagerPanel() {
     </div>
   )
 }
+
+const themeEditorGroups: Array<{
+  id: 'colors' | 'typography' | 'buttons' | 'layout' | 'assets'
+  label: string
+  description: string
+}> = [
+  { id: 'colors', label: 'Colors', description: 'Site, nav, cards, badges' },
+  { id: 'typography', label: 'Type', description: 'Fonts and text sizes' },
+  { id: 'buttons', label: 'Buttons', description: 'Shape, text, hover' },
+  { id: 'layout', label: 'Layout', description: 'Spacing, radius, shadows' },
+  { id: 'assets', label: 'Images', description: 'Logo and backgrounds' },
+]
 
 function ThemeFieldset({
   title,
@@ -866,6 +911,9 @@ function PageTextStylePanel() {
   const [embeds, setEmbeds] = useState<CustomEmbedEditor[]>([])
   const [draggedSectionId, setDraggedSectionId] = useState<string | null>(null)
   const [draggedEmbedId, setDraggedEmbedId] = useState<string | null>(null)
+  const [activePageEditorGroup, setActivePageEditorGroup] = useState<
+    'sections' | 'colors' | 'embeds'
+  >('sections')
 
   useEffect(() => {
     if (!appearance) return
@@ -991,13 +1039,19 @@ function PageTextStylePanel() {
   }
 
   return (
-    <div className="admin-split page-style-manager">
-      <Card className="admin-panel">
-        <AdminPanelHeader
-          title="Page text and color manager"
-          description="Choose a page, edit its public-facing sections, and set page-specific colors for headers, cards, text boxes, and navigation."
-        />
-        <form className="admin-form" onSubmit={submit}>
+    <div className="admin-split page-style-manager editor-workbench">
+      <Card className="admin-panel editor-panel">
+        <div className="editor-panel-top">
+          <AdminPanelHeader
+            title="Page editor"
+            description="Pick a public page, then tune its content, custom blocks, and page-specific colors."
+          />
+          <span className="editor-save-state">
+            {status || 'Changes save when you click the button below.'}
+          </span>
+        </div>
+
+        <div className="page-editor-toolbar">
           <label>
             Page
             <select
@@ -1011,189 +1065,218 @@ function PageTextStylePanel() {
               ))}
             </select>
           </label>
+          <div className="page-editor-counts" aria-label="Current page summary">
+            <span>{pageSections.length} sections</span>
+            <span>{pageEmbeds.length} embeds</span>
+          </div>
+        </div>
 
-          <fieldset className="theme-fieldset">
-            <legend>Page colors</legend>
-            <div className="form-grid">
-              {pageStyleFields.map((field) => (
-                <AdminInput
-                  key={field.key}
-                  label={field.label}
-                  type="color"
-                  value={selectedStyle[field.key]}
-                  onChange={(value) => updatePageStyle({ [field.key]: value })}
-                />
-              ))}
-            </div>
-          </fieldset>
+        <div className="editor-subnav" aria-label="Page editor tools">
+          {pageEditorGroups.map((group) => (
+            <button
+              key={group.id}
+              type="button"
+              className={activePageEditorGroup === group.id ? 'is-active' : ''}
+              onClick={() => setActivePageEditorGroup(group.id)}
+            >
+              <strong>{group.label}</strong>
+              <span>{group.description}</span>
+            </button>
+          ))}
+        </div>
 
-          <fieldset className="theme-fieldset">
-            <legend>Public text sections</legend>
-            {pageSections.length ? (
-              <div className="page-section-editor-list">
-                {pageSections.map((section) => (
-                  <article
-                    key={section.id}
-                    className="page-section-editor"
-                    draggable
-                    onDragStart={() => setDraggedSectionId(section.id)}
-                    onDragOver={(event) => event.preventDefault()}
-                    onDrop={() => reorderSections(section.id)}
-                  >
-                    <label className="settings-toggle">
-                      <span>
-                        <strong>{section.title || 'Untitled section'}</strong>
-                        <em>{section.sectionKey}</em>
-                      </span>
-                      <input
-                        type="checkbox"
-                        checked={section.enabled}
-                        onChange={(event) =>
-                          updateSection(section.id, {
-                            enabled: event.target.checked,
-                          })
-                        }
-                      />
-                    </label>
-                    <div className="form-grid">
-                      <AdminInput
-                        label="Section key"
-                        value={section.sectionKey}
-                        onChange={(value) =>
-                          updateSection(section.id, { sectionKey: value })
-                        }
-                      />
-                      <AdminInput
-                        label="Eyebrow"
-                        value={section.eyebrow}
-                        onChange={(value) =>
-                          updateSection(section.id, { eyebrow: value })
-                        }
-                      />
-                    </div>
-                    <AdminInput
-                      label="Header/title"
-                      value={section.title}
-                      onChange={(value) =>
-                        updateSection(section.id, { title: value })
-                      }
-                    />
-                    <AdminTextarea
-                      label="Text/description"
-                      value={section.description}
-                      onChange={(value) =>
-                        updateSection(section.id, { description: value })
-                      }
-                    />
-                    <Button
-                      type="button"
-                      variant="secondary"
-                      onClick={() => removeSection(section.id)}
-                    >
-                      Remove section
-                    </Button>
-                  </article>
+        <form className="admin-form editor-form" onSubmit={submit}>
+          {activePageEditorGroup === 'colors' && (
+            <fieldset className="theme-fieldset">
+              <legend>Page colors</legend>
+              <div className="form-grid">
+                {pageStyleFields.map((field) => (
+                  <AdminInput
+                    key={field.key}
+                    label={field.label}
+                    type="color"
+                    value={selectedStyle[field.key]}
+                    onChange={(value) =>
+                      updatePageStyle({ [field.key]: value })
+                    }
+                  />
                 ))}
               </div>
-            ) : (
-              <p className="form-note">No sections for this page yet.</p>
-            )}
-            <Button type="button" variant="secondary" onClick={addSection}>
-              Add section
-            </Button>
-          </fieldset>
+            </fieldset>
+          )}
 
-          <fieldset className="theme-fieldset">
-            <legend>Custom Embed / Custom Code blocks</legend>
-            {pageEmbeds.length ? (
-              <div className="page-section-editor-list">
-                {pageEmbeds.map((embed) => (
-                  <article
-                    key={embed.id}
-                    className="page-section-editor custom-embed-editor"
-                    draggable
-                    onDragStart={() => setDraggedEmbedId(embed.id)}
-                    onDragOver={(event) => event.preventDefault()}
-                    onDrop={() => reorderEmbeds(embed.id)}
-                  >
-                    <label className="settings-toggle">
-                      <span>
-                        <strong>{embed.title || 'Untitled embed'}</strong>
-                        <em>{embed.blockType}</em>
-                      </span>
-                      <input
-                        type="checkbox"
-                        checked={embed.enabled}
-                        onChange={(event) =>
-                          updateEmbed(embed.id, {
-                            enabled: event.target.checked,
-                          })
-                        }
-                      />
-                    </label>
-                    <div className="form-grid">
-                      <label>
-                        Block type
-                        <select
-                          value={embed.blockType}
+          {activePageEditorGroup === 'sections' && (
+            <fieldset className="theme-fieldset">
+              <legend>Public text sections</legend>
+              {pageSections.length ? (
+                <div className="page-section-editor-list">
+                  {pageSections.map((section) => (
+                    <article
+                      key={section.id}
+                      className="page-section-editor"
+                      draggable
+                      onDragStart={() => setDraggedSectionId(section.id)}
+                      onDragOver={(event) => event.preventDefault()}
+                      onDrop={() => reorderSections(section.id)}
+                    >
+                      <label className="settings-toggle">
+                        <span>
+                          <strong>{section.title || 'Untitled section'}</strong>
+                          <em>{section.sectionKey}</em>
+                        </span>
+                        <input
+                          type="checkbox"
+                          checked={section.enabled}
                           onChange={(event) =>
-                            updateEmbed(embed.id, {
-                              blockType: event.target.value,
+                            updateSection(section.id, {
+                              enabled: event.target.checked,
                             })
                           }
-                        >
-                          {customEmbedTypes.map((type) => (
-                            <option key={type} value={type}>
-                              {type}
-                            </option>
-                          ))}
-                        </select>
+                        />
                       </label>
+                      <div className="form-grid">
+                        <AdminInput
+                          label="Section key"
+                          value={section.sectionKey}
+                          onChange={(value) =>
+                            updateSection(section.id, { sectionKey: value })
+                          }
+                        />
+                        <AdminInput
+                          label="Eyebrow"
+                          value={section.eyebrow}
+                          onChange={(value) =>
+                            updateSection(section.id, { eyebrow: value })
+                          }
+                        />
+                      </div>
                       <AdminInput
-                        label="Block title"
-                        value={embed.title}
+                        label="Header/title"
+                        value={section.title}
                         onChange={(value) =>
-                          updateEmbed(embed.id, { title: value })
+                          updateSection(section.id, { title: value })
                         }
                       />
-                    </div>
-                    <AdminTextarea
-                      label="Block description"
-                      value={embed.description}
-                      onChange={(value) =>
-                        updateEmbed(embed.id, { description: value })
-                      }
-                    />
-                    <AdminTextarea
-                      label="Code/embed field"
-                      value={embed.code}
-                      onChange={(value) =>
-                        updateEmbed(embed.id, { code: value })
-                      }
-                    />
-                    <div className="custom-embed-preview">
-                      <strong>Preview</strong>
-                      <div dangerouslySetInnerHTML={{ __html: embed.code }} />
-                    </div>
-                    <Button
-                      type="button"
-                      variant="secondary"
-                      onClick={() => removeEmbed(embed.id)}
+                      <AdminTextarea
+                        label="Text/description"
+                        value={section.description}
+                        onChange={(value) =>
+                          updateSection(section.id, { description: value })
+                        }
+                      />
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        onClick={() => removeSection(section.id)}
+                      >
+                        Remove section
+                      </Button>
+                    </article>
+                  ))}
+                </div>
+              ) : (
+                <p className="form-note">No sections for this page yet.</p>
+              )}
+              <Button type="button" variant="secondary" onClick={addSection}>
+                Add section
+              </Button>
+            </fieldset>
+          )}
+
+          {activePageEditorGroup === 'embeds' && (
+            <fieldset className="theme-fieldset">
+              <legend>Custom Embed / Custom Code blocks</legend>
+              {pageEmbeds.length ? (
+                <div className="page-section-editor-list">
+                  {pageEmbeds.map((embed) => (
+                    <article
+                      key={embed.id}
+                      className="page-section-editor custom-embed-editor"
+                      draggable
+                      onDragStart={() => setDraggedEmbedId(embed.id)}
+                      onDragOver={(event) => event.preventDefault()}
+                      onDrop={() => reorderEmbeds(embed.id)}
                     >
-                      Remove block
-                    </Button>
-                  </article>
-                ))}
-              </div>
-            ) : (
-              <p className="form-note">
-                No custom embed blocks for this page yet.
-              </p>
-            )}
-            <Button type="button" variant="secondary" onClick={addEmbed}>
-              Add custom embed block
-            </Button>
-          </fieldset>
+                      <label className="settings-toggle">
+                        <span>
+                          <strong>{embed.title || 'Untitled embed'}</strong>
+                          <em>{embed.blockType}</em>
+                        </span>
+                        <input
+                          type="checkbox"
+                          checked={embed.enabled}
+                          onChange={(event) =>
+                            updateEmbed(embed.id, {
+                              enabled: event.target.checked,
+                            })
+                          }
+                        />
+                      </label>
+                      <div className="form-grid">
+                        <label>
+                          Block type
+                          <select
+                            value={embed.blockType}
+                            onChange={(event) =>
+                              updateEmbed(embed.id, {
+                                blockType: event.target.value,
+                              })
+                            }
+                          >
+                            {customEmbedTypes.map((type) => (
+                              <option key={type} value={type}>
+                                {type}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+                        <AdminInput
+                          label="Block title"
+                          value={embed.title}
+                          onChange={(value) =>
+                            updateEmbed(embed.id, { title: value })
+                          }
+                        />
+                      </div>
+                      <AdminTextarea
+                        label="Block description"
+                        value={embed.description}
+                        onChange={(value) =>
+                          updateEmbed(embed.id, { description: value })
+                        }
+                      />
+                      <AdminTextarea
+                        label="Code/embed field"
+                        value={embed.code}
+                        onChange={(value) =>
+                          updateEmbed(embed.id, { code: value })
+                        }
+                      />
+                      <div className="custom-embed-preview">
+                        <strong>Preview</strong>
+                        <div dangerouslySetInnerHTML={{ __html: embed.code }} />
+                      </div>
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        onClick={() => removeEmbed(embed.id)}
+                      >
+                        Remove block
+                      </Button>
+                    </article>
+                  ))}
+                </div>
+              ) : (
+                <p className="form-note">
+                  No custom embed blocks for this page yet.
+                </p>
+              )}
+              <Button type="button" variant="secondary" onClick={addEmbed}>
+                Add custom embed block
+              </Button>
+            </fieldset>
+          )}
+
           <AdminSaveBar status={status} label="Save page settings" />
         </form>
       </Card>
@@ -1236,6 +1319,28 @@ const customEmbedTypes = [
   'Custom button',
   'External script',
   'Third-party embed',
+]
+
+const pageEditorGroups: Array<{
+  id: 'sections' | 'colors' | 'embeds'
+  label: string
+  description: string
+}> = [
+  {
+    id: 'sections',
+    label: 'Sections',
+    description: 'Public text and order',
+  },
+  {
+    id: 'colors',
+    label: 'Colors',
+    description: 'Page-specific styling',
+  },
+  {
+    id: 'embeds',
+    label: 'Embeds',
+    description: 'Widgets and custom code',
+  },
 ]
 
 const pageStyleFields: Array<{
