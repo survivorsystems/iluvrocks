@@ -1,4 +1,5 @@
 import {
+  Award,
   BookOpen,
   Compass,
   Diamond,
@@ -36,6 +37,7 @@ export default function RockhoundDashboard({
   const username =
     viewer?.username?.trim() || auth.user?.username || 'rockhounder'
   const email = viewer?.email?.trim() || auth.user?.email
+  const isOriginalHound = isTaviaSupporter({ displayName, username, email })
   const location = viewer?.location?.trim() || 'Ellensburg, Washington'
   const bio =
     viewer?.bio?.trim() ||
@@ -57,6 +59,7 @@ export default function RockhoundDashboard({
           avatarLabel={avatarLabel}
           displayName={displayName}
           username={username}
+          isOriginalHound={isOriginalHound}
           location={location}
           bio={bio}
           profileImage={profileImage}
@@ -85,6 +88,7 @@ function ProfileHeader({
   avatarLabel,
   displayName,
   username,
+  isOriginalHound,
   location,
   bio,
   profileImage,
@@ -100,6 +104,7 @@ function ProfileHeader({
   avatarLabel: string
   displayName: string
   username: string
+  isOriginalHound?: boolean
   location: string
   bio: string
   profileImage?: string
@@ -237,6 +242,12 @@ function ProfileHeader({
         ) : null}
         <div className="profile-title-row">
           <h1>{displayName}</h1>
+          {isOriginalHound ? (
+            <span className="original-hound-title">
+              <Award aria-hidden="true" />
+              Original Hound
+            </span>
+          ) : null}
         </div>
         <p className="profile-meta">
           <MapPin aria-hidden="true" />
@@ -411,4 +422,18 @@ function getOptionalUserImage(user: unknown, key: 'image' | 'bannerImage') {
   if (!user || typeof user !== 'object' || !(key in user)) return undefined
   const value = (user as Record<string, unknown>)[key]
   return typeof value === 'string' ? value.trim() || undefined : undefined
+}
+
+function isTaviaSupporter({
+  displayName,
+  username,
+  email,
+}: {
+  displayName?: string
+  username?: string
+  email?: string
+}) {
+  return [displayName, username, email].some((value) =>
+    value?.toLowerCase().includes('tavia'),
+  )
 }

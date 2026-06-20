@@ -6,6 +6,7 @@ import {
   Building2,
   Compass,
   Gem,
+  Heart,
   Map,
   Route,
   Search,
@@ -59,6 +60,7 @@ export default function Home() {
         isAuthenticated={auth.isAuthenticated}
         appearance={appearance}
       />
+      <OriginalHoundsSection />
       {auth.isAuthenticated ? <MemberTripHome /> : <VisitorSections />}
     </PageBackgroundLayout>
   )
@@ -146,6 +148,32 @@ function VisitorSections() {
           description="Safety, ethics, laws by state, beginner guides, and educational resources."
         />
       </div>
+    </section>
+  )
+}
+
+function OriginalHoundsSection() {
+  return (
+    <section className="public-section original-hounds-section">
+      <SectionHeader
+        eyebrow="Original Hounds"
+        title="The first people helping iluvrocks get off the ground"
+        description="Original Hounds are the first supporters who helped iluvrocks get off the ground."
+      />
+      <Card className="original-hound-card">
+        <span className="original-hound-mark" aria-hidden="true">
+          <Heart />
+        </span>
+        <div>
+          <p className="eyebrow">First monthly supporter</p>
+          <h2>Tavia</h2>
+          <p>
+            Thank you for helping this early rockhounding community take its
+            first real steps.
+          </p>
+        </div>
+        <span className="original-hound-title">Original Hound</span>
+      </Card>
     </section>
   )
 }

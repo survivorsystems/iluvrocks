@@ -860,6 +860,43 @@ progress::-moz-progress-bar {
   line-height: var(--line-height-base);
 }
 
+.original-hounds-section {
+  padding-top: 0;
+}
+
+.original-hound-card {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: var(--space-4);
+  align-items: center;
+}
+
+.original-hound-card h2,
+.original-hound-card p {
+  margin: 0;
+}
+
+.original-hound-card p:not(.eyebrow) {
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-base);
+}
+
+.original-hound-mark {
+  display: grid;
+  width: 3.25rem;
+  height: 3.25rem;
+  place-items: center;
+  border: 1px solid var(--color-accent-yellow);
+  border-radius: var(--radius-large);
+  background: var(--color-accent-yellow);
+  color: var(--color-primary);
+}
+
+.original-hound-mark svg {
+  width: 1.35rem;
+  height: 1.35rem;
+}
+
 .table-card {
   overflow: hidden;
 }
@@ -2436,6 +2473,25 @@ label {
   font-size: clamp(2rem, 5vw, 2.55rem);
   line-height: var(--line-height-tight);
   letter-spacing: -0.025em;
+}
+
+.original-hound-title {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: fit-content;
+  border: 1px solid var(--color-accent-yellow);
+  border-radius: var(--radius-round);
+  padding: 0.4rem 0.72rem;
+  background: var(--color-accent-yellow);
+  color: var(--color-primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-black);
+}
+
+.original-hound-title svg {
+  width: 1rem;
+  height: 1rem;
 }
 
 .profile-meta,

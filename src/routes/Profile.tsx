@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Award } from 'lucide-react'
 import { useParams } from 'react-router-dom'
 import { useMutation, useQuery } from 'convex/react'
 import { api } from '../../convex/_generated/api'
@@ -73,6 +74,12 @@ export default function Profile() {
     }
   }
 
+  const isOriginalHound = isTaviaSupporter({
+    displayName: profile.user.name,
+    username: profile.user.username,
+    email: profile.user.email,
+  })
+
   return (
     <PageBackgroundLayout background="skagit">
       <section className="profile-page">
@@ -86,7 +93,15 @@ export default function Profile() {
           </div>
           <div>
             <p className="eyebrow">@{profile.user.username}</p>
-            <h1>{profile.user.name || profile.user.username}</h1>
+            <div className="profile-title-row">
+              <h1>{profile.user.name || profile.user.username}</h1>
+              {isOriginalHound ? (
+                <span className="original-hound-title">
+                  <Award aria-hidden="true" />
+                  Original Hound
+                </span>
+              ) : null}
+            </div>
             {profile.user.bio ? <p>{profile.user.bio}</p> : null}
             <div className="stats-row">
               <span>{profile.followerCount} followers</span>
@@ -128,6 +143,20 @@ export default function Profile() {
         </div>
       </section>
     </PageBackgroundLayout>
+  )
+}
+
+function isTaviaSupporter({
+  displayName,
+  username,
+  email,
+}: {
+  displayName?: string
+  username?: string
+  email?: string
+}) {
+  return [displayName, username, email].some((value) =>
+    value?.toLowerCase().includes('tavia'),
   )
 }
 

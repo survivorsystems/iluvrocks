@@ -149,7 +149,7 @@ function AppearancePanel() {
     backgroundJson:
       '{"home":"skagit","basecamp":"skagit","community":"alsea","collections":"haystacks","settings":"cascades"}',
     featuredSectionsJson:
-      'Featured members, Latest discoveries, Beginner guides, Business directory',
+      'Original Hounds, Featured members, Latest discoveries, Beginner guides, Business directory',
   })
 
   useEffect(() => {
@@ -169,7 +169,7 @@ function AppearancePanel() {
         '{"home":"skagit","basecamp":"skagit","community":"alsea","collections":"haystacks","settings":"cascades"}',
       featuredSectionsJson:
         appearance.featuredSectionsJson ||
-        'Featured members, Latest discoveries, Beginner guides, Business directory',
+        'Original Hounds, Featured members, Latest discoveries, Beginner guides, Business directory',
     })
   }, [appearance])
 
