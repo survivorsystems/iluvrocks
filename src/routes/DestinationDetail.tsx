@@ -92,7 +92,11 @@ export default function DestinationDetail() {
               <div className="admin-list">
                 {data.itineraries.map((itinerary: any) => (
                   <article key={itinerary._id}>
-                    <strong>{itinerary.title}</strong>
+                    <strong>
+                      <Link to={`/trips/${itinerary.slug}`}>
+                        {itinerary.title}
+                      </Link>
+                    </strong>
                     <span>
                       {itinerary.duration || 'Flexible'} |{' '}
                       {itinerary.difficulty || 'Difficulty TBD'}

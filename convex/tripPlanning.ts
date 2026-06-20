@@ -171,6 +171,22 @@ export const getDestinationBySlug = query({
   },
 })
 
+export const getItineraryBySlug = query({
+  args: { slug: v.string() },
+  handler: async (ctx, args) => {
+    const itinerary = await ctx.db
+      .query('itineraries')
+      .withIndex('by_slug', (q) => q.eq('slug', args.slug))
+      .unique()
+    if (!itinerary || itinerary.status !== 'published') return null
+
+    const destination = await ctx.db.get(itinerary.destinationId)
+    if (!destination || destination.status !== 'published') return null
+
+    return { itinerary, destination }
+  },
+})
+
 export const ownerListAll = query({
   args: {},
   handler: async (ctx) => {
@@ -282,6 +298,18 @@ export const saveItinerary = mutation({
     stopsJson: v.optional(v.string()),
     packingList: v.optional(v.string()),
     safetyNotes: v.optional(v.string()),
+    geologySummary: v.optional(v.string()),
+    geologicFormations: v.optional(v.string()),
+    geologicAge: v.optional(v.string()),
+    likelyMaterials: v.optional(v.string()),
+    materialOccurrence: v.optional(v.string()),
+    fieldClues: v.optional(v.string()),
+    commonLookalikes: v.optional(v.string()),
+    terrainNotes: v.optional(v.string()),
+    erosionDepositionNotes: v.optional(v.string()),
+    collectionLegalityNotes: v.optional(v.string()),
+    sourceNotes: v.optional(v.string()),
+    confidenceLevel: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const userId = await requireOwner(ctx)

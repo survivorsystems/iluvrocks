@@ -1797,6 +1797,18 @@ function ItinerariesPanel() {
     stopsJson: '',
     packingList: '',
     safetyNotes: '',
+    geologySummary: '',
+    geologicFormations: '',
+    geologicAge: '',
+    likelyMaterials: '',
+    materialOccurrence: '',
+    fieldClues: '',
+    commonLookalikes: '',
+    terrainNotes: '',
+    erosionDepositionNotes: '',
+    collectionLegalityNotes: '',
+    sourceNotes: '',
+    confidenceLevel: 'medium',
   })
   const [destinationForm, setDestinationForm] = useState({
     name: '',
@@ -1865,6 +1877,18 @@ function ItinerariesPanel() {
         stopsJson: emptyToUndefined(form.stopsJson),
         packingList: emptyToUndefined(form.packingList),
         safetyNotes: emptyToUndefined(form.safetyNotes),
+        geologySummary: emptyToUndefined(form.geologySummary),
+        geologicFormations: emptyToUndefined(form.geologicFormations),
+        geologicAge: emptyToUndefined(form.geologicAge),
+        likelyMaterials: emptyToUndefined(form.likelyMaterials),
+        materialOccurrence: emptyToUndefined(form.materialOccurrence),
+        fieldClues: emptyToUndefined(form.fieldClues),
+        commonLookalikes: emptyToUndefined(form.commonLookalikes),
+        terrainNotes: emptyToUndefined(form.terrainNotes),
+        erosionDepositionNotes: emptyToUndefined(form.erosionDepositionNotes),
+        collectionLegalityNotes: emptyToUndefined(form.collectionLegalityNotes),
+        sourceNotes: emptyToUndefined(form.sourceNotes),
+        confidenceLevel: emptyToUndefined(form.confidenceLevel),
       })
       setStatus('Itinerary saved.')
     } catch (error) {
@@ -2010,6 +2034,95 @@ function ItinerariesPanel() {
             value={form.safetyNotes}
             onChange={(value) => setForm({ ...form, safetyNotes: value })}
           />
+          <section className="admin-inline-card">
+            <div>
+              <h3>Geology Analysis</h3>
+              <p className="form-note">
+                Educational geology for this trip. Keep this separate from
+                safety, access, and general legal notes.
+              </p>
+            </div>
+            <AdminTextarea
+              label="Geology summary"
+              value={form.geologySummary}
+              onChange={(value) => setForm({ ...form, geologySummary: value })}
+            />
+            <div className="form-grid">
+              <AdminInput
+                label="Geologic formations"
+                value={form.geologicFormations}
+                onChange={(value) =>
+                  setForm({ ...form, geologicFormations: value })
+                }
+              />
+              <AdminInput
+                label="Geologic age"
+                value={form.geologicAge}
+                onChange={(value) => setForm({ ...form, geologicAge: value })}
+              />
+              <label>
+                Confidence level
+                <select
+                  value={form.confidenceLevel}
+                  onChange={(event) =>
+                    setForm({ ...form, confidenceLevel: event.target.value })
+                  }
+                >
+                  <option value="high">High</option>
+                  <option value="medium">Medium</option>
+                  <option value="low">Low</option>
+                </select>
+              </label>
+            </div>
+            <AdminTextarea
+              label="Likely materials"
+              value={form.likelyMaterials}
+              onChange={(value) => setForm({ ...form, likelyMaterials: value })}
+            />
+            <AdminTextarea
+              label="Why those materials occur there"
+              value={form.materialOccurrence}
+              onChange={(value) =>
+                setForm({ ...form, materialOccurrence: value })
+              }
+            />
+            <AdminTextarea
+              label="Field clues"
+              value={form.fieldClues}
+              onChange={(value) => setForm({ ...form, fieldClues: value })}
+            />
+            <AdminTextarea
+              label="Common lookalikes"
+              value={form.commonLookalikes}
+              onChange={(value) =>
+                setForm({ ...form, commonLookalikes: value })
+              }
+            />
+            <AdminTextarea
+              label="Terrain notes"
+              value={form.terrainNotes}
+              onChange={(value) => setForm({ ...form, terrainNotes: value })}
+            />
+            <AdminTextarea
+              label="Erosion/deposition notes"
+              value={form.erosionDepositionNotes}
+              onChange={(value) =>
+                setForm({ ...form, erosionDepositionNotes: value })
+              }
+            />
+            <AdminTextarea
+              label="Collection legality notes"
+              value={form.collectionLegalityNotes}
+              onChange={(value) =>
+                setForm({ ...form, collectionLegalityNotes: value })
+              }
+            />
+            <AdminTextarea
+              label="Source notes/links"
+              value={form.sourceNotes}
+              onChange={(value) => setForm({ ...form, sourceNotes: value })}
+            />
+          </section>
           <AdminSaveBar status={status} label="Save itinerary" />
         </form>
       </Card>

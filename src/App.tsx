@@ -24,6 +24,7 @@ import PublicPage from './routes/PublicPage'
 import PublicCollection from './routes/PublicCollection'
 import Settings from './routes/Settings'
 import SpecimenDetail from './routes/SpecimenDetail'
+import TripDetail from './routes/TripDetail'
 import TripPlanner from './routes/TripPlanner'
 import Trips from './routes/Trips'
 
@@ -47,6 +48,7 @@ export default function App() {
         <Route path="/destinations/:slug" element={<DestinationDetail />} />
         <Route path="/materials" element={<Materials />} />
         <Route path="/trip-planner" element={<TripPlanner />} />
+        <Route path="/trips/:slug" element={<TripDetail />} />
         <Route path="/guides" element={<Guides />} />
         <Route path="/members" element={<PublicPage page="members" />} />
         <Route
