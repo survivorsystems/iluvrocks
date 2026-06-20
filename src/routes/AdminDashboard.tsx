@@ -427,10 +427,10 @@ const colorThemeFields: ThemeField[] = [
 ]
 
 const typographyThemeFields: ThemeField[] = [
-  { key: 'headerFont', label: 'Header font' },
-  { key: 'subheaderFont', label: 'Subheader font' },
-  { key: 'bodyFont', label: 'Body font' },
-  { key: 'buttonFont', label: 'Button font' },
+  { key: 'headerFont', label: 'Header font', type: 'font' },
+  { key: 'subheaderFont', label: 'Subheader font', type: 'font' },
+  { key: 'bodyFont', label: 'Body font', type: 'font' },
+  { key: 'buttonFont', label: 'Button font', type: 'font' },
   { key: 'headerTextSize', label: 'Header text size' },
   { key: 'subheaderTextSize', label: 'Subheader text size' },
   { key: 'bodyTextSize', label: 'Body text size' },
@@ -455,12 +455,12 @@ const layoutThemeFields: ThemeField[] = [
   {
     key: 'cardOpacity',
     label: 'Text box/card transparency/opacity',
-    type: 'number',
+    type: 'range',
   },
   {
     key: 'defaultOverlayOpacity',
     label: 'Default card/background overlay opacity',
-    type: 'number',
+    type: 'range',
   },
 ]
 
@@ -589,6 +589,7 @@ function ThemeManagerPanel() {
                 accept="image/*"
                 onChange={(event) => setLogo(event.target.files?.[0] ?? null)}
               />
+              <ImageUploadPreview file={logo} existingUrl={form.logoUrl} />
             </label>
             <label>
               Favicon upload/change
@@ -598,6 +599,10 @@ function ThemeManagerPanel() {
                 onChange={(event) =>
                   setFavicon(event.target.files?.[0] ?? null)
                 }
+              />
+              <ImageUploadPreview
+                file={favicon}
+                existingUrl={form.faviconUrl}
               />
             </label>
             <label>
@@ -609,6 +614,10 @@ function ThemeManagerPanel() {
                   setHomepageBackground(event.target.files?.[0] ?? null)
                 }
               />
+              <ImageUploadPreview
+                file={homepageBackground}
+                existingUrl={form.homepageBackgroundUrl}
+              />
             </label>
             <label>
               Default page background image
@@ -618,6 +627,10 @@ function ThemeManagerPanel() {
                 onChange={(event) =>
                   setDefaultPageBackground(event.target.files?.[0] ?? null)
                 }
+              />
+              <ImageUploadPreview
+                file={defaultPageBackground}
+                existingUrl={form.defaultPageBackgroundUrl}
               />
             </label>
           </div>
@@ -727,6 +740,35 @@ function ThemePreview({
   )
 }
 
+function ImageUploadPreview({
+  file,
+  existingUrl,
+}: {
+  file: File | null
+  existingUrl?: string
+}) {
+  const [previewUrl, setPreviewUrl] = useState('')
+
+  useEffect(() => {
+    if (!file) {
+      setPreviewUrl('')
+      return
+    }
+    const nextUrl = URL.createObjectURL(file)
+    setPreviewUrl(nextUrl)
+    return () => URL.revokeObjectURL(nextUrl)
+  }, [file])
+
+  const source = previewUrl || existingUrl
+  if (!source) return <span className="form-note">No image selected yet.</span>
+
+  return (
+    <span className="admin-image-preview">
+      <img src={source} alt="" />
+    </span>
+  )
+}
+
 type PublicSectionEditor = {
   id: string
   page: string
@@ -735,6 +777,18 @@ type PublicSectionEditor = {
   title: string
   description: string
   enabled: boolean
+  order?: number
+}
+
+type CustomEmbedEditor = {
+  id: string
+  page: string
+  blockType: string
+  title: string
+  description: string
+  code: string
+  enabled: boolean
+  order: number
 }
 
 type PageStyleEditor = {
@@ -774,6 +828,7 @@ const defaultPublicSections: PublicSectionEditor[] = [
     title: "Let's Rock",
     description: 'Learn How To Rockhound',
     enabled: true,
+    order: 1,
   },
   {
     id: 'home-original-hounds',
@@ -784,6 +839,7 @@ const defaultPublicSections: PublicSectionEditor[] = [
     description:
       'Original Hounds are the first supporters who helped iluvrocks get off the ground.',
     enabled: true,
+    order: 2,
   },
   {
     id: 'home-public-browsing',
@@ -794,6 +850,7 @@ const defaultPublicSections: PublicSectionEditor[] = [
     description:
       'Visitors can browse destinations, materials, guides, itineraries, and business listings without creating an account.',
     enabled: true,
+    order: 3,
   },
 ]
 
@@ -806,6 +863,9 @@ function PageTextStylePanel() {
     defaultPublicSections,
   )
   const [pageStyles, setPageStyles] = useState<PageStyleEditor[]>([])
+  const [embeds, setEmbeds] = useState<CustomEmbedEditor[]>([])
+  const [draggedSectionId, setDraggedSectionId] = useState<string | null>(null)
+  const [draggedEmbedId, setDraggedEmbedId] = useState<string | null>(null)
 
   useEffect(() => {
     if (!appearance) return
@@ -816,11 +876,15 @@ function PageTextStylePanel() {
       ),
     )
     setPageStyles(parseJsonList<PageStyleEditor>(appearance.pageStylesJson, []))
+    setEmbeds(parseJsonList<CustomEmbedEditor>(appearance.customEmbedsJson, []))
   }, [appearance])
 
-  const pageSections = sections.filter(
-    (section) => section.page === selectedPage,
-  )
+  const pageSections = sections
+    .filter((section) => section.page === selectedPage)
+    .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+  const pageEmbeds = embeds
+    .filter((embed) => embed.page === selectedPage)
+    .sort((a, b) => a.order - b.order)
   const selectedStyle =
     pageStyles.find((style) => style.page === selectedPage) ??
     createDefaultPageStyle(selectedPage)
@@ -845,12 +909,58 @@ function PageTextStylePanel() {
         title: 'New section',
         description: '',
         enabled: true,
+        order: pageSections.length + 1,
       },
     ])
   }
 
   const removeSection = (id: string) => {
     setSections((current) => current.filter((section) => section.id !== id))
+  }
+
+  const reorderSections = (targetId: string) => {
+    if (!draggedSectionId || draggedSectionId === targetId) return
+    setSections((current) =>
+      reorderItems(current, selectedPage, draggedSectionId, targetId),
+    )
+    setDraggedSectionId(null)
+  }
+
+  const addEmbed = () => {
+    const id = `${selectedPage}-embed-${Date.now()}`
+    setEmbeds((current) => [
+      ...current,
+      {
+        id,
+        page: selectedPage,
+        blockType: 'Custom HTML',
+        title: 'New custom block',
+        description: '',
+        code: '<div>Paste embed code here</div>',
+        enabled: true,
+        order: pageEmbeds.length + 1,
+      },
+    ])
+  }
+
+  const updateEmbed = (id: string, patch: Partial<CustomEmbedEditor>) => {
+    setEmbeds((current) =>
+      current.map((embed) =>
+        embed.id === id ? { ...embed, ...patch } : embed,
+      ),
+    )
+  }
+
+  const removeEmbed = (id: string) => {
+    setEmbeds((current) => current.filter((embed) => embed.id !== id))
+  }
+
+  const reorderEmbeds = (targetId: string) => {
+    if (!draggedEmbedId || draggedEmbedId === targetId) return
+    setEmbeds((current) =>
+      reorderItems(current, selectedPage, draggedEmbedId, targetId),
+    )
+    setDraggedEmbedId(null)
   }
 
   const updatePageStyle = (patch: Partial<PageStyleEditor>) => {
@@ -868,6 +978,7 @@ function PageTextStylePanel() {
       await saveAppearance({
         publicSectionsJson: JSON.stringify(sections),
         pageStylesJson: JSON.stringify(pageStyles),
+        customEmbedsJson: JSON.stringify(embeds),
       })
       setStatus('Page text and colors saved.')
     } catch (error) {
@@ -921,7 +1032,14 @@ function PageTextStylePanel() {
             {pageSections.length ? (
               <div className="page-section-editor-list">
                 {pageSections.map((section) => (
-                  <article key={section.id} className="page-section-editor">
+                  <article
+                    key={section.id}
+                    className="page-section-editor"
+                    draggable
+                    onDragStart={() => setDraggedSectionId(section.id)}
+                    onDragOver={(event) => event.preventDefault()}
+                    onDrop={() => reorderSections(section.id)}
+                  >
                     <label className="settings-toggle">
                       <span>
                         <strong>{section.title || 'Untitled section'}</strong>
@@ -984,6 +1102,98 @@ function PageTextStylePanel() {
               Add section
             </Button>
           </fieldset>
+
+          <fieldset className="theme-fieldset">
+            <legend>Custom Embed / Custom Code blocks</legend>
+            {pageEmbeds.length ? (
+              <div className="page-section-editor-list">
+                {pageEmbeds.map((embed) => (
+                  <article
+                    key={embed.id}
+                    className="page-section-editor custom-embed-editor"
+                    draggable
+                    onDragStart={() => setDraggedEmbedId(embed.id)}
+                    onDragOver={(event) => event.preventDefault()}
+                    onDrop={() => reorderEmbeds(embed.id)}
+                  >
+                    <label className="settings-toggle">
+                      <span>
+                        <strong>{embed.title || 'Untitled embed'}</strong>
+                        <em>{embed.blockType}</em>
+                      </span>
+                      <input
+                        type="checkbox"
+                        checked={embed.enabled}
+                        onChange={(event) =>
+                          updateEmbed(embed.id, {
+                            enabled: event.target.checked,
+                          })
+                        }
+                      />
+                    </label>
+                    <div className="form-grid">
+                      <label>
+                        Block type
+                        <select
+                          value={embed.blockType}
+                          onChange={(event) =>
+                            updateEmbed(embed.id, {
+                              blockType: event.target.value,
+                            })
+                          }
+                        >
+                          {customEmbedTypes.map((type) => (
+                            <option key={type} value={type}>
+                              {type}
+                            </option>
+                          ))}
+                        </select>
+                      </label>
+                      <AdminInput
+                        label="Block title"
+                        value={embed.title}
+                        onChange={(value) =>
+                          updateEmbed(embed.id, { title: value })
+                        }
+                      />
+                    </div>
+                    <AdminTextarea
+                      label="Block description"
+                      value={embed.description}
+                      onChange={(value) =>
+                        updateEmbed(embed.id, { description: value })
+                      }
+                    />
+                    <AdminTextarea
+                      label="Code/embed field"
+                      value={embed.code}
+                      onChange={(value) =>
+                        updateEmbed(embed.id, { code: value })
+                      }
+                    />
+                    <div className="custom-embed-preview">
+                      <strong>Preview</strong>
+                      <div dangerouslySetInnerHTML={{ __html: embed.code }} />
+                    </div>
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      onClick={() => removeEmbed(embed.id)}
+                    >
+                      Remove block
+                    </Button>
+                  </article>
+                ))}
+              </div>
+            ) : (
+              <p className="form-note">
+                No custom embed blocks for this page yet.
+              </p>
+            )}
+            <Button type="button" variant="secondary" onClick={addEmbed}>
+              Add custom embed block
+            </Button>
+          </fieldset>
           <AdminSaveBar status={status} label="Save page settings" />
         </form>
       </Card>
@@ -1003,11 +1213,30 @@ function PageTextStylePanel() {
               </span>
             </article>
           ))}
+          {pageEmbeds.map((embed) => (
+            <article key={embed.id}>
+              <strong>{embed.title}</strong>
+              <span>
+                {embed.enabled ? 'Visible' : 'Hidden'} / {embed.blockType}
+              </span>
+            </article>
+          ))}
         </div>
       </Card>
     </div>
   )
 }
+
+const customEmbedTypes = [
+  'Custom HTML',
+  'Embedded widget',
+  'Embedded map',
+  'Embedded form',
+  'Embedded video',
+  'Custom button',
+  'External script',
+  'Third-party embed',
+]
 
 const pageStyleFields: Array<{
   key: Exclude<keyof PageStyleEditor, 'page'>
@@ -1037,6 +1266,28 @@ function createDefaultPageStyle(page: string): PageStyleEditor {
     navBackgroundColor: '#ffffff',
     navTextColor: '#050505',
   }
+}
+
+function reorderItems<T extends { id: string; page: string; order?: number }>(
+  items: T[],
+  page: string,
+  draggedId: string,
+  targetId: string,
+) {
+  const pageItems = items.filter((item) => item.page === page)
+  const otherItems = items.filter((item) => item.page !== page)
+  const draggedIndex = pageItems.findIndex((item) => item.id === draggedId)
+  const targetIndex = pageItems.findIndex((item) => item.id === targetId)
+  if (draggedIndex < 0 || targetIndex < 0) return items
+
+  const [dragged] = pageItems.splice(draggedIndex, 1)
+  pageItems.splice(targetIndex, 0, dragged)
+  const orderedPageItems = pageItems.map((item, index) => ({
+    ...item,
+    order: index + 1,
+  }))
+
+  return [...otherItems, ...orderedPageItems]
 }
 
 function DestinationsPanel() {
@@ -2078,6 +2329,24 @@ function AdminInput({
   type?: string
   onChange: (value: string) => void
 }) {
+  if (type === 'font') {
+    return (
+      <label>
+        {label}
+        <select
+          value={value}
+          onChange={(event) => onChange(event.target.value)}
+        >
+          {fontOptions.map((font) => (
+            <option key={font.value} value={font.value}>
+              {font.label}
+            </option>
+          ))}
+        </select>
+      </label>
+    )
+  }
+
   if (type === 'color') {
     return (
       <label>
@@ -2100,6 +2369,32 @@ function AdminInput({
     )
   }
 
+  if (type === 'range') {
+    return (
+      <label>
+        {label}
+        <span className="admin-range-control">
+          <input
+            type="range"
+            min="0"
+            max="1"
+            step="0.05"
+            value={value}
+            onChange={(event) => onChange(event.target.value)}
+          />
+          <input
+            type="number"
+            min="0"
+            max="1"
+            step="0.05"
+            value={value}
+            onChange={(event) => onChange(event.target.value)}
+          />
+        </span>
+      </label>
+    )
+  }
+
   return (
     <label>
       {label}
@@ -2111,6 +2406,29 @@ function AdminInput({
     </label>
   )
 }
+
+const fontOptions = [
+  {
+    label: 'System Sans',
+    value: 'Inter, ui-sans-serif, system-ui, sans-serif',
+  },
+  {
+    label: 'Clean Serif',
+    value: 'Georgia, Cambria, "Times New Roman", serif',
+  },
+  {
+    label: 'Rounded Sans',
+    value: '"Trebuchet MS", Verdana, ui-sans-serif, sans-serif',
+  },
+  {
+    label: 'Condensed Field Guide',
+    value: '"Arial Narrow", Arial, ui-sans-serif, sans-serif',
+  },
+  {
+    label: 'Monospace Journal',
+    value: '"Courier New", ui-monospace, SFMono-Regular, monospace',
+  },
+]
 
 function normalizeHexColor(value: string) {
   const clean = value.trim()

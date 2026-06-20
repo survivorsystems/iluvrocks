@@ -571,6 +571,7 @@ export default defineSchema({
     featuredSectionsJson: v.optional(v.string()),
     publicSectionsJson: v.optional(v.string()),
     pageStylesJson: v.optional(v.string()),
+    customEmbedsJson: v.optional(v.string()),
     updatedAt: v.number(),
     updatedBy: v.id('users'),
   }).index('by_key', ['key']),

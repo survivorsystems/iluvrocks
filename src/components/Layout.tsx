@@ -4,6 +4,7 @@ import { NavLink, Outlet, useLocation } from 'react-router-dom'
 import { useQuery } from 'convex/react'
 import { api } from '../../convex/_generated/api'
 import iluvrocksLogo from '../assets/brand/iluvrocks-logo-wide-dark.png'
+import CustomEmbedBlocks from './CustomEmbedBlocks'
 import DevModeBadge from './DevModeBadge'
 import { useAuthProfileState } from '../lib/authState'
 import { AppShell } from './ui'
@@ -86,6 +87,7 @@ export default function Layout() {
       </header>
       <main>
         <Outlet />
+        <CustomEmbedBlocks />
       </main>
     </div>
   )

@@ -155,6 +155,7 @@ export const saveSiteAppearance = mutation({
     featuredSectionsJson: v.optional(v.string()),
     publicSectionsJson: v.optional(v.string()),
     pageStylesJson: v.optional(v.string()),
+    customEmbedsJson: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const { userId } = await requireOwner(ctx)
