@@ -3,6 +3,7 @@ import type { CSSProperties, FormEvent } from 'react'
 import {
   BriefcaseBusiness,
   CreditCard,
+  ExternalLink,
   FileText,
   Image,
   LayoutDashboard,
@@ -17,6 +18,7 @@ import { useMutation, useQuery } from 'convex/react'
 import { api } from '../../convex/_generated/api'
 import type { Id } from '../../convex/_generated/dataModel'
 import { Button, Card, SectionHeader, StatCard } from '../components/ui'
+import { Link } from 'react-router-dom'
 
 type AdminTab =
   | 'overview'
@@ -61,6 +63,12 @@ export default function AdminDashboard() {
         eyebrow="Admin Dashboard"
         title="Manage iluvrocks"
         description="Control site content, appearance, resources, businesses, subscriptions, featured sections, and page drafts from one place."
+        action={
+          <Link to="/" className="ui-button ui-button-secondary">
+            <ExternalLink aria-hidden="true" />
+            View homepage
+          </Link>
+        }
       />
 
       <div className="admin-tabbar" role="tablist" aria-label="Admin tools">
@@ -278,6 +286,12 @@ const defaultThemeForm = {
   cardOpacity: '1',
   navBackgroundColor: '#ffffff',
   navTextColor: '#050505',
+  sidebarBackgroundColor: '#ffffff',
+  sidebarTextColor: '#050505',
+  sidebarActiveBackgroundColor: '#050505',
+  sidebarActiveTextColor: '#ffffff',
+  sidebarHoverBackgroundColor: '#f3f3f0',
+  sidebarHoverTextColor: '#050505',
   footerBackgroundColor: '#050505',
   footerTextColor: '#ffffff',
   badgeBackgroundColor: '#f2c94c',
@@ -355,10 +369,40 @@ const colorThemeFields: ThemeField[] = [
   },
   {
     key: 'navBackgroundColor',
-    label: 'Navigation background color',
+    label: 'Top navigation background color',
     type: 'color',
   },
-  { key: 'navTextColor', label: 'Navigation text color', type: 'color' },
+  { key: 'navTextColor', label: 'Top navigation text color', type: 'color' },
+  {
+    key: 'sidebarBackgroundColor',
+    label: 'Left navigation background color',
+    type: 'color',
+  },
+  {
+    key: 'sidebarTextColor',
+    label: 'Left navigation text color',
+    type: 'color',
+  },
+  {
+    key: 'sidebarActiveBackgroundColor',
+    label: 'Left navigation active background color',
+    type: 'color',
+  },
+  {
+    key: 'sidebarActiveTextColor',
+    label: 'Left navigation active text color',
+    type: 'color',
+  },
+  {
+    key: 'sidebarHoverBackgroundColor',
+    label: 'Left navigation hover background color',
+    type: 'color',
+  },
+  {
+    key: 'sidebarHoverTextColor',
+    label: 'Left navigation hover text color',
+    type: 'color',
+  },
   {
     key: 'footerBackgroundColor',
     label: 'Footer background color',
@@ -628,6 +672,12 @@ function ThemePreview({
     '--preview-padding': form.cardPadding,
     '--preview-body-font': form.bodyFont,
     '--preview-header-font': form.headerFont,
+    '--preview-sidebar-bg': form.sidebarBackgroundColor,
+    '--preview-sidebar-text': form.sidebarTextColor,
+    '--preview-sidebar-active-bg': form.sidebarActiveBackgroundColor,
+    '--preview-sidebar-active-text': form.sidebarActiveTextColor,
+    '--preview-sidebar-hover-bg': form.sidebarHoverBackgroundColor,
+    '--preview-sidebar-hover-text': form.sidebarHoverTextColor,
   } as CSSProperties
 
   return (
@@ -656,6 +706,12 @@ function ThemePreview({
         >
           <strong>Sample card</strong>
           <span>Readable text inside a themed content panel.</span>
+        </div>
+        <div className="theme-preview-sidebar" aria-label="Sidebar preview">
+          <strong>Left nav preview</strong>
+          <span className="is-active">Home</span>
+          <span>Trips</span>
+          <span className="is-hovered">Settings hover</span>
         </div>
       </div>
     </Card>
@@ -1701,6 +1757,28 @@ function AdminInput({
   type?: string
   onChange: (value: string) => void
 }) {
+  if (type === 'color') {
+    return (
+      <label>
+        {label}
+        <span className="admin-color-control">
+          <input
+            type="color"
+            value={normalizeHexColor(value)}
+            onChange={(event) => onChange(event.target.value)}
+          />
+          <input
+            type="text"
+            value={value}
+            placeholder="#050505"
+            onChange={(event) => onChange(event.target.value)}
+            onBlur={(event) => onChange(normalizeHexColor(event.target.value))}
+          />
+        </span>
+      </label>
+    )
+  }
+
   return (
     <label>
       {label}
@@ -1711,6 +1789,13 @@ function AdminInput({
       />
     </label>
   )
+}
+
+function normalizeHexColor(value: string) {
+  const clean = value.trim()
+  if (/^#[0-9a-f]{6}$/i.test(clean)) return clean
+  if (/^[0-9a-f]{6}$/i.test(clean)) return `#${clean}`
+  return '#050505'
 }
 
 function AdminTextarea({

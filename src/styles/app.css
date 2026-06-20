@@ -73,6 +73,12 @@
   --theme-input-radius: var(--radius-medium);
   --theme-nav-bg: var(--color-surface);
   --theme-nav-text: var(--color-primary);
+  --theme-sidebar-bg: var(--color-surface);
+  --theme-sidebar-text: var(--color-primary);
+  --theme-sidebar-active-bg: var(--color-primary);
+  --theme-sidebar-active-text: var(--color-surface);
+  --theme-sidebar-hover-bg: var(--color-hover);
+  --theme-sidebar-hover-text: var(--color-primary);
   --theme-footer-bg: var(--color-primary);
   --theme-footer-text: var(--color-surface);
   --theme-badge-bg: var(--color-accent-yellow);
@@ -2123,12 +2129,12 @@ label {
   height: 100vh;
   padding: var(--space-6);
   border-right: 1px solid var(--color-border);
-  background: var(--color-surface);
+  background: var(--theme-sidebar-bg);
 }
 
 .has-page-background .app-sidebar {
   border-right-color: rgba(255, 255, 255, 0.32);
-  background: rgba(0, 0, 0, 0.72);
+  background: var(--theme-sidebar-bg);
   backdrop-filter: blur(18px);
 }
 
@@ -2136,13 +2142,13 @@ label {
 .has-page-background .app-sidebar-nav a,
 .has-page-background .app-sidebar-action,
 .has-page-background .app-sidebar-signout {
-  color: var(--color-surface);
+  color: var(--theme-sidebar-text);
 }
 
 .app-logo {
   display: inline-flex;
   align-items: center;
-  color: var(--color-primary);
+  color: var(--theme-sidebar-text);
 }
 
 .app-logo-image {
@@ -2169,7 +2175,7 @@ label {
   border-radius: var(--radius-medium);
   padding: 0.72rem 1rem;
   background: transparent;
-  color: var(--color-primary);
+  color: var(--theme-sidebar-text);
   font-weight: var(--font-weight-bold);
   text-align: left;
 }
@@ -2183,32 +2189,33 @@ label {
 
 .app-sidebar-nav a:hover,
 .app-sidebar-signout:hover {
-  background: var(--color-hover);
+  background: var(--theme-sidebar-hover-bg);
+  color: var(--theme-sidebar-hover-text);
 }
 
 .has-page-background .app-sidebar-nav a:hover,
 .has-page-background .app-sidebar-signout:hover {
-  border-color: var(--color-accent-yellow);
-  background: var(--color-accent-yellow);
-  color: var(--color-primary);
+  border-color: var(--theme-sidebar-hover-bg);
+  background: var(--theme-sidebar-hover-bg);
+  color: var(--theme-sidebar-hover-text);
 }
 
 .has-page-background .app-sidebar-nav a:hover svg,
 .has-page-background .app-sidebar-signout:hover svg {
-  color: var(--color-primary);
+  color: var(--theme-sidebar-hover-text);
 }
 
 .app-sidebar-nav a.is-active,
 .app-sidebar-action {
-  background: var(--color-primary);
-  color: var(--color-surface);
+  background: var(--theme-sidebar-active-bg);
+  color: var(--theme-sidebar-active-text);
 }
 
 .has-page-background .app-sidebar-nav a.is-active,
 .has-page-background .app-sidebar-action {
   border: 1px solid rgba(255, 255, 255, 0.7);
-  background: rgba(255, 255, 255, 0.16);
-  color: var(--color-surface);
+  background: var(--theme-sidebar-active-bg);
+  color: var(--theme-sidebar-active-text);
 }
 
 .app-sidebar-action {
@@ -3194,6 +3201,19 @@ label {
   gap: var(--space-4);
 }
 
+.admin-color-control {
+  display: grid;
+  grid-template-columns: 3rem minmax(0, 1fr);
+  gap: var(--space-2);
+  align-items: center;
+}
+
+.admin-color-control input[type='color'] {
+  min-height: 2.75rem;
+  padding: 0.15rem;
+  cursor: pointer;
+}
+
 .theme-preview-card {
   align-self: start;
   position: sticky;
@@ -3261,6 +3281,32 @@ label {
 
 .theme-preview-mini-card.has-shadow {
   box-shadow: var(--shadow-card);
+}
+
+.theme-preview-sidebar {
+  display: grid;
+  gap: var(--space-2);
+  border: 1px solid var(--preview-card-border);
+  border-radius: var(--preview-radius);
+  padding: var(--preview-padding);
+  background: var(--preview-sidebar-bg);
+  color: var(--preview-sidebar-text);
+}
+
+.theme-preview-sidebar span {
+  border-radius: var(--theme-button-radius);
+  padding: 0.6rem 0.75rem;
+  font-weight: var(--font-weight-bold);
+}
+
+.theme-preview-sidebar span.is-active {
+  background: var(--preview-sidebar-active-bg);
+  color: var(--preview-sidebar-active-text);
+}
+
+.theme-preview-sidebar span.is-hovered {
+  background: var(--preview-sidebar-hover-bg);
+  color: var(--preview-sidebar-hover-text);
 }
 
 .admin-form label,
