@@ -12,7 +12,7 @@ export default function Materials() {
       <SectionHeader
         eyebrow="Washington materials"
         title="Browse by agate, jade, jasper, quartz, petrified wood, and more"
-        description="Each material connects back to destinations where it can be found, with identification and safety notes managed from the Owner Dashboard."
+        description="Each material connects back to destinations where it can be found, with identification and safety notes managed from the Admin Dashboard."
       />
       <div className="feature-grid">
         {materials.map((material: any) => (
@@ -38,7 +38,7 @@ export default function Materials() {
       {!materials.length ? (
         <EmptyState
           title="No materials published yet"
-          description="Add materials from the Owner Dashboard."
+          description="Add materials from the Admin Dashboard."
         />
       ) : null}
     </section>

@@ -5,13 +5,11 @@ import {
   Edit3,
   Eye,
   EyeOff,
-  Mail,
   MapPin,
   MoreHorizontal,
   Mountain,
   ShieldOff,
   UserPlus,
-  Trophy,
 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
@@ -24,27 +22,6 @@ import { Card, EmptyState, getInitials } from './ui'
 type RockhoundDashboardProps = {
   mode?: 'basecamp' | 'profile'
 }
-
-const stats = [
-  { label: 'Posts', value: '328', icon: BookOpen },
-  { label: 'Collections', value: '56', icon: Diamond },
-  { label: 'Finds', value: '127', icon: Mountain },
-  { label: 'Points', value: '1.2K', icon: Trophy },
-]
-
-const recentActivity = [
-  {
-    label: 'Added 3 new finds to Quartz Collection',
-    time: '2h ago',
-    icon: Mountain,
-  },
-  {
-    label: 'Posted in Central Washington Rockhounds',
-    time: '5h ago',
-    icon: Mail,
-  },
-  { label: 'Added a new trip planning note', time: '1d ago', icon: Diamond },
-]
 
 export default function RockhoundDashboard({
   mode = 'basecamp',
@@ -94,7 +71,7 @@ export default function RockhoundDashboard({
             viewerId ? () => blockUser({ blockedId: viewerId }) : undefined
           }
         />
-        <StatsRow />
+        <StatsRow collectionCount={collection?.count ?? 0} />
         <ProfileTabs />
         <CollectionShowcase collection={collection} />
         <ActivityFeed displayName={displayName} collection={collection} />
@@ -275,7 +252,14 @@ function ProfileHeader({
   )
 }
 
-function StatsRow() {
+function StatsRow({ collectionCount }: { collectionCount: number }) {
+  const stats = [
+    { label: 'Posts', value: '0', icon: BookOpen },
+    { label: 'Collections', value: collectionCount.toString(), icon: Diamond },
+    { label: 'Finds', value: collectionCount.toString(), icon: Mountain },
+    { label: 'Trips', value: '0', icon: Compass },
+  ]
+
   return (
     <section className="profile-stats" aria-label="Profile stats">
       {stats.map(({ label, value, icon: Icon }) => (
@@ -406,15 +390,10 @@ function RecentActivityCard() {
   return (
     <Card className="rail-card">
       <CardTitle title="Recent Activity" />
-      <div className="recent-list">
-        {recentActivity.map(({ label, time, icon: Icon }) => (
-          <div key={label}>
-            <Icon aria-hidden="true" />
-            <p>{label}</p>
-            <span>{time}</span>
-          </div>
-        ))}
-      </div>
+      <EmptyState
+        title="No activity yet"
+        description="Your real profile activity will appear here as you save trips, upload finds, and post updates."
+      />
     </Card>
   )
 }

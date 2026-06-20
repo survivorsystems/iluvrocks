@@ -13,7 +13,7 @@ export default function Guides() {
       <SectionHeader
         eyebrow="Guides and resources"
         title="Safety, ethics, laws, beginner guides, and Washington field resources"
-        description="Visitor-friendly trip-planning resources published from the Owner Dashboard."
+        description="Visitor-friendly trip-planning resources published from the Admin Dashboard."
       />
       <div className="feature-grid">
         {(resources ?? []).map((resource: any) => (
@@ -32,7 +32,7 @@ export default function Guides() {
       {resources && resources.length === 0 ? (
         <EmptyState
           title="No guides published yet"
-          description="Publish resources from the Owner Dashboard."
+          description="Publish resources from the Admin Dashboard."
         />
       ) : null}
     </section>

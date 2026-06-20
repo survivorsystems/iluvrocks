@@ -114,7 +114,7 @@ function SearchColumn({
       ) : (
         <EmptyState
           title={empty}
-          description="Add content from the Owner Dashboard."
+          description="Add content from the Admin Dashboard."
         />
       )}
     </div>

@@ -25,6 +25,7 @@ import PublicCollection from './routes/PublicCollection'
 import Settings from './routes/Settings'
 import SpecimenDetail from './routes/SpecimenDetail'
 import TripPlanner from './routes/TripPlanner'
+import Trips from './routes/Trips'
 
 export default function App() {
   return (
@@ -148,6 +149,14 @@ export default function App() {
           element={
             <ProtectedRoute>
               <Messages />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/trips"
+          element={
+            <ProtectedRoute>
+              <Trips />
             </ProtectedRoute>
           }
         />

@@ -84,14 +84,10 @@ function TripSearchHero({
   return (
     <section className="hero trip-hero trip-hero-centered">
       <div className="hero-copy">
-        <p className="eyebrow">Washington rockhounding trip planner</p>
-        <h1>
-          {appearance?.homepageHeadline ||
-            'Search where to go and what you might find.'}
-        </h1>
+        <p className="eyebrow">Curate Your Next Adventure</p>
+        <h1>{appearance?.homepageHeadline || "Let's Rock"}</h1>
         <p className="tagline">
-          {appearance?.homepageIntro ||
-            'Destinations, materials, safety notes, permits, local stops, and curated trip plans.'}
+          {appearance?.homepageIntro || 'Learn How To Rockhound'}
         </p>
         <form className="home-search-form" onSubmit={submit}>
           <Search aria-hidden="true" />
@@ -160,7 +156,7 @@ function MemberTripHome() {
       <SectionHeader
         eyebrow="Member home"
         title="Plan trips first. Use Basecamp when you need it."
-        description="Your profile and collection tools are still available, but the main iluvrocks experience now starts with Washington destination search."
+        description="Plan, save, and revisit your rockhounding ideas from one place."
       />
       <div className="member-home-grid">
         {memberLinks.map(({ to, icon: Icon, title, description }) => (

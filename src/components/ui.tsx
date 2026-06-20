@@ -17,13 +17,14 @@ import {
   Navigation,
   Plus,
   LogOut,
+  Route,
   Search,
   Settings,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { useAuthProfileState } from '../lib/authState'
-import iluvrocksLogo from '../assets/brand/iluvrocks-logo-wide.png'
+import iluvrocksLogo from '../assets/brand/iluvrocks-logo-wide-dark.png'
 
 type IconType =
   | LucideIcon
@@ -32,6 +33,7 @@ type IconType =
 const workspaceNavItems = [
   { to: '/basecamp', label: 'Home', icon: Home },
   { to: '/trip-planner', label: 'Trip Planner', icon: Compass },
+  { to: '/trips', label: 'Trips', icon: Route },
   { to: '/collections', label: 'Collections', icon: Diamond },
   { to: '/community', label: 'Community', icon: MessageCircle },
   { to: '/messages', label: 'Messages', icon: Mail },

@@ -3,7 +3,7 @@ import { UserRound } from 'lucide-react'
 import { NavLink, Outlet, useLocation } from 'react-router-dom'
 import { useQuery } from 'convex/react'
 import { api } from '../../convex/_generated/api'
-import iluvrocksLogo from '../assets/brand/iluvrocks-logo-wide.png'
+import iluvrocksLogo from '../assets/brand/iluvrocks-logo-wide-dark.png'
 import DevModeBadge from './DevModeBadge'
 import { useAuthProfileState } from '../lib/authState'
 import { AppShell } from './ui'
@@ -27,6 +27,7 @@ const workspaceRoutePrefixes = [
   '/messages',
   '/notifications',
   '/settings',
+  '/trips',
   '/business/manage',
   '/admin',
 ]
@@ -64,7 +65,7 @@ export default function Layout() {
       <header className="site-header">
         <NavLink to="/" className="brand" aria-label="iluvrocks home">
           <img
-            src={appearance?.logoUrl || iluvrocksLogo}
+            src={iluvrocksLogo}
             alt=""
             className="brand-logo-image brand-logo-wide"
           />

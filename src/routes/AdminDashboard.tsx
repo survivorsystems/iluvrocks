@@ -142,9 +142,8 @@ function AppearancePanel() {
     logoUrl: '',
     primaryColor: '#050505',
     accentColor: '#f2c94c',
-    homepageHeadline: 'A field journal for people who love rocks.',
-    homepageIntro:
-      'Build your Basecamp, show your finds, learn safely, and connect with collectors.',
+    homepageHeadline: "Let's Rock",
+    homepageIntro: 'Learn How To Rockhound',
     homepageCtaLabel: 'Create your Basecamp',
     navigationJson: 'Home, Discoveries, Community, Businesses, About',
     backgroundJson:
@@ -159,12 +158,8 @@ function AppearancePanel() {
       logoUrl: appearance.logoUrl ?? '',
       primaryColor: appearance.primaryColor ?? '#050505',
       accentColor: appearance.accentColor ?? '#f2c94c',
-      homepageHeadline:
-        appearance.homepageHeadline ||
-        'A field journal for people who love rocks.',
-      homepageIntro:
-        appearance.homepageIntro ||
-        'Build your Basecamp, show your finds, learn safely, and connect with collectors.',
+      homepageHeadline: appearance.homepageHeadline || "Let's Rock",
+      homepageIntro: appearance.homepageIntro || 'Learn How To Rockhound',
       homepageCtaLabel: appearance.homepageCtaLabel || 'Create your Basecamp',
       navigationJson:
         appearance.navigationJson ||
