@@ -339,32 +339,42 @@ type ThemeField = {
   type?: string
 }
 
-const colorThemeFields: ThemeField[] = [
+type ThemeEditorGroupId =
+  | 'foundation'
+  | 'text'
+  | 'cards'
+  | 'navigation'
+  | 'buttons'
+  | 'search'
+  | 'badges'
+  | 'typography'
+  | 'layout'
+  | 'assets'
+
+const foundationThemeFields: ThemeField[] = [
   { key: 'mainBackgroundColor', label: 'Main background color', type: 'color' },
   {
     key: 'secondaryBackgroundColor',
     label: 'Secondary background color',
     type: 'color',
   },
+  { key: 'accentColor', label: 'Accent color', type: 'color' },
+  {
+    key: 'defaultOverlayOpacity',
+    label: 'Background dark overlay opacity',
+    type: 'range',
+  },
+]
+
+const textThemeFields: ThemeField[] = [
   { key: 'textColor', label: 'Text color', type: 'color' },
   { key: 'mutedTextColor', label: 'Muted text color', type: 'color' },
   { key: 'headerTextColor', label: 'Header text color', type: 'color' },
   { key: 'subheaderTextColor', label: 'Subheader text color', type: 'color' },
   { key: 'linkColor', label: 'Link color', type: 'color' },
-  { key: 'accentColor', label: 'Accent color', type: 'color' },
-  {
-    key: 'buttonBackgroundColor',
-    label: 'Button background color',
-    type: 'color',
-  },
-  { key: 'buttonTextColor', label: 'Button text color', type: 'color' },
-  { key: 'buttonBorderColor', label: 'Button border color', type: 'color' },
-  { key: 'buttonHoverColor', label: 'Button hover color', type: 'color' },
-  {
-    key: 'buttonHoverTextColor',
-    label: 'Button hover text color',
-    type: 'color',
-  },
+]
+
+const cardThemeFields: ThemeField[] = [
   {
     key: 'cardBackgroundColor',
     label: 'Text box/card background color',
@@ -381,6 +391,14 @@ const colorThemeFields: ThemeField[] = [
     label: 'Text box/card border color',
     type: 'color',
   },
+  {
+    key: 'cardOpacity',
+    label: 'Text box/card transparency/opacity',
+    type: 'range',
+  },
+]
+
+const navigationThemeFields: ThemeField[] = [
   {
     key: 'navBackgroundColor',
     label: 'Top navigation background color',
@@ -423,12 +441,29 @@ const colorThemeFields: ThemeField[] = [
     type: 'color',
   },
   { key: 'footerTextColor', label: 'Footer text color', type: 'color' },
+]
+
+const buttonColorThemeFields: ThemeField[] = [
   {
-    key: 'badgeBackgroundColor',
-    label: 'Badge background color',
+    key: 'buttonBackgroundColor',
+    label: 'Button background color',
     type: 'color',
   },
-  { key: 'badgeTextColor', label: 'Badge text color', type: 'color' },
+  { key: 'buttonTextColor', label: 'Button text color', type: 'color' },
+  { key: 'buttonBorderColor', label: 'Button border color', type: 'color' },
+  { key: 'buttonHoverColor', label: 'Button hover color', type: 'color' },
+  {
+    key: 'buttonHoverTextColor',
+    label: 'Button hover text color',
+    type: 'color',
+  },
+  { key: 'defaultButtonText', label: 'Default button text where applicable' },
+  { key: 'buttonSize', label: 'Button size' },
+  { key: 'buttonBorderRadius', label: 'Button border radius' },
+  { key: 'buttonBorderWidth', label: 'Button border width' },
+]
+
+const searchThemeFields: ThemeField[] = [
   {
     key: 'searchBarBackgroundColor',
     label: 'Search bar background color',
@@ -456,6 +491,15 @@ const colorThemeFields: ThemeField[] = [
   },
 ]
 
+const badgeThemeFields: ThemeField[] = [
+  {
+    key: 'badgeBackgroundColor',
+    label: 'Badge background color',
+    type: 'color',
+  },
+  { key: 'badgeTextColor', label: 'Badge text color', type: 'color' },
+]
+
 const typographyThemeFields: ThemeField[] = [
   { key: 'headerFont', label: 'Header font', type: 'font' },
   { key: 'subheaderFont', label: 'Subheader font', type: 'font' },
@@ -469,29 +513,12 @@ const typographyThemeFields: ThemeField[] = [
   { key: 'letterSpacing', label: 'Letter spacing' },
 ]
 
-const buttonThemeFields: ThemeField[] = [
-  { key: 'defaultButtonText', label: 'Default button text where applicable' },
-  { key: 'buttonSize', label: 'Button size' },
-  { key: 'buttonBorderRadius', label: 'Button border radius' },
-  { key: 'buttonBorderWidth', label: 'Button border width' },
-]
-
 const layoutThemeFields: ThemeField[] = [
   { key: 'cardBorderRadius', label: 'Card border radius' },
   { key: 'inputBorderRadius', label: 'Input border radius' },
   { key: 'cardPadding', label: 'Card padding' },
   { key: 'sectionSpacing', label: 'Section spacing' },
   { key: 'pageMaxWidth', label: 'Page max width' },
-  {
-    key: 'cardOpacity',
-    label: 'Text box/card transparency/opacity',
-    type: 'range',
-  },
-  {
-    key: 'defaultOverlayOpacity',
-    label: 'Background dark overlay opacity',
-    type: 'range',
-  },
 ]
 
 function ThemeManagerPanel() {
@@ -509,9 +536,8 @@ function ThemeManagerPanel() {
   const [defaultPageBackground, setDefaultPageBackground] =
     useState<File | null>(null)
   const [form, setForm] = useState<ThemeForm>(defaultThemeForm)
-  const [activeEditorGroup, setActiveEditorGroup] = useState<
-    'colors' | 'typography' | 'buttons' | 'layout' | 'assets'
-  >('colors')
+  const [activeEditorGroup, setActiveEditorGroup] =
+    useState<ThemeEditorGroupId>('foundation')
 
   useEffect(() => {
     if (!appearance) return
@@ -577,9 +603,23 @@ function ThemeManagerPanel() {
         <div className="editor-panel-top">
           <AdminPanelHeader
             title="Theme / Style Manager"
-            description="Control global colors, typography, buttons, cards, layout, and brand assets without editing code."
+            description="Control global site styles. These settings apply across public pages, logged-in pages, and the admin panel unless a page-specific override is saved in the All Page Editor."
           />
           <span className="editor-save-state">{status || 'Ready to edit'}</span>
+        </div>
+        <div className="theme-editor-help">
+          <span>
+            <strong>Global theme</strong>
+            Applies across the site.
+          </span>
+          <span>
+            <strong>All Page Editor</strong>
+            Use only for page-specific exceptions.
+          </span>
+          <span>
+            <strong>Preview</strong>
+            Shows each control separately before saving.
+          </span>
         </div>
         <div className="editor-subnav" role="tablist" aria-label="Theme groups">
           {themeEditorGroups.map((group) => (
@@ -595,18 +635,38 @@ function ThemeManagerPanel() {
           ))}
         </div>
         <form className="admin-form editor-form" onSubmit={submit}>
-          {activeEditorGroup === 'colors' ? (
+          {activeEditorGroup === 'foundation' ? (
             <ThemeFieldset
-              title="Colors"
-              fields={colorThemeFields}
+              title="Foundation"
+              description="Site backgrounds, accent color, and the dark image overlay."
+              fields={foundationThemeFields}
               form={form}
               onChange={updateField}
             />
           ) : null}
-          {activeEditorGroup === 'typography' ? (
+          {activeEditorGroup === 'text' ? (
             <ThemeFieldset
-              title="Typography"
-              fields={typographyThemeFields}
+              title="Text"
+              description="Global text colors for headings, body copy, muted copy, and links."
+              fields={textThemeFields}
+              form={form}
+              onChange={updateField}
+            />
+          ) : null}
+          {activeEditorGroup === 'cards' ? (
+            <ThemeFieldset
+              title="Cards and Text Boxes"
+              description="Content panels, cards, form panels, and text box surfaces."
+              fields={cardThemeFields}
+              form={form}
+              onChange={updateField}
+            />
+          ) : null}
+          {activeEditorGroup === 'navigation' ? (
+            <ThemeFieldset
+              title="Navigation"
+              description="Public header, logged-in sidebar, top nav, and footer colors."
+              fields={navigationThemeFields}
               form={form}
               onChange={updateField}
             />
@@ -614,7 +674,35 @@ function ThemeManagerPanel() {
           {activeEditorGroup === 'buttons' ? (
             <ThemeFieldset
               title="Buttons"
-              fields={buttonThemeFields}
+              description="Default button colors, hover colors, shape, and size."
+              fields={buttonColorThemeFields}
+              form={form}
+              onChange={updateField}
+            />
+          ) : null}
+          {activeEditorGroup === 'search' ? (
+            <ThemeFieldset
+              title="Search"
+              description="Homepage and app search bar colors."
+              fields={searchThemeFields}
+              form={form}
+              onChange={updateField}
+            />
+          ) : null}
+          {activeEditorGroup === 'badges' ? (
+            <ThemeFieldset
+              title="Badges"
+              description="Small label and badge colors."
+              fields={badgeThemeFields}
+              form={form}
+              onChange={updateField}
+            />
+          ) : null}
+          {activeEditorGroup === 'typography' ? (
+            <ThemeFieldset
+              title="Typography"
+              description="Fonts, text sizes, line height, and letter spacing."
+              fields={typographyThemeFields}
               form={form}
               onChange={updateField}
             />
@@ -623,6 +711,7 @@ function ThemeManagerPanel() {
             <>
               <ThemeFieldset
                 title="Layout / Shapes"
+                description="Spacing, page width, card shape, input shape, and card padding."
                 fields={layoutThemeFields}
                 form={form}
                 onChange={updateField}
@@ -706,24 +795,35 @@ function ThemeManagerPanel() {
 }
 
 const themeEditorGroups: Array<{
-  id: 'colors' | 'typography' | 'buttons' | 'layout' | 'assets'
+  id: ThemeEditorGroupId
   label: string
   description: string
 }> = [
-  { id: 'colors', label: 'Colors', description: 'Site, nav, cards, badges' },
+  {
+    id: 'foundation',
+    label: 'Foundation',
+    description: 'Backgrounds and overlay',
+  },
+  { id: 'text', label: 'Text', description: 'Headings, body, links' },
+  { id: 'cards', label: 'Cards', description: 'Panels and text boxes' },
+  { id: 'navigation', label: 'Navigation', description: 'Header and sidebar' },
+  { id: 'buttons', label: 'Buttons', description: 'Color, hover, shape' },
+  { id: 'search', label: 'Search', description: 'Search bar styling' },
+  { id: 'badges', label: 'Badges', description: 'Small label styling' },
   { id: 'typography', label: 'Type', description: 'Fonts and text sizes' },
-  { id: 'buttons', label: 'Buttons', description: 'Shape, text, hover' },
   { id: 'layout', label: 'Layout', description: 'Spacing, radius, shadows' },
   { id: 'assets', label: 'Images', description: 'Logo and backgrounds' },
 ]
 
 function ThemeFieldset({
   title,
+  description,
   fields,
   form,
   onChange,
 }: {
   title: string
+  description?: string
   fields: ThemeField[]
   form: ThemeForm
   onChange: (key: keyof ThemeForm, value: string) => void
@@ -731,6 +831,9 @@ function ThemeFieldset({
   return (
     <fieldset className="theme-fieldset">
       <legend>{title}</legend>
+      {description ? (
+        <p className="theme-fieldset-note">{description}</p>
+      ) : null}
       <div className="form-grid">
         {fields.map((field) => (
           <AdminInput
@@ -757,6 +860,7 @@ function ThemePreview({
     '--preview-bg': form.mainBackgroundColor,
     '--preview-card-bg': form.cardBackgroundColor,
     '--preview-card-text': form.cardTextColor,
+    '--preview-card-heading': form.cardHeaderTextColor,
     '--preview-card-border': form.cardBorderColor,
     '--preview-heading': form.headerTextColor,
     '--preview-muted': form.mutedTextColor,
@@ -810,7 +914,7 @@ function ThemePreview({
               : 'theme-preview-mini-card'
           }
         >
-          <strong>Sample card</strong>
+          <strong>Sample card heading</strong>
           <span>Readable text inside a themed content panel.</span>
         </div>
         <div className="theme-preview-sidebar" aria-label="Sidebar preview">

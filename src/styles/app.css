@@ -3095,43 +3095,49 @@ label {
 }
 
 .admin-dashboard .section-header {
-  border: 1px solid rgba(255, 255, 255, 0.62);
+  border: 1px solid var(--theme-card-border);
   border-radius: var(--radius-xl);
   padding: var(--space-5);
-  background: rgba(0, 0, 0, 0.78);
-  color: var(--color-surface);
-  box-shadow: var(--shadow-card);
+  background: var(--theme-card-bg);
+  color: var(--theme-card-text);
+  box-shadow: var(--theme-card-shadow);
   backdrop-filter: blur(18px);
 }
 
-.admin-dashboard .section-header h1,
+.admin-dashboard .section-header h1 {
+  color: var(--theme-card-header-text);
+}
+
 .admin-dashboard .section-header p,
 .admin-dashboard .section-header .eyebrow {
-  color: var(--color-surface);
+  color: var(--theme-card-text);
 }
 
 .admin-dashboard .stat-card {
-  border-color: rgba(255, 255, 255, 0.62);
-  background: rgba(0, 0, 0, 0.78);
-  color: var(--color-surface);
+  border-color: var(--theme-card-border);
+  background: var(--theme-card-bg);
+  color: var(--theme-card-text);
   backdrop-filter: blur(18px);
 }
 
 .admin-dashboard .stat-card svg,
-.admin-dashboard .stat-card strong,
+.admin-dashboard .stat-card strong {
+  color: var(--theme-card-header-text);
+}
+
 .admin-dashboard .stat-card span {
-  color: var(--color-surface);
+  color: var(--theme-card-text);
 }
 
 .admin-tabbar {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2);
-  border: 1px solid rgba(255, 255, 255, 0.42);
+  border: 1px solid var(--theme-card-border);
   border-radius: var(--radius-xl);
   padding: var(--space-3);
-  background: rgba(0, 0, 0, 0.68);
-  box-shadow: var(--shadow-card);
+  background: var(--theme-nav-bg);
+  box-shadow: var(--theme-card-shadow);
   backdrop-filter: blur(18px);
 }
 
@@ -3141,11 +3147,11 @@ label {
   align-items: center;
   gap: var(--space-2);
   min-height: 2.6rem;
-  border: 1px solid rgba(255, 255, 255, 0.48);
+  border: 1px solid var(--theme-button-border);
   border-radius: var(--radius-round);
   padding: 0.65rem 0.9rem;
-  background: rgba(0, 0, 0, 0.35);
-  color: var(--color-surface);
+  background: var(--theme-card-bg);
+  color: var(--theme-nav-text);
   font-weight: var(--font-weight-bold);
 }
 
@@ -3156,16 +3162,16 @@ label {
 
 .admin-tabbar button.is-active,
 .directory-chip-row button.is-active {
-  border-color: rgba(255, 255, 255, 0.8);
-  background: rgba(255, 255, 255, 0.16);
-  color: var(--color-surface);
+  border-color: var(--theme-button-border);
+  background: var(--theme-button-bg);
+  color: var(--theme-button-text);
 }
 
 .admin-tabbar button:hover,
 .directory-chip-row button:hover {
-  border-color: var(--color-accent-yellow);
-  background: var(--color-accent-yellow);
-  color: var(--color-primary);
+  border-color: var(--theme-button-hover-bg);
+  background: var(--theme-button-hover-bg);
+  color: var(--theme-button-hover-text);
 }
 
 .admin-panel,
@@ -3174,9 +3180,9 @@ label {
 .business-profile-card {
   display: grid;
   gap: var(--space-5);
-  border-color: rgba(255, 255, 255, 0.62);
-  background: rgba(0, 0, 0, 0.78);
-  color: var(--color-surface);
+  border-color: var(--theme-card-border);
+  background: var(--theme-card-bg);
+  color: var(--theme-card-text);
   backdrop-filter: blur(18px);
 }
 
@@ -3190,14 +3196,14 @@ label {
 .business-card-body h2,
 .business-profile-card h2 {
   margin: 0;
-  color: var(--color-surface);
+  color: var(--theme-card-header-text);
 }
 
 .admin-panel-header p,
 .business-card-body p,
 .business-profile-details span {
   margin: 0;
-  color: rgba(255, 255, 255, 0.72);
+  color: var(--theme-card-text);
 }
 
 .admin-form {
@@ -3222,7 +3228,7 @@ label {
   grid-template-columns: minmax(0, 1fr) auto;
   gap: var(--space-4);
   align-items: start;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+  border-bottom: 1px solid var(--theme-card-border);
   padding-bottom: var(--space-4);
 }
 
@@ -3230,19 +3236,40 @@ label {
   display: inline-flex;
   max-width: 18rem;
   justify-content: center;
-  border: 1px solid rgba(255, 255, 255, 0.34);
+  border: 1px solid var(--theme-card-border);
   border-radius: var(--radius-round);
   padding: 0.45rem 0.75rem;
-  background: rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.76);
+  background: var(--theme-card-bg);
+  color: var(--theme-card-text);
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-bold);
   text-align: center;
 }
 
+.theme-editor-help {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+.theme-editor-help span {
+  display: grid;
+  gap: var(--space-1);
+  border: 1px solid var(--theme-card-border);
+  border-radius: var(--radius-large);
+  padding: var(--space-3);
+  background: var(--color-background);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+}
+
+.theme-editor-help strong {
+  color: var(--theme-card-header-text);
+}
+
 .editor-subnav {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(9.25rem, 1fr));
   gap: var(--space-2);
 }
 
@@ -3250,11 +3277,11 @@ label {
   display: grid;
   gap: 0.18rem;
   min-height: 4.25rem;
-  border: 1px solid rgba(255, 255, 255, 0.22);
+  border: 1px solid var(--theme-card-border);
   border-radius: var(--radius-large);
   padding: 0.8rem 0.9rem;
-  background: rgba(255, 255, 255, 0.06);
-  color: rgba(255, 255, 255, 0.72);
+  background: var(--theme-card-bg);
+  color: var(--theme-card-text);
   text-align: left;
   cursor: pointer;
   transition:
@@ -3265,21 +3292,21 @@ label {
 }
 
 .editor-subnav button strong {
-  color: var(--color-surface);
+  color: var(--theme-card-header-text);
   font-size: var(--font-size-sm);
 }
 
 .editor-subnav button span {
-  color: rgba(255, 255, 255, 0.58);
+  color: var(--theme-card-text);
   font-size: var(--font-size-xs);
   line-height: 1.35;
 }
 
 .editor-subnav button:hover,
 .editor-subnav button.is-active {
-  border-color: var(--color-accent-yellow);
-  background: var(--color-accent-yellow);
-  color: var(--color-primary);
+  border-color: var(--theme-button-hover-bg);
+  background: var(--theme-button-hover-bg);
+  color: var(--theme-button-hover-text);
   transform: translateY(-1px);
 }
 
@@ -3287,7 +3314,7 @@ label {
 .editor-subnav button:hover span,
 .editor-subnav button.is-active strong,
 .editor-subnav button.is-active span {
-  color: var(--color-primary);
+  color: var(--theme-button-hover-text);
 }
 
 .editor-form {
@@ -3299,15 +3326,21 @@ label {
   display: grid;
   gap: var(--space-3);
   margin: 0;
-  border: 1px solid rgba(255, 255, 255, 0.42);
+  border: 1px solid var(--theme-card-border);
   border-radius: var(--radius-large);
   padding: var(--space-4);
 }
 
 .theme-fieldset legend {
   padding: 0 var(--space-2);
-  color: var(--color-surface);
+  color: var(--theme-card-header-text);
   font-weight: var(--font-weight-black);
+}
+
+.theme-fieldset-note {
+  margin: 0;
+  color: var(--theme-card-text);
+  font-size: var(--font-size-sm);
 }
 
 .theme-asset-grid {
@@ -3339,9 +3372,9 @@ label {
 .admin-image-preview {
   display: block;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.42);
+  border: 1px solid var(--theme-card-border);
   border-radius: var(--radius-medium);
-  background: rgba(0, 0, 0, 0.34);
+  background: var(--theme-card-bg);
 }
 
 .admin-image-preview img {
@@ -3416,6 +3449,10 @@ label {
   color: var(--preview-card-text);
 }
 
+.theme-preview-mini-card strong {
+  color: var(--preview-card-heading);
+}
+
 .theme-preview-mini-card.has-shadow {
   box-shadow: var(--shadow-card);
 }
@@ -3468,11 +3505,11 @@ label {
 
 .page-editor-counts span {
   display: inline-flex;
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  border: 1px solid var(--theme-card-border);
   border-radius: var(--radius-round);
   padding: 0.52rem 0.72rem;
-  background: rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.76);
+  background: var(--theme-card-bg);
+  color: var(--theme-card-text);
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-bold);
 }
@@ -3485,17 +3522,17 @@ label {
 .page-section-editor {
   display: grid;
   gap: var(--space-3);
-  border: 1px solid rgba(255, 255, 255, 0.42);
+  border: 1px solid var(--theme-card-border);
   border-radius: var(--radius-large);
   padding: var(--space-4);
-  background: rgba(0, 0, 0, 0.42);
+  background: var(--theme-card-bg);
 }
 
 .custom-embed-preview {
   display: grid;
   gap: var(--space-2);
   overflow: hidden;
-  border: 1px dashed rgba(255, 255, 255, 0.45);
+  border: 1px dashed var(--theme-card-border);
   border-radius: var(--radius-medium);
   padding: var(--space-3);
 }
@@ -3555,7 +3592,7 @@ label {
 .directory-filter-card label {
   display: grid;
   gap: var(--space-2);
-  color: rgba(255, 255, 255, 0.78);
+  color: var(--theme-card-text);
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-bold);
 }
@@ -3565,17 +3602,17 @@ label {
 .admin-form select,
 .directory-filter-card input {
   width: 100%;
-  border: 1px solid rgba(255, 255, 255, 0.55);
-  border-radius: var(--radius-medium);
+  border: 1px solid var(--theme-card-border);
+  border-radius: var(--theme-input-radius);
   padding: 0.8rem 0.9rem;
-  background: rgba(0, 0, 0, 0.5);
-  color: var(--color-surface);
+  background: var(--color-background);
+  color: var(--color-text-primary);
 }
 
 .admin-form input::placeholder,
 .admin-form textarea::placeholder,
 .directory-filter-card input::placeholder {
-  color: rgba(255, 255, 255, 0.56);
+  color: var(--color-text-secondary);
 }
 
 .admin-form textarea {
@@ -3600,25 +3637,25 @@ label {
 .admin-business-row {
   display: grid;
   gap: var(--space-2);
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  border: 1px solid var(--theme-card-border);
   border-radius: var(--radius-medium);
   padding: var(--space-4);
-  background: rgba(0, 0, 0, 0.5);
-  color: var(--color-surface);
+  background: var(--theme-card-bg);
+  color: var(--theme-card-text);
 }
 
 .admin-list article span,
 .admin-business-row p {
-  color: rgba(255, 255, 255, 0.72);
+  color: var(--theme-card-text);
 }
 
 .admin-inline-card {
   display: grid;
   gap: var(--space-4);
-  border: 1px solid rgba(255, 255, 255, 0.34);
+  border: 1px solid var(--theme-card-border);
   border-radius: var(--radius-large);
   padding: var(--space-4);
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--theme-card-bg);
 }
 
 .admin-inline-card h3,
@@ -3627,7 +3664,7 @@ label {
 }
 
 .admin-inline-card h3 {
-  color: var(--color-surface);
+  color: var(--theme-card-header-text);
 }
 
 .admin-business-row {
@@ -3731,7 +3768,8 @@ label {
   }
 
   .editor-panel-top,
-  .page-editor-toolbar {
+  .page-editor-toolbar,
+  .theme-editor-help {
     grid-template-columns: 1fr;
   }
 
