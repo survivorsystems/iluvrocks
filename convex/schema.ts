@@ -452,14 +452,6 @@ export default defineSchema({
     .index('by_user', ['userId'])
     .index('by_status', ['status']),
 
-  identifications: defineTable({
-    userId: v.id('users'),
-    storageId: v.id('_storage'),
-    result: v.string(),
-    mineralName: v.optional(v.string()),
-    confidence: v.optional(v.number()),
-  }).index('by_user', ['userId']),
-
   classifieds: defineTable({
     userId: v.id('users'),
     title: v.string(),

@@ -13,10 +13,8 @@
   },
   "dependencies": {
     "@auth/core": "0.37.4",
-    "@convex-dev/agent": "^0.3.2",
     "@convex-dev/auth": "^0.0.90",
-    "@openrouter/ai-sdk-provider": "^1.5.4",
-    "ai": "^5.0.120",
+    "@supabase/server": "^1.1.0",
     "convex": "^1.41.0",
     "jose": "^5.2.2",
     "lucide-react": "^1.17.0",
