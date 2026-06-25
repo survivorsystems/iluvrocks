@@ -33,15 +33,12 @@ export default function RockhoundDashboard({
   const blockUser = useMutation(api.social.blockUser)
   const viewer = auth.viewer?.user
   const displayName =
-    viewer?.name?.trim() || auth.user?.displayName || 'RockHounder'
-  const username =
-    viewer?.username?.trim() || auth.user?.username || 'rockhounder'
+    viewer?.name?.trim() || auth.user?.displayName || 'New rockhound'
+  const username = viewer?.username?.trim() || auth.user?.username || ''
   const email = viewer?.email?.trim() || auth.user?.email
   const isOriginalHound = isTaviaSupporter({ displayName, username, email })
-  const location = viewer?.location?.trim() || 'Ellensburg, Washington'
-  const bio =
-    viewer?.bio?.trim() ||
-    'Always outside. Always hunting for the next cool find.'
+  const location = viewer?.location?.trim() || ''
+  const bio = viewer?.bio?.trim() || ''
   const profileImage = getOptionalUserImage(viewer, 'image')
   const headerImage = getOptionalUserImage(viewer, 'bannerImage')
   const avatarLabel = getInitials(displayName || username || email)
@@ -250,14 +247,15 @@ function ProfileHeader({
           ) : null}
         </div>
         <p className="profile-meta">
-          <MapPin aria-hidden="true" />
-          <span>{location}</span>
-          <span aria-hidden="true">|</span>
-          <span>Member since May 2024</span>
-          <span aria-hidden="true">|</span>
-          <span>@{username}</span>
+          {location ? (
+            <>
+              <MapPin aria-hidden="true" />
+              <span>{location}</span>
+            </>
+          ) : null}
+          {username ? <span>@{username}</span> : null}
         </p>
-        <p className="profile-bio">{bio}</p>
+        {bio ? <p className="profile-bio">{bio}</p> : null}
       </div>
     </header>
   )
@@ -367,7 +365,6 @@ function ActivityFeed({
               ? `added ${recentItems.length} find${recentItems.length === 1 ? '' : 's'} to the collection`
               : 'is building a collection showcase'}
           </p>
-          <span>2 hours ago</span>
         </div>
         <button type="button" aria-label="More activity options">
           <MoreHorizontal aria-hidden="true" />
@@ -381,9 +378,7 @@ function ActivityFeed({
         </div>
       ) : null}
       <footer className="activity-actions">
-        <span>Likes 24</span>
-        <span>Comments 6</span>
-        <button type="button">View all comments</button>
+        <span>No reactions yet</span>
       </footer>
     </article>
   )

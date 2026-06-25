@@ -1,12 +1,4 @@
-import { MapPin } from 'lucide-react'
-import { SectionHeader } from '../components/ui'
-
-const locations = [
-  'Damon Point beach gravels',
-  'Teanaway river bars',
-  'Greenwater road cuts',
-  'Yakima Canyon scouting loop',
-]
+import { EmptyState, SectionHeader } from '../components/ui'
 
 export default function SavedLocations() {
   return (
@@ -16,17 +8,10 @@ export default function SavedLocations() {
         title="Places worth another look"
         description="Keep public access notes, safety details, and collection rules close at hand."
       />
-      <div className="location-list">
-        {locations.map((location) => (
-          <article key={location} className="location-card">
-            <MapPin aria-hidden="true" />
-            <div>
-              <h2>{location}</h2>
-              <p>Access notes, conditions, and personal reminders will live here.</p>
-            </div>
-          </article>
-        ))}
-      </div>
+      <EmptyState
+        title="No saved locations yet"
+        description="Real saved places will appear here after members start saving locations."
+      />
     </section>
   )
 }

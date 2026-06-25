@@ -10,7 +10,7 @@ import {
 import type { LucideIcon } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import FeaturePanel from '../components/FeaturePanel'
-import { SectionHeader } from '../components/ui'
+import { EmptyState, SectionHeader } from '../components/ui'
 
 type PublicPanel = [title: string, description: string, icon: LucideIcon]
 type PublicPageContent = {
@@ -26,138 +26,42 @@ const pages: Record<string, PublicPageContent> = {
     title: 'Meet rockhounds worth following',
     description:
       'Preview member stories, field styles, and collection interests before creating your own Basecamp.',
-    panels: [
-      [
-        'Agate beach walkers',
-        'Collectors sharing tide notes, tumble reports, and shoreline finds.',
-        UsersRound,
-      ],
-      [
-        'Lapidary learners',
-        'Members documenting their first cuts, polish tests, and display ideas.',
-        Gem,
-      ],
-      [
-        'Careful contributors',
-        'Rockhounds helping keep location knowledge useful and respectful.',
-        ShieldCheck,
-      ],
-    ],
+    panels: [],
   },
   'founding-members': {
     eyebrow: 'Founding members',
-    title: 'The first RockHound trail markers',
+    title: 'The first iluvrocks community members',
     description:
-      'A public preview of the people helping shape RockHound during its earliest season.',
-    panels: [
-      [
-        'Early members',
-        'Early supporters helping test Basecamp, profiles, and public trip-planning pages.',
-        Medal,
-      ],
-      [
-        'Verified Contributor',
-        'Members sharing reliable notes, photos, and safety-minded updates.',
-        ShieldCheck,
-      ],
-      [
-        'First Field Trip',
-        'Rockhounds logging their first community finds and learning moments.',
-        Gem,
-      ],
-    ],
+      'A public preview of the people helping shape iluvrocks during its earliest season.',
+    panels: [],
   },
   clubs: {
     eyebrow: 'Public clubs',
     title: 'Browse clubs before joining',
     description:
       'Preview regional groups and interest circles. Joining, posting, and messaging require a Basecamp.',
-    panels: [
-      [
-        'Pacific Northwest Agates',
-        'Beach, river, and gravel-bar collectors comparing conditions.',
-        UsersRound,
-      ],
-      [
-        'Beginner ID Bench',
-        'A friendly place for find questions and learning resources.',
-        Gem,
-      ],
-      [
-        'Family Field Days',
-        'Public previews of kid-friendly outings and low-impact collecting.',
-        CalendarDays,
-      ],
-    ],
+    panels: [],
   },
   events: {
     eyebrow: 'Public events',
     title: 'See what is coming up',
     description:
       'Browse public field days, swaps, club meetings, and learning sessions.',
-    panels: [
-      [
-        'Field meetups',
-        'Public previews for nearby rockhounding outings and seasonal windows.',
-        CalendarDays,
-      ],
-      [
-        'Swap tables',
-        'Community exchange events for finds, tools, and beginner kits.',
-        Gem,
-      ],
-      [
-        'Safety refreshers',
-        'Trail etiquette, access reminders, and responsible collecting basics.',
-        ShieldCheck,
-      ],
-    ],
+    panels: [],
   },
   businesses: {
     eyebrow: 'Business listings',
     title: 'Find rock shops and field services',
     description:
       'Browse public listings for shops, lapidary services, guides, clubs, and local resources.',
-    panels: [
-      [
-        'Rock shops',
-        'Rock sellers, local supply stores, and beginner-friendly counters.',
-        Building2,
-      ],
-      [
-        'Lapidary services',
-        'Cutting, polishing, cabbing, and display help for collected pieces.',
-        Gem,
-      ],
-      [
-        'Guides and educators',
-        'Public-facing classes, walks, talks, and field learning options.',
-        UsersRound,
-      ],
-    ],
+    panels: [],
   },
   challenges: {
     eyebrow: 'Challenge previews',
     title: 'Preview seasonal collecting challenges',
     description:
       'See trip-planning prompts publicly. Saving plans and member actions require a Basecamp.',
-    panels: [
-      [
-        'First five finds',
-        'A beginner challenge for identifying and documenting common finds.',
-        Medal,
-      ],
-      [
-        'Stewardship streak',
-        'A cleanup and careful-access challenge for local collecting areas.',
-        ShieldCheck,
-      ],
-      [
-        'Region explorer',
-        'A seasonal preview for learning new terrain and geology basics.',
-        Gem,
-      ],
-    ],
+    panels: [],
   },
   about: {
     eyebrow: 'About iluvrocks',
@@ -240,6 +144,12 @@ export default function PublicPage({ page }: { page: PublicPageKey }) {
           />
         ))}
       </div>
+      {!content.panels.length ? (
+        <EmptyState
+          title="No public entries yet"
+          description="Real community content will appear here as iluvrocks grows."
+        />
+      ) : null}
     </section>
   )
 }

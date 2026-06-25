@@ -342,7 +342,7 @@ export default function LocalGuideApply() {
                 })
               }
               placeholder={
-                'One per line, like:\nEllensburg blue agate\nPetrified wood\nOrbicular jasper'
+                'One per line, like:\nTeaching find one\nTeaching find two\nTeaching find three'
               }
             />
           </label>
