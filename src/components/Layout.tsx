@@ -19,6 +19,36 @@ const navItems = [
 
 const accountNavItems = [{ to: '/basecamp', label: 'Basecamp' }]
 
+const skagitTheme = {
+  background: '#F5F4EF',
+  surface: '#FFFFFF',
+  surfaceAlt: '#D8DAD7',
+  textPrimary: '#0B0B0A',
+  textSecondary: '#56644A',
+  border: '#D8DAD7',
+  divider: '#D8DAD7',
+  primary: '#355C6B',
+  primaryHover: '#7A9AA8',
+  accent: '#B7A48A',
+  navText: '#F5F4EF',
+}
+
+const legacyThemeValues = new Set(
+  [
+    '#050505',
+    '#111111',
+    '#242424',
+    '#0b0b0a',
+    '#ffffff',
+    '#f7f7f4',
+    '#f1f1ee',
+    '#686864',
+    '#deded9',
+    '#ecece8',
+    '#f2c94c',
+  ].map((value) => value.toLowerCase()),
+)
+
 const workspaceRoutePrefixes = [
   '/basecamp',
   '/collection',
@@ -100,45 +130,77 @@ function applyThemeSettings(
   const theme = { ...(appearance ?? {}), ...(pageStyle ?? {}) }
   const root = document.documentElement
   const mappings: Array<[string, string | undefined]> = [
-    ['--color-background', theme?.mainBackgroundColor],
-    ['--color-surface', theme?.cardBackgroundColor],
-    ['--color-surface-alt', theme?.secondaryBackgroundColor],
-    ['--color-text-primary', theme?.textColor],
-    ['--color-text-secondary', theme?.mutedTextColor],
-    ['--color-primary', theme?.buttonBackgroundColor || theme?.primaryColor],
-    ['--color-primary-hover', theme?.buttonHoverColor],
-    ['--color-accent-yellow', theme?.accentColor],
-    ['--theme-heading-color', theme?.headerTextColor],
-    ['--theme-subheading-color', theme?.subheaderTextColor],
-    ['--theme-link-color', theme?.linkColor],
-    ['--theme-button-bg', theme?.buttonBackgroundColor],
-    ['--theme-button-text', theme?.buttonTextColor],
-    ['--theme-button-border', theme?.buttonBorderColor],
-    ['--theme-button-hover-bg', theme?.buttonHoverColor],
-    ['--theme-button-hover-text', theme?.buttonHoverTextColor],
-    ['--theme-button-radius', theme?.buttonBorderRadius],
+    [
+      '--color-background',
+      resolveSkagitColor(theme?.mainBackgroundColor, skagitTheme.background),
+    ],
+    ['--color-surface', resolveSkagitColor(theme?.cardBackgroundColor, skagitTheme.surface)],
+    [
+      '--color-surface-alt',
+      resolveSkagitColor(theme?.secondaryBackgroundColor, skagitTheme.surfaceAlt),
+    ],
+    ['--color-text-primary', resolveSkagitColor(theme?.textColor, skagitTheme.textPrimary)],
+    [
+      '--color-text-secondary',
+      resolveSkagitColor(theme?.mutedTextColor, skagitTheme.textSecondary),
+    ],
+    ['--color-border', resolveSkagitColor(theme?.cardBorderColor, skagitTheme.border)],
+    ['--color-divider', skagitTheme.divider],
+    [
+      '--color-primary',
+      resolveSkagitColor(theme?.buttonBackgroundColor || theme?.primaryColor, skagitTheme.primary),
+    ],
+    ['--color-primary-hover', resolveSkagitColor(theme?.buttonHoverColor, skagitTheme.primaryHover)],
+    ['--color-accent-yellow', resolveSkagitColor(theme?.accentColor, skagitTheme.accent)],
+    ['--theme-heading-color', resolveSkagitColor(theme?.headerTextColor, skagitTheme.primary)],
+    [
+      '--theme-subheading-color',
+      resolveSkagitColor(theme?.subheaderTextColor, skagitTheme.textSecondary),
+    ],
+    ['--theme-link-color', resolveSkagitColor(theme?.linkColor, skagitTheme.primary)],
+    ['--theme-button-bg', resolveSkagitColor(theme?.buttonBackgroundColor, skagitTheme.primary)],
+    ['--theme-button-text', resolveSkagitColor(theme?.buttonTextColor, '#FFFFFF')],
+    ['--theme-button-border', resolveSkagitColor(theme?.buttonBorderColor, skagitTheme.primary)],
+    ['--theme-button-hover-bg', resolveSkagitColor(theme?.buttonHoverColor, skagitTheme.primaryHover)],
+    ['--theme-button-hover-text', resolveSkagitColor(theme?.buttonHoverTextColor, '#FFFFFF')],
+    ['--theme-button-radius', resolveRadius(theme?.buttonBorderRadius, '999px')],
     ['--theme-button-border-width', theme?.buttonBorderWidth],
     ['--theme-button-height', theme?.buttonSize],
-    ['--theme-card-bg', theme?.cardBackgroundColor],
-    ['--theme-card-text', theme?.cardTextColor],
-    ['--theme-card-header-text', theme?.cardHeaderTextColor],
-    ['--theme-card-border', theme?.cardBorderColor],
+    ['--theme-card-bg', resolveSkagitColor(theme?.cardBackgroundColor, skagitTheme.surface)],
+    ['--theme-card-text', resolveSkagitColor(theme?.cardTextColor, skagitTheme.textSecondary)],
+    [
+      '--theme-card-header-text',
+      resolveSkagitColor(theme?.cardHeaderTextColor, skagitTheme.primary),
+    ],
+    ['--theme-card-border', resolveSkagitColor(theme?.cardBorderColor, skagitTheme.border)],
     ['--theme-card-opacity', theme?.cardOpacity],
-    ['--theme-card-radius', theme?.cardBorderRadius],
+    ['--theme-card-radius', resolveRadius(theme?.cardBorderRadius, '22px')],
     ['--theme-card-padding', theme?.cardPadding],
     ['--theme-input-radius', theme?.inputBorderRadius],
-    ['--theme-nav-bg', theme?.navBackgroundColor],
-    ['--theme-nav-text', theme?.navTextColor],
-    ['--theme-sidebar-bg', theme?.sidebarBackgroundColor],
-    ['--theme-sidebar-text', theme?.sidebarTextColor],
-    ['--theme-sidebar-active-bg', theme?.sidebarActiveBackgroundColor],
-    ['--theme-sidebar-active-text', theme?.sidebarActiveTextColor],
-    ['--theme-sidebar-hover-bg', theme?.sidebarHoverBackgroundColor],
-    ['--theme-sidebar-hover-text', theme?.sidebarHoverTextColor],
-    ['--theme-footer-bg', theme?.footerBackgroundColor],
-    ['--theme-footer-text', theme?.footerTextColor],
-    ['--theme-badge-bg', theme?.badgeBackgroundColor],
-    ['--theme-badge-text', theme?.badgeTextColor],
+    ['--theme-nav-bg', resolveSkagitColor(theme?.navBackgroundColor, skagitTheme.primary)],
+    ['--theme-nav-text', resolveSkagitColor(theme?.navTextColor, skagitTheme.navText)],
+    ['--theme-sidebar-bg', resolveSkagitColor(theme?.sidebarBackgroundColor, skagitTheme.primary)],
+    ['--theme-sidebar-text', resolveSkagitColor(theme?.sidebarTextColor, skagitTheme.navText)],
+    [
+      '--theme-sidebar-active-bg',
+      resolveSkagitColor(theme?.sidebarActiveBackgroundColor, skagitTheme.primaryHover),
+    ],
+    [
+      '--theme-sidebar-active-text',
+      resolveSkagitColor(theme?.sidebarActiveTextColor, '#FFFFFF'),
+    ],
+    [
+      '--theme-sidebar-hover-bg',
+      resolveSkagitColor(theme?.sidebarHoverBackgroundColor, skagitTheme.primaryHover),
+    ],
+    [
+      '--theme-sidebar-hover-text',
+      resolveSkagitColor(theme?.sidebarHoverTextColor, '#FFFFFF'),
+    ],
+    ['--theme-footer-bg', resolveSkagitColor(theme?.footerBackgroundColor, skagitTheme.primary)],
+    ['--theme-footer-text', resolveSkagitColor(theme?.footerTextColor, skagitTheme.navText)],
+    ['--theme-badge-bg', resolveSkagitColor(theme?.badgeBackgroundColor, skagitTheme.accent)],
+    ['--theme-badge-text', resolveSkagitColor(theme?.badgeTextColor, skagitTheme.textPrimary)],
     ['--theme-header-font', theme?.headerFont],
     ['--theme-subheader-font', theme?.subheaderFont],
     ['--theme-body-font', theme?.bodyFont],
@@ -155,11 +217,23 @@ function applyThemeSettings(
       '--theme-overlay-opacity',
       theme?.overlayOpacity ?? theme?.defaultOverlayOpacity,
     ],
-    ['--theme-search-bg', theme?.searchBarBackgroundColor],
-    ['--theme-search-text', theme?.searchBarTextColor],
-    ['--theme-search-border', theme?.searchBarBorderColor],
-    ['--theme-search-button-bg', theme?.searchBarButtonBackgroundColor],
-    ['--theme-search-button-text', theme?.searchBarButtonTextColor],
+    [
+      '--theme-search-bg',
+      resolveSkagitColor(theme?.searchBarBackgroundColor, 'rgba(245, 244, 239, 0.94)'),
+    ],
+    ['--theme-search-text', resolveSkagitColor(theme?.searchBarTextColor, skagitTheme.primary)],
+    [
+      '--theme-search-border',
+      resolveSkagitColor(theme?.searchBarBorderColor, 'rgba(245, 244, 239, 0.76)'),
+    ],
+    [
+      '--theme-search-button-bg',
+      resolveSkagitColor(theme?.searchBarButtonBackgroundColor, skagitTheme.primary),
+    ],
+    [
+      '--theme-search-button-text',
+      resolveSkagitColor(theme?.searchBarButtonTextColor, '#FFFFFF'),
+    ],
     [
       '--theme-card-shadow',
       theme?.cardShadowEnabled === false ? 'none' : undefined,
@@ -196,6 +270,19 @@ function applyThemeSettings(
     const favicon = document.querySelector<HTMLLinkElement>('link[rel="icon"]')
     favicon?.setAttribute('href', appearance.faviconUrl)
   }
+}
+
+function resolveSkagitColor(value: string | undefined, fallback: string) {
+  if (!value?.trim()) return fallback
+  const normalized = value.trim().toLowerCase()
+  return legacyThemeValues.has(normalized) ? fallback : value
+}
+
+function resolveRadius(value: string | undefined, fallback: string) {
+  if (!value?.trim()) return fallback
+  const match = value.trim().match(/^(\d+(?:\.\d+)?)px$/)
+  if (!match) return value
+  return Number(match[1]) < 16 ? fallback : value
 }
 
 function getActivePageStyle(value: string | undefined, pathname: string) {

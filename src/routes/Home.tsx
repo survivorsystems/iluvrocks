@@ -54,6 +54,9 @@ const memberLinks = [
 export default function Home() {
   const auth = useAuthProfileState()
   const appearance = useQuery((api as any).adminPublic.getSiteAppearance, {})
+  const results = useQuery((api as any).tripPlanning.publicSearch, {})
+  const destinationCount = results?.destinations?.length ?? 0
+  const materialCount = results?.materials?.length ?? 0
 
   return (
     <PageBackgroundLayout background="skagit" className="home-page">
@@ -62,7 +65,15 @@ export default function Home() {
         appearance={appearance}
       />
       <OriginalHoundsSection />
-      {auth.isAuthenticated ? <MemberTripHome /> : <VisitorSections />}
+      {auth.isAuthenticated ? (
+        <MemberTripHome />
+      ) : (
+        <VisitorSections
+          destinationCount={destinationCount}
+          materialCount={materialCount}
+        />
+      )}
+      <MapTilerPreview destinationCount={destinationCount} />
     </PageBackgroundLayout>
   )
 }
@@ -127,12 +138,15 @@ function TripSearchHero({
   )
 }
 
-function VisitorSections() {
-  const results = useQuery((api as any).tripPlanning.publicSearch, {})
+function VisitorSections({
+  destinationCount,
+  materialCount,
+}: {
+  destinationCount: number
+  materialCount: number
+}) {
   const appearance = useQuery((api as any).adminPublic.getSiteAppearance, {})
   const section = getPublicSection(appearance, 'home', 'visitorIntro')
-  const destinationCount = results?.destinations?.length ?? 0
-  const materialCount = results?.materials?.length ?? 0
 
   if (section?.enabled === false) return null
 
@@ -163,13 +177,13 @@ function VisitorSections() {
           description="Safety, ethics, laws by state, beginner guides, and educational resources."
         />
       </div>
-      <MapTilerPreview destinationCount={destinationCount} />
     </section>
   )
 }
 
 function MapTilerPreview({ destinationCount }: { destinationCount: number }) {
-  const maptilerKey = import.meta.env.VITE_MAPTILER_KEY as string | undefined
+  const maptilerKey = (import.meta.env.VITE_MAPTILER_KEY ||
+    import.meta.env.VITE_MAPTILER_API_KEY) as string | undefined
   const staticMapUrl = maptilerKey
     ? `https://api.maptiler.com/maps/outdoor-v2/static/-121.55,48.52,8.6/1120x520.png?key=${encodeURIComponent(maptilerKey)}`
     : undefined

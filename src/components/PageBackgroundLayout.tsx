@@ -38,7 +38,7 @@ export default function PageBackgroundLayout({
     const fallbackBackground = `url(${backgroundImages[background]})`
     const customBackground =
       background === 'skagit'
-        ? `var(--theme-homepage-background-image, ${fallbackBackground})`
+        ? fallbackBackground
         : `var(--theme-default-page-background-image, ${fallbackBackground})`
     root.style.setProperty('--active-page-background-image', customBackground)
     root.style.setProperty('--active-page-overlay-color', overlayColors[background])

@@ -44,9 +44,9 @@
   --space-16: 4rem;
 
   --radius-small: 6px;
-  --radius-medium: 8px;
-  --radius-large: 12px;
-  --radius-xl: 18px;
+  --radius-medium: 12px;
+  --radius-large: 18px;
+  --radius-xl: 28px;
   --radius-round: 999px;
 
   --shadow-card: 0 18px 46px rgba(22, 39, 45, 0.12);
@@ -59,7 +59,7 @@
   --theme-button-border: var(--color-primary);
   --theme-button-hover-bg: var(--color-primary-hover);
   --theme-button-hover-text: #ffffff;
-  --theme-button-radius: var(--radius-medium);
+  --theme-button-radius: var(--radius-round);
   --theme-button-border-width: 1px;
   --theme-button-height: 2.9rem;
   --theme-button-padding-inline: 1rem;
@@ -68,7 +68,7 @@
   --theme-card-header-text: var(--color-primary);
   --theme-card-border: var(--color-border);
   --theme-card-opacity: 1;
-  --theme-card-radius: var(--radius-large);
+  --theme-card-radius: 22px;
   --theme-card-padding: var(--space-5);
   --theme-card-shadow: var(--shadow-card);
   --theme-input-radius: var(--radius-medium);
