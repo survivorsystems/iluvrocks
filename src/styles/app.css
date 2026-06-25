@@ -11,8 +11,8 @@
   --color-accent-yellow: #b7a48a;
   --color-disabled: #a8a8a2;
   --color-hover: #f3f3f0;
-  --color-active: #050505;
-  --color-selected: #111111;
+  --color-active: #355c6b;
+  --color-selected: #355c6b;
 
   --font-family-base:
     Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
@@ -74,12 +74,12 @@
   --theme-input-radius: var(--radius-medium);
   --theme-nav-bg: #355c6b;
   --theme-nav-text: #f5f4ef;
-  --theme-sidebar-bg: var(--color-surface);
-  --theme-sidebar-text: var(--color-primary);
-  --theme-sidebar-active-bg: var(--color-primary);
-  --theme-sidebar-active-text: var(--color-surface);
-  --theme-sidebar-hover-bg: var(--color-hover);
-  --theme-sidebar-hover-text: var(--color-primary);
+  --theme-sidebar-bg: #355c6b;
+  --theme-sidebar-text: #f5f4ef;
+  --theme-sidebar-active-bg: #7a9aa8;
+  --theme-sidebar-active-text: #ffffff;
+  --theme-sidebar-hover-bg: #7a9aa8;
+  --theme-sidebar-hover-text: #ffffff;
   --theme-footer-bg: var(--color-primary);
   --theme-footer-text: var(--color-surface);
   --theme-badge-bg: var(--color-accent-yellow);

@@ -1,4 +1,3 @@
-import { lazy, Suspense } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import Layout from './components/Layout'
 import Feed from './routes/Feed'
@@ -27,8 +26,6 @@ import SpecimenDetail from './routes/SpecimenDetail'
 import TripDetail from './routes/TripDetail'
 import TripPlanner from './routes/TripPlanner'
 import Trips from './routes/Trips'
-
-const AdminDashboard = lazy(() => import('./routes/AdminDashboard'))
 
 export default function App() {
   return (
@@ -177,18 +174,6 @@ export default function App() {
           element={
             <ProtectedRoute requireProfile={false}>
               <Settings />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin"
-          element={
-            <ProtectedRoute adminOnly>
-              <Suspense
-                fallback={<p className="empty-state">Loading admin...</p>}
-              >
-                <AdminDashboard />
-              </Suspense>
             </ProtectedRoute>
           }
         />
