@@ -8,6 +8,7 @@ import {
   Gem,
   Heart,
   Map,
+  MapPin,
   Route,
   Search,
 } from 'lucide-react'
@@ -55,7 +56,7 @@ export default function Home() {
   const appearance = useQuery((api as any).adminPublic.getSiteAppearance, {})
 
   return (
-    <PageBackgroundLayout background="skagit">
+    <PageBackgroundLayout background="skagit" className="home-page">
       <TripSearchHero
         isAuthenticated={auth.isAuthenticated}
         appearance={appearance}
@@ -162,7 +163,49 @@ function VisitorSections() {
           description="Safety, ethics, laws by state, beginner guides, and educational resources."
         />
       </div>
+      <MapTilerPreview destinationCount={destinationCount} />
     </section>
+  )
+}
+
+function MapTilerPreview({ destinationCount }: { destinationCount: number }) {
+  const maptilerKey = import.meta.env.VITE_MAPTILER_KEY as string | undefined
+  const staticMapUrl = maptilerKey
+    ? `https://api.maptiler.com/maps/outdoor-v2/static/-121.55,48.52,8.6/1120x520.png?key=${encodeURIComponent(maptilerKey)}`
+    : undefined
+
+  return (
+    <Card className="home-map-preview">
+      <div className="home-map-copy">
+        <p className="eyebrow">Explore the map</p>
+        <h2>Start with the place, then follow the rock clues.</h2>
+        <p>
+          Preview Washington collecting areas, river corridors, roads, and
+          nearby trip planning details before you choose an adventure.
+        </p>
+        <Link to="/destinations" className="primary-action">
+          Open destinations
+          <ArrowRight aria-hidden="true" />
+        </Link>
+      </div>
+      <div
+        className="home-map-frame"
+        style={
+          staticMapUrl ? { backgroundImage: `url(${staticMapUrl})` } : undefined
+        }
+        aria-hidden="true"
+      >
+        <span className="map-pin map-pin-primary">
+          <MapPin />
+        </span>
+        <span className="map-pin map-pin-secondary">
+          {Math.max(destinationCount, 1)}
+        </span>
+        <span className="map-pin map-pin-tertiary">
+          <Gem />
+        </span>
+      </div>
+    </Card>
   )
 }
 
