@@ -6,9 +6,10 @@ import { useAuthProfileState } from '../lib/authState'
 import { AppShell } from './ui'
 
 const navItems = [
-  { to: '/trip-planner', label: 'Trip Planner' },
+  { to: '/local-guides', label: 'Local Guides' },
+  { to: '/guides', label: 'Learn' },
+  { to: '/community', label: 'Community' },
   { to: '/businesses', label: 'Business Directory' },
-  { to: '/guides', label: 'Guides' },
 ]
 
 const accountNavItems = [{ to: '/basecamp', label: 'Basecamp' }]
@@ -24,6 +25,7 @@ const workspaceRoutePrefixes = [
   '/settings',
   '/trips',
   '/business/manage',
+  '/local-guides/apply',
 ]
 
 export default function Layout() {

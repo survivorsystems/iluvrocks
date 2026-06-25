@@ -62,26 +62,26 @@ export default function TripPlanner() {
   return (
     <section className="workspace-page">
       <SectionHeader
-        eyebrow="Trip planner"
-        title="Plan your next adventure"
-        description="Start with a destination, then check materials, permits, safety, local supplies, lodging, campgrounds, and curated itineraries."
+        eyebrow="Regional research"
+        title="Start with the land, then decide where to learn more"
+        description="Use this lightweight research page to connect Washington regions, materials, safety notes, permits, and local support without exposing sensitive collecting spots."
       />
       <div className="trip-planner-steps">
         {[
           [
             '1',
-            'Choose a destination',
-            'Search Washington beaches, rivers, forests, and public collecting areas.',
+            'Choose a region',
+            'Start broad with Washington beaches, rivers, forests, and public learning areas.',
           ],
           [
             '2',
-            'Check materials',
-            'See what is commonly found there and what needs careful identification.',
+            'Study materials',
+            'Learn what geologic conditions create common finds and what needs careful identification.',
           ],
           [
             '3',
-            'Plan the practical details',
-            'Review permits, safety notes, gas, groceries, lodging, rock shops, and ranger offices.',
+            'Verify before you go',
+            'Review claim checks, land managers, permits, safety notes, and ethical collection practices.',
           ],
         ].map(([step, title, text]) => (
           <Card key={step} className="trip-step-card">
@@ -125,7 +125,7 @@ export default function TripPlanner() {
       {!destinations.length ? (
         <EmptyState
           title="No trip plans published yet"
-          description="Create destinations and itineraries from the Admin Dashboard."
+          description="Washington region research will appear here as the learning library grows."
         />
       ) : null}
     </section>

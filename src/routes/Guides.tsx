@@ -11,9 +11,9 @@ export default function Guides() {
   return (
     <section className="workspace-page">
       <SectionHeader
-        eyebrow="Guides and resources"
-        title="Safety, ethics, laws, beginner guides, and Washington field resources"
-        description="Visitor-friendly trip-planning resources published from the Admin Dashboard."
+        eyebrow="Learn"
+        title="Washington geology, ethics, access, and beginner field skills"
+        description="Educational resources for learning what to look for, how to verify access, and how to collect with care."
       />
       <div className="feature-grid">
         {(resources ?? []).map((resource: any) => (
@@ -32,7 +32,7 @@ export default function Guides() {
       {resources && resources.length === 0 ? (
         <EmptyState
           title="No guides published yet"
-          description="Publish resources from the Admin Dashboard."
+          description="Educational resources will appear here as iluvrocks grows."
         />
       ) : null}
     </section>

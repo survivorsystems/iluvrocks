@@ -649,6 +649,36 @@ export default defineSchema({
     .index('by_approved', ['isApproved'])
     .index('by_plan', ['plan']),
 
+  localGuides: defineTable({
+    userId: v.id('users'),
+    displayName: v.string(),
+    handle: v.string(),
+    region: v.string(),
+    homeBase: v.optional(v.string()),
+    specialties: v.array(v.string()),
+    experienceSummary: v.string(),
+    offerings: v.string(),
+    beginnerFriendly: v.boolean(),
+    familyFriendly: v.boolean(),
+    accessibilityNotes: v.optional(v.string()),
+    publicContactEmail: v.optional(v.string()),
+    websiteUrl: v.optional(v.string()),
+    bookingUrl: v.optional(v.string()),
+    photoUrl: v.optional(v.string()),
+    ethicsAgreement: v.boolean(),
+    locationProtectionAgreement: v.boolean(),
+    independentGuideAgreement: v.boolean(),
+    status: v.string(),
+    isFeatured: v.boolean(),
+    isFoundingGuide: v.boolean(),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index('by_user', ['userId'])
+    .index('by_handle', ['handle'])
+    .index('by_status', ['status'])
+    .index('by_region', ['region']),
+
   featuredContent: defineTable({
     title: v.string(),
     placement: v.string(),

@@ -82,7 +82,7 @@ export default function Trips() {
       <SectionHeader
         eyebrow="Basecamp trips"
         title="Trips and wishlists"
-        description="Save planned trips from the Trip Planner, keep a trip wishlist, and track rocks you want to find."
+        description="Keep private ideas, public plans, and rocks you want to learn about or find someday."
       />
 
       <div className="trip-tabs" role="tablist" aria-label="Trip lists">
@@ -193,7 +193,7 @@ export default function Trips() {
           ) : (
             <EmptyState
               title={`No ${getTabLabel(activeTab).toLowerCase()} yet`}
-              description="Start a list here, or save destination ideas from the Trip Planner."
+              description="Start a list here as you learn about regions, guides, materials, and public collecting options."
             />
           )}
         </Card>

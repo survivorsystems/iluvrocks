@@ -13,7 +13,7 @@ import {
   Mail,
   MessageCircle,
   LogOut,
-  Route,
+  ShieldCheck,
   Settings,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
@@ -28,8 +28,7 @@ type IconType =
 const workspaceNavItems = [
   { to: '/', label: 'Homepage', icon: Home },
   { to: '/basecamp', label: 'Basecamp', icon: Compass },
-  { to: '/trip-planner', label: 'Trip Planner', icon: Compass },
-  { to: '/trips', label: 'Trips', icon: Route },
+  { to: '/local-guides', label: 'Local Guides', icon: ShieldCheck },
   { to: '/collections', label: 'Collections', icon: Diamond },
   { to: '/community', label: 'Community', icon: MessageCircle },
   { to: '/messages', label: 'Messages', icon: Mail },

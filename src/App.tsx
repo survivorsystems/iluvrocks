@@ -16,6 +16,9 @@ import Community from './routes/Community'
 import DestinationDetail from './routes/DestinationDetail'
 import LogFind from './routes/LogFind'
 import Guides from './routes/Guides'
+import LocalGuideApply from './routes/LocalGuideApply'
+import LocalGuideProfile from './routes/LocalGuideProfile'
+import LocalGuides from './routes/LocalGuides'
 import Messages from './routes/Messages'
 import PublicPage from './routes/PublicPage'
 import PublicCollection from './routes/PublicCollection'
@@ -52,6 +55,16 @@ export default function App() {
         />
         <Route path="/trip-planner" element={<TripPlanner />} />
         <Route path="/trips/:slug" element={<TripDetail />} />
+        <Route path="/local-guides" element={<LocalGuides />} />
+        <Route
+          path="/local-guides/apply"
+          element={
+            <ProtectedRoute requireProfile={false}>
+              <LocalGuideApply />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/local-guides/:handle" element={<LocalGuideProfile />} />
         <Route path="/guides" element={<Guides />} />
         <Route path="/members" element={<PublicPage page="members" />} />
         <Route

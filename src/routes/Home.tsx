@@ -8,8 +8,9 @@ import {
   Gem,
   Heart,
   Map,
-  Route,
   Search,
+  ShieldCheck,
+  Users,
 } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useQuery } from 'convex/react'
@@ -22,25 +23,25 @@ import { useAuthProfileState } from '../lib/authState'
 
 const memberLinks = [
   {
-    to: '/trip-planner',
-    icon: Map,
-    title: 'Search trip ideas',
+    to: '/local-guides',
+    icon: ShieldCheck,
+    title: 'Find local guides',
     description:
-      'Browse Washington regions, materials, and practical trip details.',
+      'Connect with approved Washington rockhounds who choose what they share.',
   },
   {
-    to: '/trip-planner',
-    icon: Route,
-    title: 'Plan a trip',
+    to: '/guides',
+    icon: BookOpen,
+    title: 'Learn the land',
     description:
-      'Check safety, permits, places nearby, and curated itineraries.',
+      'Study geology, access, safety, ethics, and what to look for in Washington.',
   },
   {
-    to: '/businesses',
-    icon: Building2,
-    title: 'Find local support',
+    to: '/community',
+    icon: Users,
+    title: 'Ask the community',
     description:
-      'Rock shops, lapidaries, lodging, supplies, museums, and permit offices.',
+      'Use forums for ID help, beginner questions, and trip reports without exposing sensitive places.',
   },
   {
     to: '/basecamp',
@@ -92,21 +93,24 @@ function TripSearchHero({
   return (
     <section className="hero trip-hero trip-hero-centered">
       <div className="hero-copy">
-        <p className="eyebrow">Curate Your Next Adventure</p>
+        <p className="eyebrow">Washington rockhounding, taught with care</p>
         <h1>Let's Rock</h1>
-        <p className="tagline">Learn How To Rockhound</p>
+        <p className="tagline">
+          Learn the geology, protect the places, and connect with trusted local
+          knowledge.
+        </p>
         <form className="home-search-form" onSubmit={submit}>
           <Search aria-hidden="true" />
           <input
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search agate, jade, jasper, quartz, petrified wood, beaches, rivers..."
+            placeholder="Search agate, jade, jasper, quartz, ethics, access, guides..."
           />
           <button type="submit">Search</button>
         </form>
         <div className="hero-actions">
-          <Link to="/trip-planner" className="primary-action">
-            Open Trip Planner
+          <Link to="/local-guides" className="primary-action">
+            Find Local Guides
             <ArrowRight aria-hidden="true" />
           </Link>
           <Link
@@ -133,25 +137,25 @@ function VisitorSections({
   return (
     <section className="public-section">
       <SectionHeader
-        eyebrow="Plan before you sign up"
-        title="Public browsing comes first"
-        description="Visitors can browse trip planning ideas, guides, itineraries, and business listings without creating an account."
+        eyebrow="Learn before you go"
+        title="Beginner-friendly information without exposing hard-earned spots"
+        description="Visitors can browse Washington learning resources, public-area guidance, local guide profiles, and community context without creating an account."
       />
       <div className="feature-grid">
         <FeaturePanel
           icon={Map}
-          title={`${destinationCount} trip areas`}
-          description="Washington region pages with materials, permits, safety, maps, photos, and local tips."
+          title={`${destinationCount} learning regions`}
+          description="Broad Washington region pages with geology, materials, access notes, safety, and ethical collecting reminders."
         />
         <FeaturePanel
           icon={Gem}
           title={`${materialCount} searchable materials`}
-          description="Plan around agate, jade, jasper, quartz, petrified wood, and other finds."
+          description="Learn what geologic conditions create agate, jade, jasper, quartz, petrified wood, and other finds."
         />
         <FeaturePanel
-          icon={BookOpen}
-          title="Guides and resources"
-          description="Safety, ethics, laws by state, beginner guides, and educational resources."
+          icon={ShieldCheck}
+          title="Local guide network"
+          description="Experienced rockhounds can share knowledge, protect sensitive places, and choose their own booking or contact process."
         />
       </div>
     </section>
@@ -163,13 +167,13 @@ function MapTilerPreview() {
     <Card className="home-map-preview">
       <div className="home-map-copy">
         <p className="eyebrow">Explore the map</p>
-        <h2>Start with the place, then follow the rock clues.</h2>
+        <h2>Use the map as a learning layer, not a secret-spot machine.</h2>
         <p>
-          Preview Washington collecting areas, river corridors, roads, and
-          nearby trip planning details before you choose an adventure.
+          Preview broad Washington regions, public context, landform clues, and
+          nearby learning resources before deciding where to research next.
         </p>
-        <Link to="/trip-planner" className="primary-action">
-          Open Trip Planner
+        <Link to="/guides" className="primary-action">
+          Learn How To Rockhound
           <ArrowRight aria-hidden="true" />
         </Link>
       </div>
@@ -209,8 +213,8 @@ function MemberTripHome() {
     <section className="workspace-page member-home">
       <SectionHeader
         eyebrow="Member home"
-        title="Plan trips first. Use Basecamp when you need it."
-        description="Plan, save, and revisit your rockhounding ideas from one place."
+        title="Learn, connect, and keep your Basecamp close."
+        description="Use iluvrocks to build skill, ask better questions, and connect with trusted local knowledge."
       />
       <div className="member-home-grid">
         {memberLinks.map(({ to, icon: Icon, title, description }) => (
