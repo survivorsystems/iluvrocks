@@ -6,8 +6,6 @@ import { useAuthProfileState } from '../lib/authState'
 import { AppShell } from './ui'
 
 const navItems = [
-  { to: '/destinations', label: 'Destinations' },
-  { to: '/materials', label: 'Materials' },
   { to: '/trip-planner', label: 'Trip Planner' },
   { to: '/businesses', label: 'Business Directory' },
   { to: '/guides', label: 'Guides' },

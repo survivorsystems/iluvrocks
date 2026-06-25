@@ -22,11 +22,11 @@ import { useAuthProfileState } from '../lib/authState'
 
 const memberLinks = [
   {
-    to: '/destinations',
+    to: '/trip-planner',
     icon: Map,
-    title: 'Search destinations',
+    title: 'Search trip ideas',
     description:
-      'Browse Washington destinations and what materials are found there.',
+      'Browse Washington regions, materials, and practical trip details.',
   },
   {
     to: '/trip-planner',
@@ -85,7 +85,7 @@ function TripSearchHero({
   const submit = (event: FormEvent) => {
     event.preventDefault()
     navigate(
-      `/destinations${query.trim() ? `?q=${encodeURIComponent(query.trim())}` : ''}`,
+      `/trip-planner${query.trim() ? `?q=${encodeURIComponent(query.trim())}` : ''}`,
     )
   }
 
@@ -105,8 +105,8 @@ function TripSearchHero({
           <button type="submit">Search</button>
         </form>
         <div className="hero-actions">
-          <Link to="/destinations" className="primary-action">
-            Browse destinations
+          <Link to="/trip-planner" className="primary-action">
+            Open Trip Planner
             <ArrowRight aria-hidden="true" />
           </Link>
           <Link
@@ -135,18 +135,18 @@ function VisitorSections({
       <SectionHeader
         eyebrow="Plan before you sign up"
         title="Public browsing comes first"
-        description="Visitors can browse destinations, materials, guides, itineraries, and business listings without creating an account."
+        description="Visitors can browse trip planning ideas, guides, itineraries, and business listings without creating an account."
       />
       <div className="feature-grid">
         <FeaturePanel
           icon={Map}
-          title={`${destinationCount} destinations`}
-          description="Washington trip pages with materials, permits, safety, maps, photos, and local tips."
+          title={`${destinationCount} trip areas`}
+          description="Washington region pages with materials, permits, safety, maps, photos, and local tips."
         />
         <FeaturePanel
           icon={Gem}
-          title={`${materialCount} materials`}
-          description="Search by agate, jade, jasper, quartz, petrified wood, and other finds."
+          title={`${materialCount} searchable materials`}
+          description="Plan around agate, jade, jasper, quartz, petrified wood, and other finds."
         />
         <FeaturePanel
           icon={BookOpen}
@@ -168,8 +168,8 @@ function MapTilerPreview() {
           Preview Washington collecting areas, river corridors, roads, and
           nearby trip planning details before you choose an adventure.
         </p>
-        <Link to="/destinations" className="primary-action">
-          Open destinations
+        <Link to="/trip-planner" className="primary-action">
+          Open Trip Planner
           <ArrowRight aria-hidden="true" />
         </Link>
       </div>
