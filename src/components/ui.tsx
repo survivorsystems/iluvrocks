@@ -7,21 +7,17 @@ import type {
 } from 'react'
 import {
   Bell,
-  ChevronDown,
   Compass,
   Diamond,
   Home,
   Mail,
   MessageCircle,
-  Navigation,
-  Plus,
   LogOut,
   Route,
-  Search,
   Settings,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
-import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
+import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useAuthProfileState } from '../lib/authState'
 import iluvrocksLogo from '../assets/brand/iluvrocks-logo-wide-dark.png'
 
@@ -42,18 +38,10 @@ const workspaceNavItems = [
 ]
 
 export function AppShell() {
-  const auth = useAuthProfileState()
-  const viewer = auth.viewer?.user
-  const displayName =
-    viewer?.name?.trim() ||
-    auth.user?.displayName ||
-    viewer?.username ||
-    'RockHounder'
-
   return (
     <div className="app-workspace">
       <div className="app-workspace-content">
-        <TopNavigation avatarLabel={getInitials(displayName)} />
+        <TopNavigation />
         <main className="workspace-main">
           <Outlet />
         </main>
@@ -62,13 +50,13 @@ export function AppShell() {
   )
 }
 
-export function TopNavigation({
-  avatarLabel = 'RH',
-}: {
-  avatarLabel?: string
-}) {
+export function TopNavigation() {
+  const location = useLocation()
   const navigate = useNavigate()
   const auth = useAuthProfileState()
+  const navItems = workspaceNavItems.filter(
+    (item) => !(location.pathname === '/basecamp' && item.to === '/basecamp'),
+  )
 
   const handleSignOut = async () => {
     await auth.signOut()
@@ -82,7 +70,7 @@ export function TopNavigation({
         <span className="sr-only">iluvrocks</span>
       </Link>
       <nav className="app-folder-tabs" aria-label="Logged-in navigation">
-        {workspaceNavItems.map(({ to, label, icon: Icon }) => (
+        {navItems.map(({ to, label, icon: Icon }) => (
           <NavLink
             key={label}
             to={to}
@@ -93,41 +81,15 @@ export function TopNavigation({
           </NavLink>
         ))}
       </nav>
-      <label className="app-search">
-        <Search aria-hidden="true" />
-        <span className="sr-only">Search</span>
-        <input placeholder="Search rocks, users, collections..." />
-      </label>
       <div className="app-topnav-actions">
-        <Link className="icon-button" to="/destinations" aria-label="Explore">
-          <Navigation aria-hidden="true" />
-        </Link>
-        <Link className="icon-button" to="/messages" aria-label="Messages">
-          <MessageCircle aria-hidden="true" />
-        </Link>
-        <Link
-          to="/notifications"
-          className="icon-button notification-action"
-          aria-label="Notifications"
-        >
-          <Bell aria-hidden="true" />
-          <NotificationIndicator count={3} />
-        </Link>
-        <Link to="/feed" className="topnav-create-action">
-          <Plus aria-hidden="true" />
-          <span>Create Post</span>
-        </Link>
-        <Link to="/settings" className="avatar-action" aria-label="Settings">
-          <span>{avatarLabel}</span>
-          <ChevronDown aria-hidden="true" />
-        </Link>
         <button
           type="button"
-          className="icon-button"
+          className="topnav-signout"
           onClick={() => void handleSignOut()}
           aria-label="Sign out"
         >
           <LogOut aria-hidden="true" />
+          <span>Sign out</span>
         </button>
       </div>
     </header>
