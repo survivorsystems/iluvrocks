@@ -12,7 +12,6 @@ import {
   Diamond,
   Home,
   Mail,
-  Menu,
   MessageCircle,
   Navigation,
   Plus,
@@ -53,7 +52,6 @@ export function AppShell() {
 
   return (
     <div className="app-workspace">
-      <Sidebar />
       <div className="app-workspace-content">
         <TopNavigation avatarLabel={getInitials(displayName)} />
         <main className="workspace-main">
@@ -64,7 +62,11 @@ export function AppShell() {
   )
 }
 
-export function Sidebar() {
+export function TopNavigation({
+  avatarLabel = 'RH',
+}: {
+  avatarLabel?: string
+}) {
   const navigate = useNavigate()
   const auth = useAuthProfileState()
 
@@ -74,12 +76,12 @@ export function Sidebar() {
   }
 
   return (
-    <aside className="app-sidebar" aria-label="Logged-in navigation">
+    <header className="app-topnav">
       <Link to="/" className="app-logo" aria-label="iluvrocks homepage">
         <img src={iluvrocksLogo} alt="" className="app-logo-image" />
         <span className="sr-only">iluvrocks</span>
       </Link>
-      <nav className="app-sidebar-nav">
+      <nav className="app-folder-tabs" aria-label="Logged-in navigation">
         {workspaceNavItems.map(({ to, label, icon: Icon }) => (
           <NavLink
             key={label}
@@ -91,59 +93,41 @@ export function Sidebar() {
           </NavLink>
         ))}
       </nav>
-      <Link to="/feed" className="app-sidebar-action">
-        <Plus aria-hidden="true" />
-        <span>Create Post</span>
-      </Link>
-      <button
-        type="button"
-        className="app-sidebar-signout"
-        onClick={() => void handleSignOut()}
-      >
-        <LogOut aria-hidden="true" />
-        <span>Sign out</span>
-      </button>
-    </aside>
-  )
-}
-
-export function TopNavigation({
-  avatarLabel = 'RH',
-}: {
-  avatarLabel?: string
-}) {
-  return (
-    <header className="app-topnav">
-      <button
-        className="icon-button topnav-menu"
-        type="button"
-        aria-label="Open navigation"
-      >
-        <Menu aria-hidden="true" />
-      </button>
       <label className="app-search">
         <Search aria-hidden="true" />
         <span className="sr-only">Search</span>
         <input placeholder="Search rocks, users, collections..." />
       </label>
       <div className="app-topnav-actions">
-        <button className="icon-button" type="button" aria-label="Explore">
+        <Link className="icon-button" to="/destinations" aria-label="Explore">
           <Navigation aria-hidden="true" />
-        </button>
-        <button className="icon-button" type="button" aria-label="Messages">
+        </Link>
+        <Link className="icon-button" to="/messages" aria-label="Messages">
           <MessageCircle aria-hidden="true" />
-        </button>
-        <button
+        </Link>
+        <Link
+          to="/notifications"
           className="icon-button notification-action"
-          type="button"
           aria-label="Notifications"
         >
           <Bell aria-hidden="true" />
           <NotificationIndicator count={3} />
-        </button>
-        <button type="button" className="avatar-action" aria-label="User menu">
+        </Link>
+        <Link to="/feed" className="topnav-create-action">
+          <Plus aria-hidden="true" />
+          <span>Create Post</span>
+        </Link>
+        <Link to="/settings" className="avatar-action" aria-label="Settings">
           <span>{avatarLabel}</span>
           <ChevronDown aria-hidden="true" />
+        </Link>
+        <button
+          type="button"
+          className="icon-button"
+          onClick={() => void handleSignOut()}
+          aria-label="Sign out"
+        >
+          <LogOut aria-hidden="true" />
         </button>
       </div>
     </header>
