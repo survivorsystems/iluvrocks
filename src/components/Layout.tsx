@@ -1,6 +1,6 @@
 import { UserRound } from 'lucide-react'
 import { NavLink, Outlet, useLocation } from 'react-router-dom'
-import iluvrocksLogo from '../assets/brand/iluvrocks-logo-wide-dark.png'
+import iluvrocksLogo from '../assets/brand/iluvrocks-logo-river.png'
 import DevModeBadge from './DevModeBadge'
 import { useAuthProfileState } from '../lib/authState'
 import { AppShell } from './ui'

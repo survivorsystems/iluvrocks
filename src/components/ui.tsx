@@ -19,7 +19,7 @@ import {
 import type { LucideIcon } from 'lucide-react'
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useAuthProfileState } from '../lib/authState'
-import iluvrocksLogo from '../assets/brand/iluvrocks-logo-wide-dark.png'
+import iluvrocksLogo from '../assets/brand/iluvrocks-logo-river.png'
 
 type IconType =
   | LucideIcon
