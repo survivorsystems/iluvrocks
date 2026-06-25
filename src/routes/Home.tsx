@@ -8,7 +8,6 @@ import {
   Gem,
   Heart,
   Map,
-  MapPin,
   Route,
   Search,
 } from 'lucide-react'
@@ -16,6 +15,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useQuery } from 'convex/react'
 import { api } from '../../convex/_generated/api'
 import FeaturePanel from '../components/FeaturePanel'
+import MapTilerMapPreview from '../components/MapTilerMapPreview'
 import PageBackgroundLayout from '../components/PageBackgroundLayout'
 import { Card, SectionHeader } from '../components/ui'
 import { useAuthProfileState } from '../lib/authState'
@@ -69,7 +69,7 @@ export default function Home() {
           materialCount={materialCount}
         />
       )}
-      <MapTilerPreview destinationCount={destinationCount} />
+      <MapTilerPreview />
     </PageBackgroundLayout>
   )
 }
@@ -158,13 +158,7 @@ function VisitorSections({
   )
 }
 
-function MapTilerPreview({ destinationCount }: { destinationCount: number }) {
-  const maptilerKey = (import.meta.env.VITE_MAPTILER_KEY ||
-    import.meta.env.VITE_MAPTILER_API_KEY) as string | undefined
-  const staticMapUrl = maptilerKey
-    ? `https://api.maptiler.com/maps/outdoor-v2/static/-121.55,48.52,8.6/1120x520.png?key=${encodeURIComponent(maptilerKey)}`
-    : undefined
-
+function MapTilerPreview() {
   return (
     <Card className="home-map-preview">
       <div className="home-map-copy">
@@ -179,23 +173,7 @@ function MapTilerPreview({ destinationCount }: { destinationCount: number }) {
           <ArrowRight aria-hidden="true" />
         </Link>
       </div>
-      <div
-        className="home-map-frame"
-        style={
-          staticMapUrl ? { backgroundImage: `url(${staticMapUrl})` } : undefined
-        }
-        aria-hidden="true"
-      >
-        <span className="map-pin map-pin-primary">
-          <MapPin />
-        </span>
-        <span className="map-pin map-pin-secondary">
-          {Math.max(destinationCount, 1)}
-        </span>
-        <span className="map-pin map-pin-tertiary">
-          <Gem />
-        </span>
-      </div>
+      <MapTilerMapPreview />
     </Card>
   )
 }
