@@ -4065,6 +4065,67 @@ label {
   backdrop-filter: blur(12px);
 }
 
+.map-region-legend {
+  position: absolute;
+  top: var(--space-4);
+  left: var(--space-4);
+  z-index: 2;
+  display: grid;
+  gap: 0.15rem;
+  max-width: 250px;
+  border: 1px solid rgba(245, 244, 239, 0.45);
+  border-radius: var(--radius-large);
+  padding: var(--space-3);
+  background: rgba(23, 52, 63, 0.82);
+  color: #f5f4ef;
+  box-shadow: var(--shadow-card);
+  backdrop-filter: blur(10px);
+}
+
+.map-region-legend strong {
+  font-size: var(--font-size-sm);
+}
+
+.map-region-legend span {
+  color: rgba(245, 244, 239, 0.82);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-snug);
+}
+
+.maplibregl-popup-content {
+  border-radius: var(--radius-large);
+  padding: 0;
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+}
+
+.map-region-popup {
+  display: grid;
+  gap: 0.45rem;
+  padding: var(--space-4);
+  background: #f5f4ef;
+  color: var(--color-text-secondary);
+  font-family: var(--font-body);
+}
+
+.map-region-popup p {
+  margin: 0 0 0.25rem;
+  color: var(--color-primary);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+}
+
+.map-region-popup strong {
+  color: var(--color-primary);
+  font-size: var(--font-size-xs);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.map-region-popup span {
+  line-height: var(--line-height-snug);
+}
+
 .home-map-frame::after {
   position: absolute;
   inset: 0;
