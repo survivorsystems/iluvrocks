@@ -22,18 +22,11 @@ import { Link } from 'react-router-dom'
 
 type AdminTab =
   | 'overview'
-  | 'appearance'
-  | 'theme'
-  | 'pageStyles'
+  | 'homepage'
+  | 'style'
   | 'destinations'
   | 'materials'
   | 'itineraries'
-  | 'places'
-  | 'pages'
-  | 'resources'
-  | 'featured'
-  | 'businesses'
-  | 'stripe'
 
 const tabs: Array<{
   id: AdminTab
@@ -41,18 +34,11 @@ const tabs: Array<{
   icon: typeof LayoutDashboard
 }> = [
   { id: 'overview', label: 'Overview', icon: LayoutDashboard },
-  { id: 'appearance', label: 'Homepage + Site Copy', icon: Paintbrush },
-  { id: 'theme', label: 'Theme / Style Manager', icon: Paintbrush },
-  { id: 'pageStyles', label: 'All Page Editor', icon: FileText },
+  { id: 'homepage', label: 'Homepage', icon: FileText },
+  { id: 'style', label: 'Basic Style', icon: Paintbrush },
   { id: 'destinations', label: 'Destinations', icon: Map },
   { id: 'materials', label: 'Materials', icon: Image },
   { id: 'itineraries', label: 'Itineraries', icon: Route },
-  { id: 'places', label: 'Places', icon: BriefcaseBusiness },
-  { id: 'pages', label: 'Pages', icon: FileText },
-  { id: 'resources', label: 'Resources', icon: Library },
-  { id: 'featured', label: 'Featured', icon: Star },
-  { id: 'businesses', label: 'Businesses', icon: BriefcaseBusiness },
-  { id: 'stripe', label: 'Stripe test mode', icon: CreditCard },
 ]
 
 export default function AdminDashboard() {
@@ -64,7 +50,7 @@ export default function AdminDashboard() {
       <SectionHeader
         eyebrow="Admin Dashboard"
         title="Manage iluvrocks"
-        description="Control site content, appearance, resources, businesses, subscriptions, featured sections, and page drafts from one place."
+        description="The basics: homepage copy, simple styling, destinations, materials, and itineraries."
         action={
           <Link to="/" className="ui-button ui-button-secondary">
             <ExternalLink aria-hidden="true" />
@@ -88,18 +74,11 @@ export default function AdminDashboard() {
       </div>
 
       {activeTab === 'overview' ? <OverviewPanel overview={overview} /> : null}
-      {activeTab === 'appearance' ? <AppearancePanel /> : null}
-      {activeTab === 'theme' ? <ThemeManagerPanel /> : null}
-      {activeTab === 'pageStyles' ? <PageTextStylePanel /> : null}
+      {activeTab === 'homepage' ? <AppearancePanel /> : null}
+      {activeTab === 'style' ? <BasicStylePanel /> : null}
       {activeTab === 'destinations' ? <DestinationsPanel /> : null}
       {activeTab === 'materials' ? <MaterialsPanel /> : null}
       {activeTab === 'itineraries' ? <ItinerariesPanel /> : null}
-      {activeTab === 'places' ? <PlacesPanel /> : null}
-      {activeTab === 'pages' ? <PagesPanel /> : null}
-      {activeTab === 'resources' ? <ResourcesPanel /> : null}
-      {activeTab === 'featured' ? <FeaturedPanel /> : null}
-      {activeTab === 'businesses' ? <BusinessesPanel /> : null}
-      {activeTab === 'stripe' ? <StripePanel overview={overview} /> : null}
     </section>
   )
 }
@@ -114,25 +93,6 @@ function OverviewPanel({ overview }: { overview: any }) {
     },
     { label: 'Materials', value: overview?.materials ?? 0, icon: Image },
     { label: 'Itineraries', value: overview?.itineraries ?? 0, icon: Route },
-    { label: 'Places', value: overview?.places ?? 0, icon: BriefcaseBusiness },
-    { label: 'Pages', value: overview?.pages ?? 0, icon: FileText },
-    { label: 'Draft pages', value: overview?.draftPages ?? 0, icon: FileText },
-    { label: 'Resources', value: overview?.resources ?? 0, icon: Library },
-    {
-      label: 'Pending businesses',
-      value: overview?.pendingBusinesses ?? 0,
-      icon: BriefcaseBusiness,
-    },
-    {
-      label: 'Premium businesses',
-      value: overview?.premiumBusinesses ?? 0,
-      icon: Star,
-    },
-    {
-      label: 'Featured items',
-      value: overview?.featuredItems ?? 0,
-      icon: Star,
-    },
   ]
 
   return (
@@ -270,6 +230,134 @@ function AppearancePanel() {
   )
 }
 
+function BasicStylePanel() {
+  const appearance = useQuery((api as any).admin.getSiteAppearance, {})
+  const saveAppearance = useMutation((api as any).admin.saveSiteAppearance)
+  const generateUploadUrl = useMutation(api.uploads.generateUploadUrl)
+  const getStorageUrl = useMutation(api.uploads.getStorageUrl)
+  const [status, setStatus] = useState('')
+  const [logo, setLogo] = useState<File | null>(null)
+  const [homepageBackground, setHomepageBackground] = useState<File | null>(
+    null,
+  )
+  const [form, setForm] = useState<ThemeForm>(defaultThemeForm)
+
+  useEffect(() => {
+    if (!appearance) return
+    setForm({
+      ...defaultThemeForm,
+      ...Object.fromEntries(
+        Object.keys(defaultThemeForm).map((key) => [
+          key,
+          appearance[key] ?? defaultThemeForm[key as keyof ThemeForm],
+        ]),
+      ),
+    } as ThemeForm)
+  }, [appearance])
+
+  const updateField = (key: keyof ThemeForm, value: string) => {
+    setForm((current) => ({ ...current, [key]: value }))
+  }
+
+  const submit = async (event: FormEvent) => {
+    event.preventDefault()
+    setStatus('Saving style...')
+    try {
+      const [logoUrl, homepageBackgroundUrl] = await Promise.all([
+        logo
+          ? uploadFile(logo, generateUploadUrl, getStorageUrl)
+          : form.logoUrl,
+        homepageBackground
+          ? uploadFile(homepageBackground, generateUploadUrl, getStorageUrl)
+          : form.homepageBackgroundUrl,
+      ])
+
+      await saveAppearance({
+        ...form,
+        logoUrl: emptyToUndefined(logoUrl),
+        homepageBackgroundUrl: emptyToUndefined(homepageBackgroundUrl),
+      })
+      setStatus('Style saved.')
+    } catch (error) {
+      setStatus(
+        error instanceof Error ? error.message : 'Could not save style.',
+      )
+    }
+  }
+
+  return (
+    <div className="admin-split theme-manager-layout">
+      <Card className="admin-panel">
+        <AdminPanelHeader
+          title="Basic style controls"
+          description="Change the main site look without digging through advanced settings."
+        />
+        <form className="admin-form" onSubmit={submit}>
+          <fieldset className="theme-fieldset">
+            <legend>Brand images</legend>
+            <div className="theme-asset-grid">
+              <label>
+                Logo
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(event) => setLogo(event.target.files?.[0] ?? null)}
+                />
+                <ImageUploadPreview file={logo} existingUrl={form.logoUrl} />
+              </label>
+              <label>
+                Homepage background
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(event) =>
+                    setHomepageBackground(event.target.files?.[0] ?? null)
+                  }
+                />
+                <ImageUploadPreview
+                  file={homepageBackground}
+                  existingUrl={form.homepageBackgroundUrl}
+                />
+              </label>
+            </div>
+          </fieldset>
+
+          <ThemeFieldset
+            title="Page colors"
+            description="Overall background, text, accent, and image overlay."
+            fields={basicFoundationFields}
+            form={form}
+            onChange={updateField}
+          />
+          <ThemeFieldset
+            title="Text boxes and cards"
+            description="Panels, forms, destination cards, admin boxes, and content surfaces."
+            fields={basicCardFields}
+            form={form}
+            onChange={updateField}
+          />
+          <ThemeFieldset
+            title="Navigation and buttons"
+            description="Header, sidebar, primary buttons, and button hover states."
+            fields={basicNavigationButtonFields}
+            form={form}
+            onChange={updateField}
+          />
+          <ThemeFieldset
+            title="Search bars"
+            description="Homepage search and logged-in app search styling."
+            fields={basicSearchFields}
+            form={form}
+            onChange={updateField}
+          />
+          <AdminSaveBar status={status} label="Save basic style" />
+        </form>
+      </Card>
+      <ThemePreview form={form} cardShadowEnabled />
+    </div>
+  )
+}
+
 const defaultThemeForm = {
   mainBackgroundColor: '#f7f7f4',
   secondaryBackgroundColor: '#f1f1ee',
@@ -350,6 +438,94 @@ type ThemeEditorGroupId =
   | 'typography'
   | 'layout'
   | 'assets'
+
+const basicFoundationFields: ThemeField[] = [
+  { key: 'mainBackgroundColor', label: 'Main background color', type: 'color' },
+  {
+    key: 'secondaryBackgroundColor',
+    label: 'Secondary background color',
+    type: 'color',
+  },
+  { key: 'textColor', label: 'Main text color', type: 'color' },
+  { key: 'mutedTextColor', label: 'Muted text color', type: 'color' },
+  { key: 'headerTextColor', label: 'Header text color', type: 'color' },
+  { key: 'accentColor', label: 'Accent color', type: 'color' },
+  {
+    key: 'defaultOverlayOpacity',
+    label: 'Background image dark overlay',
+    type: 'range',
+  },
+]
+
+const basicCardFields: ThemeField[] = [
+  {
+    key: 'cardBackgroundColor',
+    label: 'Text box/card background',
+    type: 'color',
+  },
+  { key: 'cardTextColor', label: 'Text box/card text', type: 'color' },
+  {
+    key: 'cardHeaderTextColor',
+    label: 'Text box/card header text',
+    type: 'color',
+  },
+  { key: 'cardBorderColor', label: 'Text box/card border', type: 'color' },
+  { key: 'cardBorderRadius', label: 'Card corner roundness' },
+  { key: 'cardOpacity', label: 'Card opacity', type: 'range' },
+]
+
+const basicNavigationButtonFields: ThemeField[] = [
+  {
+    key: 'navBackgroundColor',
+    label: 'Top navigation background',
+    type: 'color',
+  },
+  { key: 'navTextColor', label: 'Top navigation text', type: 'color' },
+  {
+    key: 'sidebarBackgroundColor',
+    label: 'Left navigation background',
+    type: 'color',
+  },
+  { key: 'sidebarTextColor', label: 'Left navigation text', type: 'color' },
+  {
+    key: 'sidebarActiveBackgroundColor',
+    label: 'Left navigation active background',
+    type: 'color',
+  },
+  {
+    key: 'sidebarActiveTextColor',
+    label: 'Left navigation active text',
+    type: 'color',
+  },
+  { key: 'buttonBackgroundColor', label: 'Button background', type: 'color' },
+  { key: 'buttonTextColor', label: 'Button text', type: 'color' },
+  { key: 'buttonHoverColor', label: 'Button hover background', type: 'color' },
+  {
+    key: 'buttonHoverTextColor',
+    label: 'Button hover text',
+    type: 'color',
+  },
+]
+
+const basicSearchFields: ThemeField[] = [
+  {
+    key: 'searchBarBackgroundColor',
+    label: 'Search background',
+    type: 'color',
+  },
+  { key: 'searchBarTextColor', label: 'Search text', type: 'color' },
+  { key: 'searchBarBorderColor', label: 'Search border', type: 'color' },
+  {
+    key: 'searchBarButtonBackgroundColor',
+    label: 'Search button background',
+    type: 'color',
+  },
+  {
+    key: 'searchBarButtonTextColor',
+    label: 'Search button text',
+    type: 'color',
+  },
+]
 
 const foundationThemeFields: ThemeField[] = [
   { key: 'mainBackgroundColor', label: 'Main background color', type: 'color' },

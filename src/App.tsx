@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import Layout from './components/Layout'
 import Feed from './routes/Feed'
@@ -7,7 +8,6 @@ import Login from './routes/Login'
 import Profile from './routes/Profile'
 import ProfileSetup from './routes/ProfileSetup'
 import ProtectedRoute from './components/ProtectedRoute'
-import AdminDashboard from './routes/AdminDashboard'
 import Basecamp from './routes/Basecamp'
 import BusinessDirectory from './routes/BusinessDirectory'
 import BusinessManage from './routes/BusinessManage'
@@ -27,6 +27,8 @@ import SpecimenDetail from './routes/SpecimenDetail'
 import TripDetail from './routes/TripDetail'
 import TripPlanner from './routes/TripPlanner'
 import Trips from './routes/Trips'
+
+const AdminDashboard = lazy(() => import('./routes/AdminDashboard'))
 
 export default function App() {
   return (
@@ -182,7 +184,11 @@ export default function App() {
           path="/admin"
           element={
             <ProtectedRoute adminOnly>
-              <AdminDashboard />
+              <Suspense
+                fallback={<p className="empty-state">Loading admin...</p>}
+              >
+                <AdminDashboard />
+              </Suspense>
             </ProtectedRoute>
           }
         />
