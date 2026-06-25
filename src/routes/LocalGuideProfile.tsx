@@ -1,6 +1,12 @@
 import { Link, useParams } from 'react-router-dom'
 import { useQuery } from 'convex/react'
-import { CalendarCheck, ExternalLink, MapPinned, ShieldCheck } from 'lucide-react'
+import {
+  CalendarCheck,
+  ExternalLink,
+  Gem,
+  MapPinned,
+  ShieldCheck,
+} from 'lucide-react'
 import { api } from '../../convex/_generated/api'
 import { Card, EmptyState, SectionHeader } from '../components/ui'
 
@@ -40,7 +46,7 @@ export default function LocalGuideProfile() {
           <SectionHeader
             eyebrow={guide.isFoundingGuide ? 'Founding local guide' : 'Local guide'}
             title={guide.displayName}
-            description={guide.experienceSummary}
+            description={guide.guideBio || guide.experienceSummary}
             action={
               <div className="hero-actions">
                 {guide.bookingUrl ? (
@@ -61,6 +67,14 @@ export default function LocalGuideProfile() {
                   >
                     Contact guide
                   </a>
+                ) : null}
+                {guide.collector?.username ? (
+                  <Link
+                    to={`/profile/${guide.collector.username}/collection`}
+                    className="secondary-action"
+                  >
+                    View collection
+                  </Link>
                 ) : null}
               </div>
             }
@@ -103,6 +117,63 @@ export default function LocalGuideProfile() {
               </li>
             </ul>
           </Card>
+
+          <Card as="div" className="guide-detail-panel">
+            <h2>Why this guide is useful</h2>
+            <p>{guide.experienceSummary}</p>
+          </Card>
+
+          <Card as="div" className="guide-detail-panel">
+            <h2>Ethics and location protection</h2>
+            <p>
+              {guide.ethicsStatement ||
+                'This guide has agreed to promote ethical, legal collecting and respectful field behavior.'}
+            </p>
+            <p>
+              {guide.locationPrivacyStatement ||
+                'This guide has agreed to protect sensitive locations and private knowledge while helping people learn how to research responsibly.'}
+            </p>
+          </Card>
+
+          <Card as="div" className="guide-detail-panel">
+            <h2>Collection as teaching portfolio</h2>
+            <p>
+              {guide.collectionShowcaseNotes ||
+                'Public collection items can help visitors understand this guide’s interests, skill, and field experience without revealing exact locations.'}
+            </p>
+            {guide.collector?.username ? (
+              <Link
+                to={`/profile/${guide.collector.username}/collection`}
+                className="primary-action"
+              >
+                View public collection
+              </Link>
+            ) : null}
+          </Card>
+
+          {guide.favoriteEducationalFinds?.length ? (
+            <Card as="div" className="guide-detail-panel">
+              <h2>Favorite educational finds</h2>
+              <div className="guide-find-list">
+                {guide.favoriteEducationalFinds.map((find: string) => (
+                  <span key={find}>
+                    <Gem aria-hidden="true" />
+                    {find}
+                  </span>
+                ))}
+              </div>
+            </Card>
+          ) : null}
+
+          {guide.testimonialQuote ? (
+            <Card as="div" className="guide-detail-panel guide-testimonial">
+              <h2>Community note</h2>
+              <blockquote>{guide.testimonialQuote}</blockquote>
+              {guide.testimonialAttribution ? (
+                <p>{guide.testimonialAttribution}</p>
+              ) : null}
+            </Card>
+          ) : null}
 
           <Card as="div" className="guide-detail-panel">
             <h2>Accessibility and safety notes</h2>

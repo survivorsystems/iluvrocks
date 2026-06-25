@@ -39,9 +39,14 @@ export const listPublic = query({
           guide.displayName,
           guide.region,
           guide.homeBase,
+          guide.guideBio,
           guide.experienceSummary,
           guide.offerings,
+          guide.ethicsStatement,
+          guide.locationPrivacyStatement,
+          guide.collectionShowcaseNotes,
           ...guide.specialties,
+          ...(guide.favoriteEducationalFinds ?? []),
         ]
           .filter(Boolean)
           .some((value) => value?.toLowerCase().includes(search))
@@ -63,7 +68,18 @@ export const getByHandle = query({
       .unique()
 
     if (!guide || guide.status !== 'approved') return null
-    return guide
+
+    const user = await ctx.db.get(guide.userId)
+    return {
+      ...guide,
+      collector: user
+        ? {
+            username: user.username ?? null,
+            name: user.name ?? null,
+            image: user.image ?? null,
+          }
+        : null,
+    }
   },
 })
 
@@ -87,8 +103,15 @@ export const saveMine = mutation({
     region: v.string(),
     homeBase: v.optional(v.string()),
     specialties: v.array(v.string()),
+    guideBio: v.optional(v.string()),
     experienceSummary: v.string(),
     offerings: v.string(),
+    ethicsStatement: v.optional(v.string()),
+    locationPrivacyStatement: v.optional(v.string()),
+    favoriteEducationalFinds: v.optional(v.array(v.string())),
+    collectionShowcaseNotes: v.optional(v.string()),
+    testimonialQuote: v.optional(v.string()),
+    testimonialAttribution: v.optional(v.string()),
     beginnerFriendly: v.boolean(),
     familyFriendly: v.boolean(),
     accessibilityNotes: v.optional(v.string()),
@@ -119,8 +142,15 @@ export const saveMine = mutation({
       region: args.region,
       homeBase: args.homeBase,
       specialties: args.specialties,
+      guideBio: args.guideBio,
       experienceSummary: args.experienceSummary,
       offerings: args.offerings,
+      ethicsStatement: args.ethicsStatement,
+      locationPrivacyStatement: args.locationPrivacyStatement,
+      favoriteEducationalFinds: args.favoriteEducationalFinds,
+      collectionShowcaseNotes: args.collectionShowcaseNotes,
+      testimonialQuote: args.testimonialQuote,
+      testimonialAttribution: args.testimonialAttribution,
       beginnerFriendly: args.beginnerFriendly,
       familyFriendly: args.familyFriendly,
       accessibilityNotes: args.accessibilityNotes,

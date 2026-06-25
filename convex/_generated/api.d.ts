@@ -17,6 +17,7 @@ import type * as classifieds from "../classifieds.js";
 import type * as collections from "../collections.js";
 import type * as http from "../http.js";
 import type * as jobs from "../jobs.js";
+import type * as localGuides from "../localGuides.js";
 import type * as locationActivity from "../locationActivity.js";
 import type * as minerals from "../minerals.js";
 import type * as safety from "../safety.js";
@@ -47,6 +48,7 @@ declare const fullApi: ApiFromModules<{
   collections: typeof collections;
   http: typeof http;
   jobs: typeof jobs;
+  localGuides: typeof localGuides;
   locationActivity: typeof locationActivity;
   minerals: typeof minerals;
   safety: typeof safety;

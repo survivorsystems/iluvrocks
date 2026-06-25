@@ -3,7 +3,14 @@ import type { FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { useMutation, useQuery } from 'convex/react'
 import { api } from '../../convex/_generated/api'
-import { Button, Card, EmptyState, Input, SectionHeader, Textarea } from '../components/ui'
+import {
+  Button,
+  Card,
+  EmptyState,
+  Input,
+  SectionHeader,
+  Textarea,
+} from '../components/ui'
 
 const regionOptions = [
   'Central Washington',
@@ -37,8 +44,16 @@ export default function LocalGuideApply() {
     region: existing?.region ?? regionOptions[0],
     homeBase: existing?.homeBase ?? '',
     specialties: existing?.specialties ?? ['Agate'],
+    guideBio: existing?.guideBio ?? '',
     experienceSummary: existing?.experienceSummary ?? '',
     offerings: existing?.offerings ?? '',
+    ethicsStatement: existing?.ethicsStatement ?? '',
+    locationPrivacyStatement: existing?.locationPrivacyStatement ?? '',
+    favoriteEducationalFinds:
+      existing?.favoriteEducationalFinds?.join('\n') ?? '',
+    collectionShowcaseNotes: existing?.collectionShowcaseNotes ?? '',
+    testimonialQuote: existing?.testimonialQuote ?? '',
+    testimonialAttribution: existing?.testimonialAttribution ?? '',
     beginnerFriendly: existing?.beginnerFriendly ?? true,
     familyFriendly: existing?.familyFriendly ?? false,
     accessibilityNotes: existing?.accessibilityNotes ?? '',
@@ -59,8 +74,16 @@ export default function LocalGuideApply() {
       region: existing.region ?? regionOptions[0],
       homeBase: existing.homeBase ?? '',
       specialties: existing.specialties ?? ['Agate'],
+      guideBio: existing.guideBio ?? '',
       experienceSummary: existing.experienceSummary ?? '',
       offerings: existing.offerings ?? '',
+      ethicsStatement: existing.ethicsStatement ?? '',
+      locationPrivacyStatement: existing.locationPrivacyStatement ?? '',
+      favoriteEducationalFinds:
+        existing.favoriteEducationalFinds?.join('\n') ?? '',
+      collectionShowcaseNotes: existing.collectionShowcaseNotes ?? '',
+      testimonialQuote: existing.testimonialQuote ?? '',
+      testimonialAttribution: existing.testimonialAttribution ?? '',
       beginnerFriendly: existing.beginnerFriendly ?? true,
       familyFriendly: existing.familyFriendly ?? false,
       accessibilityNotes: existing.accessibilityNotes ?? '',
@@ -96,8 +119,18 @@ export default function LocalGuideApply() {
         region: form.region,
         homeBase: form.homeBase.trim() || undefined,
         specialties: form.specialties,
+        guideBio: form.guideBio.trim() || undefined,
         experienceSummary: form.experienceSummary.trim(),
         offerings: form.offerings.trim(),
+        ethicsStatement: form.ethicsStatement.trim() || undefined,
+        locationPrivacyStatement:
+          form.locationPrivacyStatement.trim() || undefined,
+        favoriteEducationalFinds: splitLines(form.favoriteEducationalFinds),
+        collectionShowcaseNotes:
+          form.collectionShowcaseNotes.trim() || undefined,
+        testimonialQuote: form.testimonialQuote.trim() || undefined,
+        testimonialAttribution:
+          form.testimonialAttribution.trim() || undefined,
         beginnerFriendly: form.beginnerFriendly,
         familyFriendly: form.familyFriendly,
         accessibilityNotes: form.accessibilityNotes.trim() || undefined,
@@ -244,6 +277,16 @@ export default function LocalGuideApply() {
           </div>
 
           <label>
+            Guide bio
+            <Textarea
+              value={form.guideBio}
+              onChange={(event) =>
+                setForm({ ...form, guideBio: event.target.value })
+              }
+              placeholder="A warmer public intro: your story, your region, and why you like helping other hounds learn."
+            />
+          </label>
+          <label>
             Experience summary
             <Textarea
               required
@@ -266,6 +309,57 @@ export default function LocalGuideApply() {
             />
           </label>
           <label>
+            Ethics statement
+            <Textarea
+              value={form.ethicsStatement}
+              onChange={(event) =>
+                setForm({ ...form, ethicsStatement: event.target.value })
+              }
+              placeholder="How you teach legal access, leave-no-trace collecting, claim checks, and respect for the land."
+            />
+          </label>
+          <label>
+            Location protection statement
+            <Textarea
+              value={form.locationPrivacyStatement}
+              onChange={(event) =>
+                setForm({
+                  ...form,
+                  locationPrivacyStatement: event.target.value,
+                })
+              }
+              placeholder="Explain how you protect sensitive or hard-earned locations while still helping beginners learn."
+            />
+          </label>
+          <label>
+            Favorite educational finds
+            <Textarea
+              value={form.favoriteEducationalFinds}
+              onChange={(event) =>
+                setForm({
+                  ...form,
+                  favoriteEducationalFinds: event.target.value,
+                })
+              }
+              placeholder={
+                'One per line, like:\nEllensburg blue agate\nPetrified wood\nOrbicular jasper'
+              }
+            />
+          </label>
+          <label>
+            Collection showcase notes
+            <Textarea
+              value={form.collectionShowcaseNotes}
+              onChange={(event) =>
+                setForm({
+                  ...form,
+                  collectionShowcaseNotes: event.target.value,
+                })
+              }
+              placeholder="Tell visitors what your public collection shows about your skills, interests, or teaching style without naming secret spots."
+            />
+          </label>
+          <label>
             Accessibility and terrain notes
             <Textarea
               value={form.accessibilityNotes}
@@ -275,6 +369,31 @@ export default function LocalGuideApply() {
               placeholder="Share terrain expectations, mobility notes, kid/pet fit, weather or road cautions."
             />
           </label>
+          <div className="form-grid">
+            <label>
+              Testimonial quote
+              <Textarea
+                value={form.testimonialQuote}
+                onChange={(event) =>
+                  setForm({ ...form, testimonialQuote: event.target.value })
+                }
+                placeholder="Optional: add a short quote from someone you helped."
+              />
+            </label>
+            <label>
+              Testimonial attribution
+              <Input
+                value={form.testimonialAttribution}
+                onChange={(event) =>
+                  setForm({
+                    ...form,
+                    testimonialAttribution: event.target.value,
+                  })
+                }
+                placeholder="Example: Beginner hound, Skagit County"
+              />
+            </label>
+          </div>
 
           <div className="guide-checkbox-grid">
             <label>
@@ -345,4 +464,11 @@ export default function LocalGuideApply() {
       </Card>
     </section>
   )
+}
+
+function splitLines(value: string) {
+  return value
+    .split('\n')
+    .map((item) => item.trim())
+    .filter(Boolean)
 }
